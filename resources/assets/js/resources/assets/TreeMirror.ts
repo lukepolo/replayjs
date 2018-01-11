@@ -67,9 +67,7 @@ export default class TreeMirror {
       let parent = this.deserializeNode(data.parentNode);
       let previous = this.deserializeNode(data.previousSibling);
 
-      if(this.isDomObject(node)) {
-        parent.insertBefore(node, previous ? previous.nextSibling : parent.firstChild);
-      }
+      parent.insertBefore(node, previous ? previous.nextSibling : parent.firstChild);
     });
 
     attributes.forEach((data:AttributeData) => {
@@ -77,32 +75,30 @@ export default class TreeMirror {
       let node = <Element> this.deserializeNode(data);
       let type = node.type;
 
-      if(this.isDomObject(node)) {
-        Object.keys(data.attributes).forEach((attrName) => {
-          let newVal = data.attributes[attrName];
-          if (newVal === null) {
-            node.removeAttribute(attrName);
-          } else {
-            if (!this.delegate ||
-              !this.delegate.setAttribute ||
-              !this.delegate.setAttribute(node, attrName, newVal)) {
-              node.setAttribute(attrName, newVal);
-            }
+      Object.keys(data.attributes).forEach((attrName) => {
+        let newVal = data.attributes[attrName];
+        if (newVal === null) {
+          node.removeAttribute(attrName);
+        } else {
+          if (!this.delegate ||
+            !this.delegate.setAttribute ||
+            !this.delegate.setAttribute(node, attrName, newVal)) {
+            node.setAttribute(attrName, newVal);
           }
-        });
+        }
+      });
 
-        switch(type) {
-          case 'textarea' :
-            node.value = data.attributes['value'];
-            break;
-          case 'radio' :
-          case 'checkbox' :
-            let checked = data.attributes['checked'];
-            node.checked = checked === 'true';
-            break;
-          case 'select-one' : {
-            node.selectedIndex = data.attributes['selected-option']
-          }
+      switch(type) {
+        case 'textarea' :
+          node.value = data.attributes['value'];
+          break;
+        case 'radio' :
+        case 'checkbox' :
+          let checked = data.attributes['checked'];
+          node.checked = checked === 'true';
+          break;
+        case 'select-one' : {
+          node.selectedIndex = data.attributes['selected-option']
         }
       }
     });
@@ -122,12 +118,15 @@ export default class TreeMirror {
       return null;
 
     let node:Node = this.idMap[nodeData.id];
-    if (node)
+
+    if (node) {
       return node;
+    }
 
     let doc = this.root.ownerDocument;
-    if (doc === null)
+    if (doc === null) {
       doc = <HTMLDocument>this.root;
+    }
 
     switch(nodeData.nodeType) {
       case Node.COMMENT_NODE:
@@ -143,10 +142,13 @@ export default class TreeMirror {
         break;
 
       case Node.ELEMENT_NODE:
-        if (this.delegate && this.delegate.createElement)
+        if (this.delegate && this.delegate.createElement) {
           node = this.delegate.createElement(nodeData.tagName);
-        if (!node)
+        }
+
+        if (!node) {
           node = doc.createElement(nodeData.tagName);
+        }
 
         Object.keys(nodeData.attributes).forEach((name) => {
           if (!this.delegate ||
@@ -160,16 +162,14 @@ export default class TreeMirror {
     }
 
     if (!node) {
-      throw "ouch";
+      console.warn(nodeData);
+      throw `Invalid NodeData`;
     }
 
     this.idMap[nodeData.id] = node;
 
     if (parent) {
-      // try {
-        parent.appendChild(node);
-      // } catch(error) {
-      // }
+      parent.appendChild(node);
     }
 
     if (nodeData.childNodes) {
