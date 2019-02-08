@@ -8,7 +8,7 @@
     "sourceMap": true,
     "outDir": "./public/",
     "moduleResolution": "Node",
-    "baseUrl": "tsconfig",
+    "baseUrl": "",
     "lib": ["esnext", "dom"],
     "types": ["vue", "vuex", "vue-router", "webpack-env", "reflect-metadata"],
     "emitDecoratorMetadata": true,
@@ -39,6 +39,6 @@
       "@components/*": ["resources/js/app/components/*"]
     }
   },
-  "include": ["resources/js/./**/*.ts"],
+  "include": ["./resources/js/**/*.ts"],
   "exclude": ["node_modules"]
 }
