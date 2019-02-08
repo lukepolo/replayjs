@@ -1,37 +1,36 @@
 {
   "private": true,
+  "version": "0.0.1",
   "scripts": {
-    "dev": "npm run development",
-    "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
-    "watch": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --watch --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
-    "watch-poll": "npm run watch -- --watch-poll",
-    "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
-    "prod": "npm run production",
-    "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
-    "pretty": "prettier --write './**/*.*(ts|js|json)'"
+    "analyze": "npm run dev -- --analyze",
+    "dev-modern": "npm run dev -- --modern",
+    "prod-modern": "npm run prod -- --modern",
+    "analyze-prod": "npm run dev -- --analyze",
+    "dev": "webpack --mode development --progress --hide-modules",
+    "prod": "webpack --mode production --no-progress --hide-modules",
+    "watch": "webpack-dev-server --mode development --progress --hot"
   },
   "dependencies": {
-    "laravel-echo": "^1.3.3",
-    "mutation-summary": "^0.1.1",
-    "pusher-js": "^4.2.2",
-    "tree-mirror": "^1.0.8",
-    "vue": "^2.5.3",
-    "vue-router": "^3.0.1",
-    "vuex": "^3.0.1"
+    "varie": "^0.11.3",
+    "vue": "^2.6.2",
+    "vue-router": "^3.0.2",
+    "vuex": "^3.1.0"
   },
   "devDependencies": {
-    "@types/webpack-env": "^1.13.2",
-    "browser-sync": "^2.18.13",
-    "browser-sync-webpack-plugin": "^1.2.0",
-    "cross-env": "^5.1.1",
-    "dotenv": "^4.0.0",
-    "html-webpack-plugin": "^2.30.1",
-    "inline-style-loader": "^0.0.5",
-    "laravel-mix": "^1.6.1",
-    "ts-loader": "^3.1.1",
-    "typescript": "^2.6.1",
-    "varie": "^0.0.21",
-    "vue-loader": "^13.4.0",
-    "vue-template-compiler": "^2.5.3"
-  }
+    "husky": "^1.3.1",
+    "prettier": "^1.16.4",
+    "pretty-quick": "^1.10.0",
+    "varie-bundler": "^0.7.7",
+    "vue-template-compiler": "^2.6.2",
+    "webpack-bundle-analyzer": "^3.0.3"
+  },
+  "engines": {
+    "node": "10.15.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "composer format && pretty-quick --staged"
+    }
+  },
+  "variePath": "resources/js"
 }
