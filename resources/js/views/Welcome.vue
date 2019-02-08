@@ -83,7 +83,7 @@ export default Vue.extend({
         }, 3000);
       });
 
-    require("./../client/Client");
+    require("../client/client");
   },
   methods: {
     typing() {
