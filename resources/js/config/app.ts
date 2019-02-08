@@ -1,6 +1,7 @@
 import AppServiceProvider from "@app/providers/AppServiceProvider";
 import StateServiceProvider from "@app/providers/StateServiceProvider";
 import RoutingServiceProvider from "@app/providers/RouteServiceProvider";
+import BroadcastServiceProvider from "@app/providers/BroadcastServiceProvider";
 
 import {
   FormServiceProvider,
@@ -94,5 +95,6 @@ export default {
      */
     AppServiceProvider,
     AlertServiceProvider,
+    BroadcastServiceProvider,
   },
 };

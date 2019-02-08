@@ -10,3 +10,4 @@
 npm-debug.log
 /resources/views/layouts/app.blade.php
 .php_cs.cache
+laravel-echo-server.lock

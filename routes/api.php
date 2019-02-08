@@ -12,3 +12,6 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+Route::post('broadcasting/auth', 'SupportController@auth');
+Route::post('support/messages', 'SupportController@store');
