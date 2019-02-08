@@ -13,6 +13,5 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::post('broadcasting/auth', 'SupportController@auth');
+Route::post('support/messages', 'SupportController@store');

@@ -11,9 +11,4 @@
 |
 */
 
-Route::view('/', 'preview');
-Route::view('/preview', 'admin');
-
-Auth::routes();
-
-Route::apiResource('support/messages', 'SupportController');
+Route::get('/{any}', 'Controller@app')->where('any', '.*');

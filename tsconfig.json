@@ -1,0 +1,44 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "jsx": "preserve",
+    "importHelpers": true,
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "outDir": "./public/",
+    "moduleResolution": "Node",
+    "baseUrl": "",
+    "lib": ["esnext", "dom"],
+    "types": ["vue", "vuex", "vue-router", "webpack-env", "reflect-metadata"],
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "paths": {
+      "@app": ["resources/js/app"],
+      "@app/*": ["resources/js/app/*"],
+
+      "@views": ["resources/js/views"],
+      "@views/*": ["resources/js/views/*"],
+
+      "@store": ["resources/js/store"],
+      "@store/*": ["resources/js/store/*"],
+
+      "@config": ["resources/js/config"],
+      "@config/*": ["resources/js/config/*"],
+
+      "@models": ["resources/js/app/models"],
+      "@models/*": ["resources/js/app/models/*"],
+
+      "@routes": ["resources/js/routes"],
+      "@routes/*": ["resources/js/routes/*"],
+
+      "@resources": ["resources/js/resources"],
+      "@resources/*": ["resources/js/resources/*"],
+
+      "@components": ["resources/js/app/components"],
+      "@components/*": ["resources/js/app/components/*"]
+    }
+  },
+  "include": ["./resources/js/**/*.ts"],
+  "exclude": ["node_modules"]
+}
