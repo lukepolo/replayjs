@@ -51,9 +51,9 @@
 </template>
 <script>
 import Vue from "vue";
-import TreeMirror from "./../assets/TreeMirror";
-
+import { TreeMirror } from "tree-mirror";
 export default Vue.extend({
+  $inject: ["BroadcastService"],
   data() {
     return {
       base: null,
@@ -95,8 +95,7 @@ export default Vue.extend({
         }
       },
     });
-
-    this.channel = Echo.join(`chat`);
+    this.channel = this.broadcastService.join(`chat`);
     this.channel
       .listenForWhisper("initialize", ({ rootId, children, base }) => {
         if (!this.initialized) {

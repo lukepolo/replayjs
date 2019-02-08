@@ -82,6 +82,8 @@ export default Vue.extend({
           this.isTyping = null;
         }, 3000);
       });
+
+    require("./../client/Client");
   },
   methods: {
     typing() {
