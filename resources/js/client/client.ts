@@ -143,6 +143,7 @@ export default class Client {
         // @ts-ignore
         event.target.setAttribute(
           "selected-option",
+          // @ts-ignore
           event.target.selectedIndex,
         );
       };
