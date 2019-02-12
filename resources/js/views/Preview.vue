@@ -184,7 +184,6 @@ export default Vue.extend({
   },
   methods: {
     getScale() {
-      console.info("get the scale");
       if (this.$refs.hasOwnProperty("previewBox")) {
         this.scale = Math.min(
           this.$refs.previewBox.offsetWidth /
