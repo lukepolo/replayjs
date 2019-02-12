@@ -83,7 +83,9 @@ export default Vue.extend({
         }, 3000);
       });
 
-    require("../client/client");
+    let client = document.createElement("script");
+    client.src = "http://replayjs.test/js/client.js";
+    this.$el.append(client);
   },
   methods: {
     typing() {

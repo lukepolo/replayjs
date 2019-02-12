@@ -1,6 +1,7 @@
 const path = require("path");
 const VarieBundler = require("varie-bundler");
 const ENV = require("dotenv").config().parsed;
+const WriteFilePlugin = require("write-file-webpack-plugin");
 
 module.exports = function(env, argv) {
   let bundle = new VarieBundler(argv, __dirname)
@@ -81,7 +82,9 @@ module.exports = function(env, argv) {
         });
       }
 
-      config.output.filename("client.js");
+      config.output.filename("js/client.js");
+
+      config.plugin("save-to-disk").use(WriteFilePlugin);
     });
 
   clientBundle._env.isModern = false;

@@ -1,7 +1,8 @@
 import Echo from "laravel-echo";
 // @ts-ignore
 window.io = require("socket.io-client");
-import { TreeMirrorClient } from "tree-mirror";
+import { TreeMirrorClient } from "./tree-mirror";
+
 export default class Client {
   protected echo = null;
   protected start = null;
