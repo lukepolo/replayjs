@@ -1,7 +1,6 @@
 const path = require("path");
 const VarieBundler = require("varie-bundler");
 const ENV = require("dotenv").config().parsed;
-const WriteFilePlugin = require("write-file-webpack-plugin");
 
 module.exports = function(env, argv) {
   let bundle = new VarieBundler(argv, __dirname)
