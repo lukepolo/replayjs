@@ -1,12 +1,36 @@
-<style>
+<style lang="scss">
+body {
+  margin: 0;
+}
 #preview {
-  transform: scale(1);
   transform-origin: 0 0;
+}
+
+.container {
+  display: flex;
+  max-height: 100vh;
+}
+
+.left-nav {
+  display: flex;
+  flex: 0 0 150px;
+}
+
+.preview-box {
+  overflow: hidden;
+  max-height: 100%;
+  flex: 1 1 auto;
 }
 </style>
 <template>
-  <div>
-    <iframe id="preview"></iframe>
+  <div class="container">
+    <div class="left-nav">
+      <h1>Scale</h1>
+      <pre>{{ scale }}</pre>
+    </div>
+    <div class="preview-box" ref="previewBox">
+      <iframe ref="preview" id="preview"></iframe>
+    </div>
   </div>
 </template>
 <script>
@@ -16,6 +40,7 @@ export default Vue.extend({
   $inject: ["BroadcastService"],
   data() {
     return {
+      scale: null,
       base: null,
       previewDocument: null,
       previewFrame: null,
@@ -24,6 +49,8 @@ export default Vue.extend({
     };
   },
   mounted() {
+    window.addEventListener("resize", this.getScale);
+
     this.previewFrame = document.getElementById("preview");
     this.previewDocument = document.getElementById(
       "preview",
@@ -124,6 +151,7 @@ export default Vue.extend({
       .listenForWhisper("windowSize", ({ width, height }) => {
         this.previewFrame.style.width = width + "px";
         this.previewFrame.style.height = height + "px";
+        this.getScale();
       })
       .listenForWhisper("click", ({ x, y }) => {
         let node = document.createElement("DIV");
@@ -153,6 +181,27 @@ export default Vue.extend({
           }, movement.timing);
         });
       });
+  },
+  methods: {
+    getScale() {
+      console.info("get the scale");
+      if (this.$refs.hasOwnProperty("previewBox")) {
+        this.scale = Math.min(
+          this.$refs.previewBox.offsetWidth /
+            parseInt(this.previewFrame.style.width),
+          this.$refs.previewBox.offsetHeight /
+            parseInt(this.previewFrame.style.height),
+        );
+      } else {
+        this.scale = 1;
+      }
+      if (this.$refs.hasOwnProperty("preview")) {
+        this.$refs.preview.style.transform = `scale(${this.scale})`;
+      }
+    },
+  },
+  destroyed() {
+    window.removeEventListener("resize", this.getScale);
   },
 });
 </script>
