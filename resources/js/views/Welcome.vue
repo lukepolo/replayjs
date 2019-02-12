@@ -63,7 +63,7 @@ export default Vue.extend({
   data() {
     return {
       form: {
-        message: "test",
+        message: "WOOO ITS A MESSAGE",
       },
       isTyping: null,
       messages: [],
