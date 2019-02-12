@@ -3,9 +3,8 @@ const VarieBundler = require("varie-bundler");
 const ENV = require("dotenv").config().parsed;
 
 module.exports = function(env, argv) {
-  return new VarieBundler(argv, __dirname)
+  let bundle = new VarieBundler(argv, __dirname)
     .entry("app", ["resources/js/app/app.ts", "resources/sass/app.scss"])
-    .entry("client", ["resources/js/client/client.ts"])
     .aliases({
       "@app": path.join(__dirname, "resources/js/app"),
       "@views": path.join(__dirname, "resources/js/views"),
@@ -51,4 +50,46 @@ module.exports = function(env, argv) {
       ]);
     })
     .build();
+
+  let clientBundle = new VarieBundler(argv, __dirname)
+    .entry("client", ["resources/js/client/client.ts"])
+    .chainWebpack((config) => {
+      config.module.rules.delete("html");
+      config.module.rules.delete("javascript");
+      config.module.rules.delete("sass");
+      config.module.rules.delete("fonts");
+      config.module.rules.delete("images");
+
+      config.plugins.delete("vue");
+      config.plugins.delete("html");
+      config.plugins.delete("clean");
+      config.plugins.delete("multi-build");
+      config.plugins.delete("mini-extract");
+      config.plugins.delete("browser-sync");
+      config.plugins.delete("optimize-assets");
+
+      config.devServer.hot(false);
+      config.optimization.splitChunks({}).runtimeChunk(false);
+
+      if (config.plugins.has("analyzer")) {
+        config.plugin("analyzer").tap(() => {
+          return [
+            {
+              analyzerPort: 8890,
+            },
+          ];
+        });
+      }
+
+      config.output.filename("client.js");
+    });
+
+  clientBundle._env.isModern = false;
+
+  if (!Array.isArray(bundle)) {
+    bundle = [bundle];
+  }
+  bundle.push(clientBundle.build());
+
+  return bundle;
 };
