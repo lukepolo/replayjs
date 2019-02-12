@@ -81,9 +81,6 @@ var TreeMirrorClient = (function() {
       case Node.ELEMENT_NODE:
         var elm = node;
         data.tagName = elm.tagName;
-        if (data.tagName.toLowerCase() === "textarea") {
-          console.info(node);
-        }
         data.attributes = {};
 
         for (var i = 0; i < elm.attributes.length; i++) {

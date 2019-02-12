@@ -43,23 +43,27 @@ export default class Client {
   protected setupMirror() {
     // TODO - mouse movements should send at the same time?
     // TODO - should send timings so we can send in batches
-    new TreeMirrorClient(document, {
-      initialize: (rootId, children) => {
-        this.channel.whisper("initialize", {
-          rootId,
-          children,
-          base: location.href.match(/^(.*\/)[^\/]*$/)[1],
-        });
+    new TreeMirrorClient(
+      document,
+      {
+        initialize: (rootId, children) => {
+          this.channel.whisper("initialize", {
+            rootId,
+            children,
+            base: location.href.match(/^(.*\/)[^\/]*$/)[1],
+          });
+        },
+        applyChanged: (removed, addedOrMoved, attributes, text) => {
+          this.channel.whisper("changes", {
+            removed,
+            addedOrMoved,
+            attributes,
+            text,
+          });
+        },
       },
-      applyChanged: (removed, addedOrMoved, attributes, text) => {
-        this.channel.whisper("changes", {
-          removed,
-          addedOrMoved,
-          attributes,
-          text,
-        });
-      },
-    });
+      [{ all: true }],
+    );
   }
 
   protected attachClickEvents() {
@@ -126,8 +130,10 @@ export default class Client {
         if (type) {
           switch (type) {
             case "text":
-            case "textarea":
               target.setAttribute("value", target.value);
+              break;
+            case "textarea":
+              target.innerHTML = target.value;
               break;
           }
         }
