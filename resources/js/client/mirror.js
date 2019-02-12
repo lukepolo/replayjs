@@ -73,6 +73,20 @@ var TreeMirror = (function() {
             }
           }
         });
+
+        switch (node.type) {
+          case "textarea":
+            node.value = data.attributes["value"];
+            break;
+          case "radio":
+          case "checkbox":
+            let checked = data.attributes["checked"];
+            node.checked = checked === "true";
+            break;
+          case "select-one": {
+            node.selectedIndex = data.attributes["selected-option"];
+          }
+        }
       }
     });
 

@@ -36,6 +36,7 @@ export default class Client {
         this.attachScrollingEvents();
         this.attachWindowResizeEvent();
         this.attachMouseMovementEvents();
+        this.attachAttributeHandlersToInputs();
 
         // TODO - watch for removal of replayjs element and re-insert them
         // TODO - watch for body replacement (which would include all of replayjs scripting)
@@ -119,6 +120,49 @@ export default class Client {
       }
       this.sendMouseMovements();
     }, 1000);
+  }
+
+  protected attachAttributeHandlersToInputs() {
+    document.querySelectorAll("input, textarea").forEach((element) => {
+      // @ts-ignore
+      element.oninput = (event) => {
+        let type = event.target.type;
+        if (type) {
+          switch (type) {
+            case "text":
+            case "textarea":
+              event.target.setAttribute("value", event.target.value);
+              break;
+          }
+        }
+      };
+    });
+
+    document.querySelectorAll("select").forEach((element) => {
+      element.onchange = (event) => {
+        // @ts-ignore
+        event.target.setAttribute(
+          "selected-option",
+          event.target.selectedIndex,
+        );
+      };
+    });
+
+    document
+      .querySelectorAll('input[type="checkbox"], input[type="radio"]')
+      .forEach((element) => {
+        // @ts-ignore
+        element.onchange = (event) => {
+          document
+            .querySelectorAll(
+              `input[type="radio"][name="${event.target.name}"]`,
+            )
+            .forEach((element) => {
+              element.removeAttribute("checked");
+            });
+          event.target.setAttribute("checked", event.target.checked);
+        };
+      });
   }
 }
 new Client();
