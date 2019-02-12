@@ -32,11 +32,10 @@ export default class Client {
         this.setupMirror();
       })
       .listenForWhisper("initialized", () => {
-        this.attachClickEvents(); // WORKS
-        this.attachScrollingEvents(); // WORKS
-        this.attachWindowResizeEvent(); // WORKS
-        this.attachMouseMovementEvents(); // WORKS
-        this.attachAttributeHandlersToInputs();
+        this.attachClickEvents();
+        this.attachScrollingEvents();
+        this.attachWindowResizeEvent();
+        this.attachMouseMovementEvents();
       });
   }
 
@@ -117,59 +116,6 @@ export default class Client {
       }
       this.sendMouseMovements();
     }, 1000);
-  }
-
-  // TODO -THIS ONE HAS SOME WORK
-  protected attachAttributeHandlersToInputs() {
-    Array.from(
-      document.querySelectorAll<HTMLInputElement>("input, textarea"),
-    ).forEach((element) => {
-      element.oninput = (event: Event) => {
-        let target = <HTMLInputElement>event.target;
-        let type = target.type;
-        if (type) {
-          switch (type) {
-            case "text":
-              target.setAttribute("value", target.value);
-              break;
-            case "textarea":
-              target.innerHTML = target.value;
-              break;
-          }
-        }
-      };
-    });
-
-    Array.from(document.querySelectorAll<HTMLSelectElement>("select")).forEach(
-      (element) => {
-        element.onchange = (event: Event) => {
-          let target = <HTMLSelectElement>event.target;
-          target.setAttribute(
-            "selected-option",
-            target.selectedIndex.toString(),
-          );
-        };
-      },
-    );
-
-    Array.from(
-      document.querySelectorAll<HTMLInputElement>(
-        'input[type="checkbox"], input[type="radio"]',
-      ),
-    ).forEach((element) => {
-      element.onchange = (event: Event) => {
-        let target = <HTMLSelectElement>event.target;
-        Array.from(
-          document.querySelectorAll<HTMLInputElement>(
-            `input[type="radio"][name="${target.name}"]`,
-          ),
-        ).forEach((element) => {
-          element.removeAttribute("checked");
-        });
-        // @ts-ignore
-        target.setAttribute("checked", target.checked);
-      };
-    });
   }
 }
 new Client();
