@@ -49,7 +49,7 @@
         <label> <input type="radio" name="abc" value="2" /> Radio 2 </label>
 
         <br /><br />
-        <textarea name="test" value="123">Testung 123</textarea>
+        <textarea name="test">Testing 123</textarea>
       </div>
     </div>
   </section>

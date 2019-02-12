@@ -19,8 +19,6 @@ var TreeMirrorClient = (function() {
 
     this.mirror.initialize(rootId, children);
 
-    var self = this;
-
     var queries = [{ all: true }];
 
     if (testingQueries) queries = queries.concat(testingQueries);
