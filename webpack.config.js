@@ -83,8 +83,6 @@ module.exports = function(env, argv) {
       }
 
       config.output.filename("js/client.js");
-
-      config.plugin("save-to-disk").use(WriteFilePlugin);
     });
 
   clientBundle._env.isModern = false;

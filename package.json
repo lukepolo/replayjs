@@ -26,8 +26,7 @@
     "pretty-quick": "^1.10.0",
     "varie-bundler": "^0.7.7",
     "vue-template-compiler": "^2.6.2",
-    "webpack-bundle-analyzer": "^3.0.3",
-    "write-file-webpack-plugin": "^4.5.0"
+    "webpack-bundle-analyzer": "^3.0.3"
   },
   "engines": {
     "node": "10.15.0"
