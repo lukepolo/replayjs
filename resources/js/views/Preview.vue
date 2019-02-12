@@ -90,7 +90,6 @@ export default Vue.extend({
           let clicksNode = document.createElement("DIV");
           clicksNode.id = "clicks";
 
-          console.info("PUT IN");
           this.previewDocument.body.appendChild(cursorNode);
           this.previewDocument.body.appendChild(clicksNode);
 
@@ -143,10 +142,6 @@ export default Vue.extend({
         this.channel.whisper("initialized", {
           init: true,
         });
-
-        // while (this.previewDocument.firstChild) {
-        //     this.previewDocument.removeChild(this.previewDocument.firstChild);
-        // }
       })
       .listenForWhisper("windowSize", ({ width, height }) => {
         this.previewFrame.style.width = width + "px";
@@ -184,19 +179,21 @@ export default Vue.extend({
   },
   methods: {
     getScale() {
-      if (this.$refs.hasOwnProperty("previewBox")) {
-        this.scale = Math.min(
-          this.$refs.previewBox.offsetWidth /
-            parseInt(this.previewFrame.style.width),
-          this.$refs.previewBox.offsetHeight /
-            parseInt(this.previewFrame.style.height),
-        );
-      } else {
-        this.scale = 1;
-      }
-      if (this.$refs.hasOwnProperty("preview")) {
-        this.$refs.preview.style.transform = `scale(${this.scale})`;
-      }
+      this.$nextTick(() => {
+        if (this.$refs.hasOwnProperty("previewBox")) {
+          this.scale = Math.min(
+            this.$refs.previewBox.offsetWidth /
+              parseInt(this.previewFrame.style.width),
+            this.$refs.previewBox.offsetHeight /
+              parseInt(this.previewFrame.style.height),
+          );
+        } else {
+          this.scale = 1;
+        }
+        if (this.$refs.hasOwnProperty("preview")) {
+          this.$refs.preview.style.transform = `scale(${this.scale})`;
+        }
+      });
     },
   },
   destroyed() {
