@@ -44,10 +44,15 @@ var TreeMirror = (function() {
       if (node) {
         var parent = _this.deserializeNode(data.parentNode);
         var previous = _this.deserializeNode(data.previousSibling);
-        parent.insertBefore(
-          node,
-          previous ? previous.nextSibling : parent.firstChild,
-        );
+
+        try {
+          parent.insertBefore(
+            node,
+            previous ? previous.nextSibling : parent.firstChild,
+          );
+        } catch (e) {
+          console.info(`Node is gone`);
+        }
       }
     });
 

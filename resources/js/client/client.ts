@@ -8,6 +8,7 @@ export default class Client {
   protected start = null;
   protected channel = null;
   protected movements = [];
+  protected streamClient;
 
   constructor() {
     this.startClient();
@@ -37,14 +38,14 @@ export default class Client {
         this.attachWindowResizeEvent();
         this.attachMouseMovementEvents();
         this.attachAttributeHandlersToInputs();
-
-        // TODO - watch for removal of replayjs element and re-insert them
-        // TODO - watch for body replacement (which would include all of replayjs scripting)
       });
   }
 
   protected setupMirror() {
-    new TreeMirrorClient(
+    if (this.streamClient) {
+      this.streamClient.disconnect();
+    }
+    this.streamClient = new TreeMirrorClient(
       document,
       {
         initialize: (rootId, children) => {
