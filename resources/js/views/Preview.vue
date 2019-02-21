@@ -41,60 +41,106 @@ export default Vue.extend({
   data() {
     return {
       scale: null,
-      base: null,
-      previewDocument: null,
+      mirror: null,
       previewFrame: null,
-      clickTimeout: null,
-      initialized: false,
+      previewDocument: null,
     };
   },
-  mounted() {
+  created() {
     window.addEventListener("resize", this.getScale);
-
+  },
+  mounted() {
     this.previewFrame = document.getElementById("preview");
     this.previewDocument = document.getElementById(
       "preview",
     ).contentWindow.document;
-
-    while (this.previewDocument.firstChild) {
-      this.previewDocument.removeChild(this.previewDocument.firstChild);
-    }
-
-    let mirror = new TreeMirror(this.previewDocument, {
-      createElement: (tagName) => {
-        if (tagName === "SCRIPT") {
-          let node = document.createElement("NO-SCRIPT");
-          node.style.display = "none";
-          return node;
-        }
-        if (tagName === "HEAD") {
-          let node = document.createElement("HEAD");
-          // TODO - this only fixes relative URLS not absolute
-          let baseHref = document.createElement("BASE");
-          node.appendChild(baseHref);
-          node.firstChild.href = "http://codepier.test/";
-          return node;
-        }
-      },
-    });
-    this.channel = this.broadcastService.join(`chat`);
-    this.channel
-      .listenForWhisper("initialize", ({ rootId, children, base }) => {
-        if (!this.initialized) {
-          this.base = base;
-          mirror.initialize(rootId, children);
-
-          let cursorNode = document.createElement("DIV");
-          cursorNode.id = "cursor";
-
-          let clicksNode = document.createElement("DIV");
-          clicksNode.id = "clicks";
-
-          this.previewDocument.body.appendChild(cursorNode);
-          this.previewDocument.body.appendChild(clicksNode);
-
-          let styles = document.createElement("style");
-          styles.innerHTML = `
+    this.setupSockets();
+  },
+  methods: {
+    clearIframe() {
+      while (this.previewDocument.firstChild) {
+        this.previewDocument.removeChild(this.previewDocument.firstChild);
+      }
+    },
+    setupMirror(base) {
+      this.mirror = new TreeMirror(this.previewDocument, {
+        createElement: (tagName) => {
+          if (tagName === "SCRIPT") {
+            let node = document.createElement("NO-SCRIPT");
+            node.style.display = "none";
+            return node;
+          }
+          if (tagName === "HEAD") {
+            let node = document.createElement("HEAD");
+            node.appendChild(document.createElement("BASE"));
+            node.firstChild.href = base;
+            return node;
+          }
+        },
+      });
+    },
+    setupIframe({ rootId, children }) {
+      this.clearIframe();
+      this.mirror.initialize(rootId, children);
+      this.addClicks();
+      this.addCursor();
+      this.insertStyles();
+    },
+    addCursor() {
+      let cursorNode = document.createElement("DIV");
+      cursorNode.id = "cursor";
+      this.previewDocument.body.appendChild(cursorNode);
+    },
+    addClicks() {
+      let clicksNode = document.createElement("DIV");
+      clicksNode.id = "clicks";
+      this.previewDocument.body.appendChild(clicksNode);
+    },
+    setupSockets() {
+      this.channel = this.broadcastService.join(`chat`);
+      this.channel
+        .listenForWhisper("initialize", ({ rootId, children, base }) => {
+          this.setupMirror(base);
+          this.setupIframe({ rootId, children });
+          this.channel.whisper("initialized");
+        })
+        .listenForWhisper("windowSize", ({ width, height }) => {
+          this.previewFrame.style.width = width + "px";
+          this.previewFrame.style.height = height + "px";
+          this.getScale();
+        })
+        .listenForWhisper("click", ({ x, y }) => {
+          let node = document.createElement("DIV");
+          node.style.top = y + "px";
+          node.style.left = x + "px";
+          this.previewDocument.getElementById("clicks").appendChild(node);
+          setTimeout(() => {
+            node.remove();
+          }, 1001);
+        })
+        .listenForWhisper("scroll", ({ scrollPosition }) => {
+          window.scrollTo(0, scrollPosition);
+        })
+        .listenForWhisper(
+          "changes",
+          ({ removed, addedOrMoved, attributes, text }) => {
+            this.mirror.applyChanged(removed, addedOrMoved, attributes, text);
+          },
+        )
+        .listenForWhisper("mouseMovement", (movements) => {
+          movements.forEach((movement) => {
+            setTimeout(() => {
+              this.previewDocument.getElementById("cursor").style.top =
+                movement.y + "px";
+              this.previewDocument.getElementById("cursor").style.left =
+                movement.x + "px";
+            }, movement.timing);
+          });
+        });
+    },
+    insertStyles() {
+      let styles = document.createElement("style");
+      styles.innerHTML = `
 @-webkit-keyframes load-progress {
   100% {
     opacity: 0;
@@ -135,49 +181,8 @@ export default Vue.extend({
   background-image: url("http://replayjs.test/img/cursor.png");
 }
 `;
-          this.previewDocument.head.appendChild(styles);
-        }
-
-        this.initialized = true;
-        this.channel.whisper("initialized", {
-          init: true,
-        });
-      })
-      .listenForWhisper("windowSize", ({ width, height }) => {
-        this.previewFrame.style.width = width + "px";
-        this.previewFrame.style.height = height + "px";
-        this.getScale();
-      })
-      .listenForWhisper("click", ({ x, y }) => {
-        let node = document.createElement("DIV");
-        node.style.top = y + "px";
-        node.style.left = x + "px";
-        this.previewDocument.getElementById("clicks").appendChild(node);
-        this.clickTimeout = setTimeout(() => {
-          node.remove();
-        }, 1001);
-      })
-      .listenForWhisper("scroll", ({ scrollPosition }) => {
-        window.scrollTo(0, scrollPosition);
-      })
-      .listenForWhisper(
-        "changes",
-        ({ removed, addedOrMoved, attributes, text }) => {
-          mirror.applyChanged(removed, addedOrMoved, attributes, text);
-        },
-      )
-      .listenForWhisper("mouseMovement", (movements) => {
-        movements.forEach((movement) => {
-          setTimeout(() => {
-            this.previewDocument.getElementById("cursor").style.top =
-              movement.y + "px";
-            this.previewDocument.getElementById("cursor").style.left =
-              movement.x + "px";
-          }, movement.timing);
-        });
-      });
-  },
-  methods: {
+      this.previewDocument.head.appendChild(styles);
+    },
     getScale() {
       this.$nextTick(() => {
         if (this.$refs.hasOwnProperty("previewBox")) {

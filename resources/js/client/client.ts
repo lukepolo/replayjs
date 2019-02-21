@@ -36,6 +36,8 @@ export default class Client {
         this.attachScrollingEvents();
         this.attachWindowResizeEvent();
         this.attachMouseMovementEvents();
+        this.attachAttributeHandlersToInputs();
+
         // TODO - watch for removal of replayjs element and re-insert them
         // TODO - watch for body replacement (which would include all of replayjs scripting)
       });
