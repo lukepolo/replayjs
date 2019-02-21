@@ -44,8 +44,6 @@ export default class Client {
   }
 
   protected setupMirror() {
-    // TODO - mouse movements should send at the same time?
-    // TODO - should send timings so we can send in batches
     new TreeMirrorClient(
       document,
       {
