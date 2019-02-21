@@ -44,6 +44,7 @@ export default Vue.extend({
       mirror: null,
       previewFrame: null,
       previewDocument: null,
+      lastCursorPosition: null,
     };
   },
   created() {
@@ -90,6 +91,12 @@ export default Vue.extend({
       let cursorNode = document.createElement("DIV");
       cursorNode.id = "cursor";
       this.previewDocument.body.appendChild(cursorNode);
+      if (this.lastCursorPosition) {
+        this.updateCursorPosition(
+          this.lastCursorPosition.x,
+          this.lastCursorPosition.y,
+        );
+      }
     },
     addClicks() {
       let clicksNode = document.createElement("DIV");
@@ -130,13 +137,16 @@ export default Vue.extend({
         .listenForWhisper("mouseMovement", (movements) => {
           movements.forEach((movement) => {
             setTimeout(() => {
-              this.previewDocument.getElementById("cursor").style.top =
-                movement.y + "px";
-              this.previewDocument.getElementById("cursor").style.left =
-                movement.x + "px";
+              this.updateCursorPosition(movement.x, movement.y);
             }, movement.timing);
           });
+
+          this.lastCursorPosition = movements[movements.length - 1];
         });
+    },
+    updateCursorPosition(x, y) {
+      this.previewDocument.getElementById("cursor").style.top = y + "px";
+      this.previewDocument.getElementById("cursor").style.left = x + "px";
     },
     insertStyles() {
       let styles = document.createElement("style");
