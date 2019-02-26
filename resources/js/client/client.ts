@@ -20,8 +20,8 @@ export default class Client {
     this.echo = new Echo({
       broadcaster: "socket.io",
       key: "441a88572fdd6f9151442d1d484c0f84",
-      authEndpoint: "https://replayjs.test/api/broadcasting/auth",
-      host: "https://replayjs.test:6002",
+      authEndpoint: "http://replayjs.test/api/broadcasting/auth",
+      host: "http://replayjs.test:6002",
     });
 
     this.channel = this.echo

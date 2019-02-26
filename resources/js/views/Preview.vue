@@ -193,7 +193,7 @@ export default Vue.extend({
   position: absolute;
   background-size: contain;
   background-repeat: no-repeat;
-  background-image: url("https://replayjs.test/img/cursor.png");
+  background-image: url("http://replayjs.test/img/cursor.png");
 }
 `;
       this.previewDocument.head.appendChild(styles);

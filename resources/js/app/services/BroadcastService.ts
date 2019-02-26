@@ -13,7 +13,7 @@ export default class BroadcastService {
       key: configService.get("services.PUSHER_APP_KEY"),
       host:
         configService.get("app.ENV") === "local"
-          ? `https://replayjs.test:6002`
+          ? `http://replayjs.test:6002`
           : "https://ws.replayjs.io:6002",
     });
   }
