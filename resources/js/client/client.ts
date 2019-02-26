@@ -20,8 +20,8 @@ export default class Client {
     this.echo = new Echo({
       broadcaster: "socket.io",
       key: "441a88572fdd6f9151442d1d484c0f84",
-      authEndpoint: "http://relayjs.test/api/broadcasting/auth",
-      host: "http://relayjs.test:6001",
+      authEndpoint: "https://replayjs.test/api/broadcasting/auth",
+      host: "https://replayjs.test:6002",
     });
 
     this.channel = this.echo
@@ -38,6 +38,7 @@ export default class Client {
         this.attachWindowResizeEvent();
         this.attachMouseMovementEvents();
         this.attachAttributeHandlersToInputs();
+        this.getAssets();
       });
   }
 
@@ -64,6 +65,7 @@ export default class Client {
           });
           if (addedOrMoved.length) {
             this.attachAttributeHandlersToInputs();
+            this.getAssets();
           }
         },
       },
@@ -167,5 +169,7 @@ export default class Client {
         };
       });
   }
+
+  protected getAssets() {}
 }
 new Client();

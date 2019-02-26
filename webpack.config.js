@@ -52,6 +52,7 @@ module.exports = function(env, argv) {
     .build();
 
   let clientBundle = new VarieBundler(argv, __dirname)
+    .webWorkers()
     .entry("client", ["resources/js/client/client.ts"])
     .chainWebpack((config) => {
       config.module.rules.delete("html");
@@ -82,6 +83,14 @@ module.exports = function(env, argv) {
       }
 
       config.output.filename("js/client.js");
+
+      config.module
+        .rule("workers")
+        .use("worker-loader")
+        .tap((options) => {
+          options.inline = true;
+          return options;
+        });
     });
 
   clientBundle._env.isModern = false;

@@ -142,6 +142,11 @@ export default Vue.extend({
           });
 
           this.lastCursorPosition = movements[movements.length - 1];
+        })
+        .listenForWhisper("assets", (assets) => {
+          console.group("DOWNLOAD ASSETS");
+          console.info(assets);
+          console.groupEnd();
         });
     },
     updateCursorPosition(x, y) {
@@ -188,7 +193,7 @@ export default Vue.extend({
   position: absolute;
   background-size: contain;
   background-repeat: no-repeat;
-  background-image: url("http://replayjs.test/img/cursor.png");
+  background-image: url("https://replayjs.test/img/cursor.png");
 }
 `;
       this.previewDocument.head.appendChild(styles);

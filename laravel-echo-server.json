@@ -1,5 +1,5 @@
 {
-  "authHost": "http://replayjs.test",
+  "authHost": "https://replayjs.test",
   "authEndpoint": "/api/broadcasting/auth",
   "clients": [
     {
@@ -13,20 +13,20 @@
   },
   "devMode": true,
   "host": null,
-  "port": "6001",
-  "protocol": "http",
+  "port": "6002",
+  "protocol": "https",
   "socketio": {},
-  "sslCertPath": "",
-  "sslKeyPath": "",
-  "sslCertChainPath": "",
+  "sslCertPath": "/Users/luke/.config/valet/Certificates/replayjs.test.crt",
+  "sslKeyPath": "/Users/luke/.config/valet/Certificates/replayjs.test.key",
+  "sslCertChainPath": "/Users/luke/.config/valet/Certificates/replayjs.test.csr",
   "sslPassphrase": "",
   "subscribers": {
-    "http": true,
+    "https": true,
     "redis": true
   },
   "apiOriginAllow": {
     "allowCors": true,
-    "allowOrigin": "http://replayjs.test",
+    "allowOrigin": "*",
     "allowMethods": "GET, POST",
     "allowHeaders": "Origin, Content-Type, X-Auth-Token, X-Requested-With, Accept, Authorization, X-CSRF-TOKEN, X-Socket-Id"
   }
