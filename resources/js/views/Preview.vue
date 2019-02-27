@@ -67,7 +67,7 @@ export default Vue.extend({
       }
     },
     isValidTld() {
-      return false;
+      return true;
     },
     setupMirror(base) {
       this.mirror = new TreeMirror(this.previewDocument, {
@@ -81,23 +81,24 @@ export default Vue.extend({
         },
         setAttribute: (node, attrName, value) => {
           node.setAttribute(attrName, value);
-          if (
-            !["test", "http://localhost"].includes(
-              new URL(base).origin.split(".").pop(),
-            )
-          ) {
-            if (node.tagName === "LINK" && attrName === "href") {
-              let isRelativeUrlRx = new RegExp(/^\/(?!\/).*/g);
-              if (isRelativeUrlRx.test(value)) {
-                if (this.isValidTld(value)) {
-                  value = `${$config.get(
-                    "app.APP_URL",
-                  )}/api/asset?url=${value}`;
-                }
-                node.setAttribute(attrName, value);
+          // if (
+          //   !["test", "http://localhost"].includes(
+          //     new URL(base).origin.split(".").pop(),
+          //   )
+          // ) {
+          if (node.tagName === "LINK" && attrName === "href") {
+            let isRelativeUrlRx = new RegExp(/^\/(?!\/).*/g);
+            if (isRelativeUrlRx.test(value)) {
+              if (this.isValidTld(value)) {
+                console.info(base);
+                value = `${$config.get(
+                  "app.APP_URL",
+                )}/api/asset?url=${base}${value}`;
               }
+              node.setAttribute(attrName, value);
             }
           }
+          // }
           return node;
         },
       });

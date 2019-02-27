@@ -43,15 +43,8 @@ module.exports = function(env, argv) {
           return opts;
         });
       });
-
-      config.devServer.proxy([
-        {
-          context: ["/api"],
-          target: ENV.APP_URL,
-          changeOrigin: true,
-        },
-      ]);
     })
+    // .proxy('/api', ENV.APP_URL)
     .build();
 
   let clientBundle = new VarieBundler(argv, __dirname)
