@@ -80,16 +80,22 @@ export default Vue.extend({
           }
         },
         setAttribute: (node, attrName, value) => {
-          // TODO
-          // http://data.iana.org/TLD/tlds-alpha-by-domain.txt
           node.setAttribute(attrName, value);
-          if (node.tagName === "LINK" && attrName === "href") {
-            let isRelativeUrlRx = new RegExp(/^\/(?!\/).*/g);
-            if (isRelativeUrlRx.test(value)) {
-              if (this.isValidTld(value)) {
-                value = `${$config.get("app.APP_URL")}/api/asset?url=${value}`;
+          if (
+            !["test", "http://localhost"].includes(
+              new URL(base).origin.split(".").pop(),
+            )
+          ) {
+            if (node.tagName === "LINK" && attrName === "href") {
+              let isRelativeUrlRx = new RegExp(/^\/(?!\/).*/g);
+              if (isRelativeUrlRx.test(value)) {
+                if (this.isValidTld(value)) {
+                  value = `${$config.get(
+                    "app.APP_URL",
+                  )}/api/asset?url=${value}`;
+                }
+                node.setAttribute(attrName, value);
               }
-              node.setAttribute(attrName, value);
             }
           }
           return node;
