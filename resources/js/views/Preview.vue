@@ -41,9 +41,6 @@ body {
 import Vue from "vue";
 import { TreeMirror } from "./../client/mirror";
 
-// @ts-ignore
-import assetWorker from "@app/workers/asset.service-worker";
-
 export default Vue.extend({
   $inject: ["BroadcastService"],
   data() {
@@ -61,25 +58,16 @@ export default Vue.extend({
   mounted() {
     this.previewFrame = document.getElementById("preview");
     this.previewDocument = this.previewFrame.contentWindow.document;
-    if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        console.info(assetWorker);
-        navigator.serviceWorker
-          .register(assetWorker)
-          .then(() => {
-            this.setupSockets();
-          })
-          .catch((err) => {
-            console.log("ServiceWorker registration failed: ", err);
-          });
-      });
-    }
+    this.setupSockets();
   },
   methods: {
     clearIframe() {
       while (this.previewDocument.firstChild) {
         this.previewDocument.removeChild(this.previewDocument.firstChild);
       }
+    },
+    isValidTld() {
+      return false;
     },
     setupMirror(base) {
       this.mirror = new TreeMirror(this.previewDocument, {
@@ -95,6 +83,21 @@ export default Vue.extend({
             node.firstChild.href = base;
             return node;
           }
+        },
+        setAttribute: (node, attrName, value) => {
+          // TODO
+          // http://data.iana.org/TLD/tlds-alpha-by-domain.txt
+          node.setAttribute(attrName, value);
+          if (node.tagName === "LINK" && attrName === "href") {
+            let isRelativeUrlRx = new RegExp(/^\/(?!\/).*/g);
+            if (isRelativeUrlRx.test(value)) {
+              if (this.isValidTld(value)) {
+                value = `http://replayjs.test/api/asset?url=${value}`;
+              }
+              node.setAttribute(attrName, value);
+            }
+          }
+          return node;
         },
       });
     },
