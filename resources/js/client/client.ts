@@ -52,7 +52,7 @@ export default class Client {
           this.channel.whisper("initialize", {
             rootId,
             children,
-            base: location.href.match(/^(.*\/)[^\/]*$/)[1],
+            base: window.location.origin,
           });
         },
         applyChanged: (removed, addedOrMoved, attributes, text) => {

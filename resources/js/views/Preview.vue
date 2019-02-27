@@ -90,7 +90,7 @@ export default Vue.extend({
             let isRelativeUrlRx = new RegExp(/^\/(?!\/).*/g);
             if (isRelativeUrlRx.test(value)) {
               if (this.isValidTld(value)) {
-                console.info(base);
+                console.info("base", base);
                 value = `${$config.get(
                   "app.APP_URL",
                 )}/api/asset?url=${base}${value}`;
