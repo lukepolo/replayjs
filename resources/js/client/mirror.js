@@ -122,10 +122,12 @@ var TreeMirror = (function() {
         break;
 
       case Node.ELEMENT_NODE:
-        if (this.delegate && this.delegate.createElement)
+        if (this.delegate && this.delegate.createElement) {
           node = this.delegate.createElement(nodeData.tagName);
-        if (!node) node = doc.createElement(nodeData.tagName);
-
+        }
+        if (!node) {
+          node = doc.createElement(nodeData.tagName);
+        }
         Object.keys(nodeData.attributes).forEach(function(name) {
           try {
             if (
@@ -140,7 +142,7 @@ var TreeMirror = (function() {
               node.setAttribute(name, nodeData.attributes[name]);
             }
           } catch (e) {
-            // Debug here if needed
+            console.info(`Cannot set attribute`, e);
           }
         });
 

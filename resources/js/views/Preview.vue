@@ -29,13 +29,21 @@ body {
       <pre>{{ scale }}</pre>
     </div>
     <div class="preview-box" ref="previewBox">
-      <iframe ref="preview" id="preview"></iframe>
+      <iframe
+        ref="preview"
+        id="preview"
+        sandbox="allow-scripts allow-same-origin"
+      ></iframe>
     </div>
   </div>
 </template>
 <script>
 import Vue from "vue";
 import { TreeMirror } from "./../client/mirror";
+
+// @ts-ignore
+import assetWorker from "@app/workers/asset.service-worker";
+
 export default Vue.extend({
   $inject: ["BroadcastService"],
   data() {
@@ -52,10 +60,20 @@ export default Vue.extend({
   },
   mounted() {
     this.previewFrame = document.getElementById("preview");
-    this.previewDocument = document.getElementById(
-      "preview",
-    ).contentWindow.document;
-    this.setupSockets();
+    this.previewDocument = this.previewFrame.contentWindow.document;
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        console.info(assetWorker);
+        navigator.serviceWorker
+          .register(assetWorker)
+          .then(() => {
+            this.setupSockets();
+          })
+          .catch((err) => {
+            console.log("ServiceWorker registration failed: ", err);
+          });
+      });
+    }
   },
   methods: {
     clearIframe() {
