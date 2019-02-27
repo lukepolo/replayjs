@@ -72,11 +72,6 @@ export default Vue.extend({
     setupMirror(base) {
       this.mirror = new TreeMirror(this.previewDocument, {
         createElement: (tagName) => {
-          if (tagName === "SCRIPT") {
-            let node = document.createElement("NO-SCRIPT");
-            node.style.display = "none";
-            return node;
-          }
           if (tagName === "HEAD") {
             let node = document.createElement("HEAD");
             node.appendChild(document.createElement("BASE"));
