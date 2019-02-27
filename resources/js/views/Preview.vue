@@ -87,7 +87,7 @@ export default Vue.extend({
             let isRelativeUrlRx = new RegExp(/^\/(?!\/).*/g);
             if (isRelativeUrlRx.test(value)) {
               if (this.isValidTld(value)) {
-                value = `http://replayjs.test/api/asset?url=${value}`;
+                value = `${$config.get("app.APP_URL")}/api/asset?url=${value}`;
               }
               node.setAttribute(attrName, value);
             }
@@ -209,7 +209,7 @@ export default Vue.extend({
   position: absolute;
   background-size: contain;
   background-repeat: no-repeat;
-  background-image: url("http://replayjs.test/img/cursor.png");
+  background-image: url("${$config.get("app.APP_URL")}/img/cursor.png");
 }
 `;
       this.previewDocument.head.appendChild(styles);

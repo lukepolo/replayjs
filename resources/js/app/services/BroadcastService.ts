@@ -10,11 +10,8 @@ export default class BroadcastService {
     window.io = require("socket.io-client");
     this.$echo = new Echo({
       broadcaster: "socket.io",
+      host: configService.get("app.WS_URL"),
       key: configService.get("services.PUSHER_APP_KEY"),
-      host:
-        configService.get("app.ENV") === "local"
-          ? `http://replayjs.test:6002`
-          : "https://ws.replayjs.io:6002",
     });
   }
 

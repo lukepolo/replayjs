@@ -16,12 +16,11 @@ export default class Client {
 
   public startClient() {
     this.start = new Date().getTime();
-
     this.echo = new Echo({
       broadcaster: "socket.io",
-      key: "441a88572fdd6f9151442d1d484c0f84",
-      authEndpoint: "http://replayjs.test/api/broadcasting/auth",
-      host: "http://replayjs.test:6002",
+      host: __ENV_VARIABLES__.app.WS_URL,
+      key: __ENV_VARIABLES__.services.PUSHER_APP_KEY,
+      authEndpoint: `${__ENV_VARIABLES__.app.APP_URL}/api/broadcasting/auth`,
     });
 
     this.channel = this.echo

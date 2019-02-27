@@ -19,6 +19,8 @@ module.exports = function(env, argv) {
     .config({
       app: {
         ENV: ENV.APP_ENV,
+        WS_URL: ENV.WS_URL,
+        APP_URL: ENV.APP_URL,
         VERSION: require("./package").version,
       },
       services: {
@@ -53,6 +55,17 @@ module.exports = function(env, argv) {
     .build();
 
   let clientBundle = new VarieBundler(argv, __dirname)
+    .config({
+      app: {
+        ENV: ENV.APP_ENV,
+        WS_URL: ENV.WS_URL,
+        APP_URL: ENV.APP_URL,
+        VERSION: require("./package").version,
+      },
+      services: {
+        PUSHER_APP_KEY: ENV.PUSHER_APP_KEY,
+      },
+    })
     .entry("client", ["resources/js/client/client.ts"])
     .chainWebpack((config) => {
       config.module.rules.delete("html");
