@@ -9,15 +9,39 @@ class AssetController extends Controller
     public function index()
     {
         $url = \Request::input('url');
+
+        $fileDetails = \Cache::remember($url, 10, function () use ($url) {
+            return $this->getAsset($url);
+        });
+
+        if ($fileDetails) {
+            foreach ($fileDetails['headers'] as $header) {
+                header($header);
+            }
+            echo $fileDetails['file'];
+        } else {
+            header("HTTP/1.1 404 Not Found");
+        }
+        exit();
+    }
+
+    /**
+     * @param $url
+     * @return bool|string|string[]|null
+     */
+    private function getAsset($url)
+    {
         $asset_url = action($this->asset_url);
         $cURL = curl_init($url);
+
         curl_setopt($cURL, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($cURL, CURLOPT_FOLLOWLOCATION, 1);
-        //curl_setopt($cURL, CURLOPT_HEADER, 0);
+        curl_setopt($cURL, CURLOPT_HEADER, 0);
         curl_setopt($cURL, CURLOPT_CONNECTTIMEOUT, 2);
         curl_setopt($cURL, CURLOPT_TIMEOUT, 3);
         curl_setopt($cURL, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($cURL, CURLOPT_SSL_VERIFYHOST, false);
+
         $file = curl_exec($cURL);
 
         $http_status = curl_getinfo($cURL, CURLINFO_HTTP_CODE);
@@ -33,16 +57,17 @@ class AssetController extends Controller
 
                 // Fix urls with relative paths
                 // https://www.regex101.com/r/eS7gP8/16
-                $file = preg_replace('/url\((?!h|\/\/)(?:(\/|\.\.|[a-zA-Z]))(.*?)(?:\))/i', 'url('.$asset_url.'?url='.$parsed_url['host'].'$1$2)', $file);
+                $file = preg_replace('/url\((?!h|\/\/)(?:(\/|\.\.|[a-zA-Z]))(.*?)(?:\))/i', 'url(' . $asset_url . '?url=' . $parsed_url['host'] . '$1$2)', $file);
             }
 
-            header('Content-Type: '.$contentType);
-            $nameOfFile= substr($parsed_url['path'], strrpos($parsed_url['path'], '/') + 1);
-            header('Content-Disposition: filename="'.$nameOfFile.'"');
-            echo $file;
-        } else {
-            header("HTTP/1.1 404 Not Found");
+            $nameOfFile = substr($parsed_url['path'], strrpos($parsed_url['path'], '/') + 1);
+            return [
+                'file' => $file,
+                'headers' => [
+                    'Content-Type: ' . $contentType,
+                    'Content-Disposition: filename="' . $nameOfFile . '"',
+                ]
+            ];
         }
-        exit();
     }
 }
