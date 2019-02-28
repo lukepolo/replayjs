@@ -7,7 +7,7 @@ const baseHref = window.location.origin;
 
 export default class Client {
   protected echo = null;
-  protected start = null;
+  protected timing = null;
   protected channel = null;
   protected movements = [];
   protected streamClient;
@@ -17,7 +17,7 @@ export default class Client {
   }
 
   public startClient() {
-    this.start = new Date().getTime();
+    this.timing = new Date().getTime();
     this.echo = new Echo({
       broadcaster: "pusher",
       wsHost: __ENV_VARIABLES__.app.WS_HOST,
@@ -41,7 +41,6 @@ export default class Client {
         this.attachWindowResizeEvent();
         this.attachMouseMovementEvents();
         this.attachAttributeHandlersToInputs();
-        this.getAssets();
       });
   }
 
@@ -61,15 +60,15 @@ export default class Client {
         },
         applyChanged: (removed, addedOrMoved, attributes, text) => {
           this.channel.whisper("changes", {
-            baseHref,
-            removed,
-            addedOrMoved,
-            attributes,
             text,
+            removed,
+            baseHref,
+            attributes,
+            addedOrMoved,
+            timing: new Date().getTime() - this.timing,
           });
           if (addedOrMoved.length) {
             this.attachAttributeHandlersToInputs();
-            this.getAssets();
           }
         },
       },
@@ -113,7 +112,7 @@ export default class Client {
       this.movements.push({
         x: event.pageX,
         y: event.pageY,
-        timing: new Date().getTime() - this.start,
+        timing: new Date().getTime() - this.timing,
       });
     };
     this.sendMouseMovements();
@@ -124,7 +123,7 @@ export default class Client {
       if (this.movements.length) {
         this.channel.whisper("mouseMovement", this.movements);
         this.movements = [];
-        this.start = new Date().getTime();
+        this.timing = new Date().getTime();
       }
       this.sendMouseMovements();
     }, 1000);
@@ -173,7 +172,5 @@ export default class Client {
         };
       });
   }
-
-  protected getAssets() {}
 }
 new Client();
