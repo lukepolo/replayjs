@@ -12,5 +12,5 @@
 */
 
 Broadcast::channel('chat', function ($user) {
-    return 'test';
+    return $user;
 });

@@ -27,16 +27,13 @@ export default class Client {
 
     this.channel = this.echo
       .join(`chat`)
-      .here((users) => {
-        console.info(users, "HERE");
+      .here(() => {
         this.setupMirror();
       })
       .joining(() => {
-        console.info("JOINING");
         this.setupMirror();
       })
       .listenForWhisper("initialized", () => {
-        console.info("initialized");
         this.attachClickEvents();
         this.attachScrollingEvents();
         this.attachWindowResizeEvent();

@@ -164,11 +164,6 @@ export default Vue.extend({
           });
 
           this.lastCursorPosition = movements[movements.length - 1];
-        })
-        .listenForWhisper("assets", (assets) => {
-          console.group("DOWNLOAD ASSETS");
-          console.info(assets);
-          console.groupEnd();
         });
     },
     updateCursorPosition(x, y) {

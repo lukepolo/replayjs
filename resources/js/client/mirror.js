@@ -51,7 +51,7 @@ var TreeMirror = (function() {
             previous ? previous.nextSibling : parent.firstChild,
           );
         } catch (e) {
-          console.info(`Node is gone`);
+          console.warn(`Node is gone`);
         }
       }
     });
@@ -142,7 +142,7 @@ var TreeMirror = (function() {
               node.setAttribute(name, nodeData.attributes[name]);
             }
           } catch (e) {
-            console.info(`Cannot set attribute`, e);
+            console.warn(`Cannot set attribute`, e);
           }
         });
 
