@@ -56,6 +56,7 @@ export default class Client {
             rootId,
             children,
             baseHref,
+            timing: this.timing,
           });
         },
         applyChanged: (removed, addedOrMoved, attributes, text) => {
@@ -81,6 +82,7 @@ export default class Client {
       this.channel.whisper("click", {
         x: event.clientX,
         y: event.clientY,
+        timing: new Date().getTime() - this.timing,
       });
     };
   }
@@ -88,6 +90,7 @@ export default class Client {
   protected attachScrollingEvents() {
     document.onscroll = () => {
       this.channel.whisper("scroll", {
+        timing: new Date().getTime() - this.timing,
         scrollPosition: document.documentElement.scrollTop,
       });
     };
@@ -104,6 +107,7 @@ export default class Client {
     this.channel.whisper("windowSize", {
       width: window.innerWidth,
       height: window.innerHeight,
+      timing: new Date().getTime() - this.timing,
     });
   }
 
@@ -123,7 +127,6 @@ export default class Client {
       if (this.movements.length) {
         this.channel.whisper("mouseMovement", this.movements);
         this.movements = [];
-        this.timing = new Date().getTime();
       }
       this.sendMouseMovements();
     }, 1000);
