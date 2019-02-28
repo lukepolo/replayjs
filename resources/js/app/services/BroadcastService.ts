@@ -7,11 +7,14 @@ export default class BroadcastService {
 
   constructor(@inject("ConfigService") configService) {
     // @ts-ignore
-    window.io = require("socket.io-client");
+    window.Pusher = require("pusher-js");
     this.$echo = new Echo({
-      broadcaster: "socket.io",
-      host: configService.get("app.WS_URL"),
+      broadcaster: "pusher",
+      wsHost: configService.get("app.WS_HOST"),
+      wsPort: configService.get("app.WS_PORT"),
       key: configService.get("services.PUSHER_APP_KEY"),
+      authEndpoint: `${__ENV_VARIABLES__.app.APP_URL}/api/broadcasting/auth`,
+      disableStats: true,
     });
   }
 

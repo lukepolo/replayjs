@@ -9,11 +9,12 @@
     "dev": "webpack --mode development --progress --hide-modules",
     "prod": "webpack --mode production --no-progress --hide-modules",
     "watch": "webpack-dev-server --mode development --progress --hot",
-    "echo": "laravel-echo-server start"
+    "echo": "php artisan websockets:serve --port=6002"
   },
   "dependencies": {
     "laravel-echo": "^1.5.2",
     "mutation-summary": "^0.1.1",
+    "pusher-js": "^4.4.0",
     "varie": "^0.11.3",
     "vue": "^2.6.2",
     "vue-router": "^3.0.2",
@@ -21,7 +22,6 @@
   },
   "devDependencies": {
     "husky": "^1.3.1",
-    "laravel-echo-server": "^1.5.0",
     "prettier": "^1.16.4",
     "pretty-quick": "^1.10.0",
     "varie-bundler": "^0.8.0-beta-6",

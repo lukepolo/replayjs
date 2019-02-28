@@ -1,6 +1,7 @@
 declare const __ENV_VARIABLES__: {
   app: {
-    WS_URL: string;
+    WS_HOST: string;
+    WS_PORT: number;
     APP_URL: string;
   };
   services: {

@@ -1,6 +1,6 @@
 import Echo from "laravel-echo";
 // @ts-ignore
-window.io = require("socket.io-client");
+window.Pusher = require("pusher-js");
 import { TreeMirrorClient } from "./tree-mirror";
 
 export default class Client {
@@ -17,10 +17,12 @@ export default class Client {
   public startClient() {
     this.start = new Date().getTime();
     this.echo = new Echo({
-      broadcaster: "socket.io",
-      host: __ENV_VARIABLES__.app.WS_URL,
+      broadcaster: "pusher",
+      wsHost: __ENV_VARIABLES__.app.WS_HOST,
+      wsPort: __ENV_VARIABLES__.app.WS_PORT,
       key: __ENV_VARIABLES__.services.PUSHER_APP_KEY,
       authEndpoint: `${__ENV_VARIABLES__.app.APP_URL}/api/broadcasting/auth`,
+      disableStats: true,
     });
 
     this.channel = this.echo

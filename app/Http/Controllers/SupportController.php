@@ -38,10 +38,10 @@ class SupportController extends Controller
             // $request->session()->put('guest', $guest);
         // }
 
-        return json_encode(['channel_data' => [
-            'user_id' => $guest->getAuthIdentifier(),
-            'user_info' => $guest,
-        ]]);
+        return json_encode([
+                                       'user_id' => $guest->getAuthIdentifier(),
+                                       'user_info' => $guest,
+                                   ]);
 
         return ['channel_data' => $guest];
     }

@@ -19,8 +19,9 @@ module.exports = function(env, argv) {
     .config({
       app: {
         ENV: ENV.APP_ENV,
-        WS_URL: ENV.WS_URL,
         APP_URL: ENV.APP_URL,
+        WS_HOST: ENV.WS_HOST,
+        WS_PORT: ENV.WS_PORT,
         VERSION: require("./package").version,
       },
       services: {
@@ -44,7 +45,7 @@ module.exports = function(env, argv) {
         });
       });
     })
-    // .proxy('/api', ENV.APP_URL)
+    .proxy("/api", ENV.APP_URL)
     .build();
 
   let clientBundle = new VarieBundler(argv, __dirname)
