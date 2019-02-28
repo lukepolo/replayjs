@@ -52,8 +52,9 @@ module.exports = function(env, argv) {
     .config({
       app: {
         ENV: ENV.APP_ENV,
-        WS_URL: ENV.WS_URL,
         APP_URL: ENV.APP_URL,
+        WS_HOST: ENV.WS_HOST,
+        WS_PORT: ENV.WS_PORT,
         VERSION: require("./package").version,
       },
       services: {

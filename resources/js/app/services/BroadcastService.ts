@@ -13,7 +13,7 @@ export default class BroadcastService {
       wsHost: configService.get("app.WS_HOST"),
       wsPort: configService.get("app.WS_PORT"),
       key: configService.get("services.PUSHER_APP_KEY"),
-      authEndpoint: `${__ENV_VARIABLES__.app.APP_URL}/api/broadcasting/auth`,
+      authEndpoint: `/api/broadcasting/auth`,
       disableStats: true,
     });
   }

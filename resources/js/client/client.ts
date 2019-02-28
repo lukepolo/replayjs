@@ -25,6 +25,8 @@ export default class Client {
       disableStats: true,
     });
 
+    console.info(__ENV_VARIABLES__.app);
+
     this.channel = this.echo
       .join(`chat`)
       .here(() => {

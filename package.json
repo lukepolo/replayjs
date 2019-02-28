@@ -24,7 +24,7 @@
     "husky": "^1.3.1",
     "prettier": "^1.16.4",
     "pretty-quick": "^1.10.0",
-    "varie-bundler": "^0.8.0-beta-6",
+    "varie-bundler": "^0.8.0-beta-7",
     "vue-template-compiler": "^2.6.2",
     "webpack-bundle-analyzer": "^3.0.3"
   },
