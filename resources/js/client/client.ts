@@ -25,17 +25,18 @@ export default class Client {
       disableStats: true,
     });
 
-    console.info(__ENV_VARIABLES__.app);
-
     this.channel = this.echo
       .join(`chat`)
-      .here(() => {
+      .here((users) => {
+        console.info(users, "HERE");
         this.setupMirror();
       })
       .joining(() => {
+        console.info("JOINING");
         this.setupMirror();
       })
       .listenForWhisper("initialized", () => {
+        console.info("initialized");
         this.attachClickEvents();
         this.attachScrollingEvents();
         this.attachWindowResizeEvent();

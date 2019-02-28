@@ -15,5 +15,4 @@ use Illuminate\Http\Request;
 
 Route::get('asset', 'AssetController@index');
 
-Route::post('broadcasting/auth', 'SupportController@auth');
 Route::post('support/messages', 'SupportController@store');
