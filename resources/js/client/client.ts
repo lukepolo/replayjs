@@ -3,6 +3,8 @@ import Echo from "laravel-echo";
 window.Pusher = require("pusher-js");
 import { TreeMirrorClient } from "./tree-mirror";
 
+const baseHref = window.location.origin;
+
 export default class Client {
   protected echo = null;
   protected start = null;
@@ -54,11 +56,12 @@ export default class Client {
           this.channel.whisper("initialize", {
             rootId,
             children,
-            base: window.location.origin,
+            baseHref,
           });
         },
         applyChanged: (removed, addedOrMoved, attributes, text) => {
           this.channel.whisper("changes", {
+            baseHref,
             removed,
             addedOrMoved,
             attributes,

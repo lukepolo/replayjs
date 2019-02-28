@@ -9,7 +9,7 @@
     "dev": "webpack --mode development --progress --hide-modules",
     "prod": "webpack --mode production --no-progress --hide-modules",
     "watch": "webpack-dev-server --mode development --progress --hot",
-    "echo": "php artisan websockets:serve --port=6002"
+    "websocket-server": "php artisan websockets:serve --port=6002"
   },
   "dependencies": {
     "laravel-echo": "^1.5.2",

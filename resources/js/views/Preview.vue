@@ -69,13 +69,13 @@ export default Vue.extend({
     isValidTld() {
       return true;
     },
-    setupMirror(base) {
+    setupMirror(baseHref) {
       this.mirror = new TreeMirror(this.previewDocument, {
         createElement: (tagName) => {
           if (tagName === "HEAD") {
             let node = document.createElement("HEAD");
             node.appendChild(document.createElement("BASE"));
-            node.firstChild.href = base;
+            node.firstChild.href = baseHref;
             return node;
           }
         },
@@ -83,7 +83,7 @@ export default Vue.extend({
           node.setAttribute(attrName, value);
           if (
             !["test", "http://localhost"].includes(
-              new URL(base).origin.split(".").pop(),
+              new URL(baseHref).origin.split(".").pop(),
             )
           ) {
             if (node.tagName === "LINK" && attrName === "href") {
@@ -92,7 +92,7 @@ export default Vue.extend({
                 if (this.isValidTld(value)) {
                   value = `${$config.get(
                     "app.APP_URL",
-                  )}/api/asset?url=${base}${value}`;
+                  )}/api/asset?url=${baseHref}${value}`;
                 }
                 node.setAttribute(attrName, value);
               }
@@ -128,8 +128,8 @@ export default Vue.extend({
     setupSockets() {
       this.channel = this.broadcastService.join(`chat`);
       this.channel
-        .listenForWhisper("initialize", ({ rootId, children, base }) => {
-          this.setupMirror(base);
+        .listenForWhisper("initialize", ({ rootId, children, baseHref }) => {
+          this.setupMirror(baseHref);
           this.setupIframe({ rootId, children });
           this.channel.whisper("initialized");
         })
