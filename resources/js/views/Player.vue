@@ -81,7 +81,9 @@ export default Vue.extend({
               text,
             } = recording.dom_changes[timing];
             if (removed) {
-              this.updateDom(removed, addedOrMoved, attributes, text);
+              setTimeout(() => {
+                this.updateDom(removed, addedOrMoved, attributes, text);
+              }, 0);
             }
           }, timing);
         }

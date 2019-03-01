@@ -10,11 +10,5 @@ class Recording extends Model
 
     protected $casts = [
         'custom_data' => 'json',
-        'dom_changes' => 'json',
-        'xhr_requests' => 'json',
-        'mouse_clicks' => 'json',
-        'scroll_events' => 'json',
-        'mouse_movements' => 'json',
-        'window_size_changes' => 'json'
     ];
 }

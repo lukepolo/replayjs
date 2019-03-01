@@ -20,12 +20,6 @@ class CreateRecordingsTable extends Migration
             $table->integer('client_id')->nullable();
             $table->json('custom_data')->nullable();
             $table->string('user_agent')->nullable();
-            $table->json('dom_changes')->nullable();
-            $table->json('xhr_requests')->nullable();
-            $table->json('mouse_clicks')->nullable();
-            $table->json('scroll_events')->nullable();
-            $table->json('mouse_movements')->nullable();
-            $table->json('window_size_changes')->nullable();
             $table->timestamps();
         });
     }
