@@ -191,13 +191,12 @@ export default Vue.extend({
       window.scrollTo(0, scrollPosition);
     },
     updateMouseMovements(movements) {
-      if (movements) {
-        movements.forEach((movement) => {
-          setTimeout(() => {
-            this.updateCursorPosition(movement.x, movement.y);
-          }, movement.timing);
-        });
-
+      for (let movement in movements) {
+        movement = movements[movement];
+        console.info(movement);
+        setTimeout(() => {
+          this.updateCursorPosition(movement.x, movement.y);
+        }, movement.timing);
         this.lastCursorPosition = movements[movements.length - 1];
       }
     },
