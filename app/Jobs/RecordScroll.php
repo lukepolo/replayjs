@@ -40,10 +40,7 @@ class RecordScroll implements ShouldQueue
             $recording = Recording::firstOrCreate([
                 'session' => $this->socketId,
             ]);
-
-            $recording->update([
-                "scroll_events->{$this->data->timing}" => $this->data
-            ]);
+            Cache::tags([$this->socketId, 'scroll_events'])->put($this->data->timing, $this->data);
         });
     }
 }

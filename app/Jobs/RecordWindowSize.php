@@ -40,10 +40,7 @@ class RecordWindowSize implements ShouldQueue
             $recording = Recording::firstOrCreate([
                 'session' => $this->socketId,
             ]);
-
-            $recording->update([
-                "window_size_changes->{$this->data->timing}" => $this->data
-            ]);
+            Cache::tags([$this->socketId, 'window_size_changes'])->put($this->data->timing, $this->data);
         });
     }
 }

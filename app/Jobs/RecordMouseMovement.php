@@ -40,15 +40,11 @@ class RecordMouseMovement implements ShouldQueue
             $recording = Recording::firstOrCreate([
                 'session' => $this->socketId,
             ]);
-
             $mouseMovements = $this->data;
             if (is_array($recording->mouse_movements)) {
                 $mouseMovements = array_merge($mouseMovements, $recording->mouse_movements);
             }
-
-            $recording->update([
-                "mouse_movements" => $mouseMovements
-            ]);
+            Cache::forever("$this->socketId.mouse_movements", $mouseMovements);
         });
     }
 }

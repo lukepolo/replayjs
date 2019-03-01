@@ -40,10 +40,7 @@ class RecordClick implements ShouldQueue
             $recording = Recording::firstOrCreate([
                 'session' => $this->socketId,
             ]);
-
-            $recording->update([
-                "mouse_clicks->{$this->data->timing}" => $this->data
-            ]);
+            Cache::tags([$this->socketId, 'mouse_clicks'])->put($this->data->timing, $this->data);
         });
     }
 }

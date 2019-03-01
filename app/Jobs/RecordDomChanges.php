@@ -40,10 +40,7 @@ class RecordDomChanges implements ShouldQueue
             $recording = Recording::firstOrCreate([
                 'session' => $this->socketId,
             ]);
-
-            $recording->update([
-                "dom_changes->{$this->data->timing}" => $this->data
-            ]);
+            Cache::tags([$this->socketId, 'dom_changes'])->put($this->data->timing, $this->data);
         });
     }
 }

@@ -40,10 +40,7 @@ class RecordXhrRequest implements ShouldQueue
             $recording = Recording::firstOrCreate([
                 'session' => $this->socketId,
             ]);
-
-            $recording->update([
-                "xhr_requests->{$this->data->timing}" => $this->data
-            ]);
+            Cache::tags([$this->socketId, 'xhr_requests'])->put($this->data->timing, $this->data);
         });
     }
 }
