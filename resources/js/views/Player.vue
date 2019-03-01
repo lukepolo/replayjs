@@ -86,7 +86,9 @@ export default Vue.extend({
           }, timing);
         }
 
-        this.updateMouseMovements(recording.mouse_movements);
+        for (let timing in recording.mouse_movements) {
+          this.updateMouseMovements(recording.mouse_movements[timing]);
+        }
 
         for (let timing in recording.mouse_clicks) {
           setTimeout(() => {
@@ -193,7 +195,6 @@ export default Vue.extend({
     updateMouseMovements(movements) {
       for (let movement in movements) {
         movement = movements[movement];
-        console.info(movement);
         setTimeout(() => {
           this.updateCursorPosition(movement.x, movement.y);
         }, movement.timing);
