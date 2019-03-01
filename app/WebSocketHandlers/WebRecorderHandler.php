@@ -3,7 +3,6 @@
 namespace App\WebSocketHandlers;
 
 use App\Jobs\RecordDomChanges;
-use App\Jobs\RecordInitialDom;
 use Ratchet\ConnectionInterface;
 use App\Jobs\CacheWebRecorderAssets;
 use Ratchet\RFC6455\Messaging\MessageInterface;
@@ -19,6 +18,8 @@ class WebRecorderHandler extends WebSocketHandler
             case 'client-initialize':
                 dispatch(new RecordDomChanges($connection->socketId, $messagePayload->data));
                 dispatch(new CacheWebRecorderAssets($messagePayload->data));
+                break;
+            case 'client-windowSize':
                 break;
             default:
                 dump($messagePayload->event);
