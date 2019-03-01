@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Models\Recording;
 use Illuminate\Bus\Queueable;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -35,12 +36,14 @@ class RecordDomChanges implements ShouldQueue
      */
     public function handle()
     {
-        $recording = Recording::firstOrCreate([
-            'session' => $this->socketId,
-        ]);
+        Cache::lock($this->socketId)->get(function () {
+            $recording = Recording::firstOrCreate([
+                'session' => $this->socketId,
+            ]);
 
-        $recording->update([
-            "dom_changes->{$this->data->timing}" => $this->data
-        ]);
+            $recording->update([
+                "dom_changes->{$this->data->timing}" => $this->data
+            ]);
+        });
     }
 }

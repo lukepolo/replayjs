@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Models\Recording;
 use Illuminate\Bus\Queueable;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -35,7 +36,7 @@ class RecordMouseMovement implements ShouldQueue
      */
     public function handle()
     {
-        \Cache::lock($this->socketId)->get(function () {
+        Cache::lock($this->socketId)->get(function () {
             $recording = Recording::firstOrCreate([
                 'session' => $this->socketId,
             ]);
