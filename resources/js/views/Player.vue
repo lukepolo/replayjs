@@ -86,7 +86,7 @@ export default Vue.extend({
                 this.updateDom(removed, addedOrMoved, attributes, text);
               }, 0);
             }
-          }, timing);
+          }, recording.dom_changes[timing].timing);
         }
 
         for (let timing in recording.mouse_movements) {
@@ -97,7 +97,7 @@ export default Vue.extend({
           setTimeout(() => {
             let { x, y } = recording.mouse_clicks[timing];
             this.addClick(x, y);
-          }, timing);
+          }, recording.mouse_clicks[timing].timing);
         }
       },
     },
