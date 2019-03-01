@@ -45,7 +45,7 @@ class RecordingController extends Controller
         $recording->xhr_requests = $this->getFromCache($recording->session, 'xhr_requests');
         $recording->window_size_changes = $this->getFromCache($recording->session, 'window_size_changes');
         $recording->scroll_events = $this->getFromCache($recording->session, 'scroll_events');
-        $recording->mouse_movements = Cache::get("$recording->session.mouse_movements");
+        $recording->mouse_movements = $this->getFromCache($recording->session, 'mouse_movements');
 
         return response()->json($recording);
     }
@@ -55,7 +55,7 @@ class RecordingController extends Controller
         $data = [];
         $sha = sha1(Cache::tags([$session, $cache])->getTags()->getNamespace());
         foreach (new Iterator\Keyspace($this->redis->client(), "replayjs_cache:$sha:*") as $key) {
-            $data[] =unserialize($this->redis->get($key));
+            $data[str_replace("replayjs_cache:$sha:", '', $key)] =unserialize($this->redis->get($key));
         }
         return $data;
     }
