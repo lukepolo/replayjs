@@ -118,16 +118,13 @@ export default class Client {
         timing: new Date().getTime() - this.timing,
       });
     };
-    this.sendMouseMovements();
-  }
-
-  protected sendMouseMovements() {
-    setTimeout(() => {
+    // TODO - sometimes this doesn't get attached properly?
+    setInterval(() => {
+      console.info("OK WHISPER IT");
       if (this.movements.length) {
         this.channel.whisper("mouse-movement", this.movements);
         this.movements = [];
       }
-      this.sendMouseMovements();
     }, 1000);
   }
 

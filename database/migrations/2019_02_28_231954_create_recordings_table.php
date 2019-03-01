@@ -14,8 +14,8 @@ class CreateRecordingsTable extends Migration
     public function up()
     {
         Schema::create('recordings', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('session');
+            $table->bigIncrements('id');
+            $table->string('session')->unique();
             $table->string('user_name')->nullable();
             $table->integer('client_id')->nullable();
             $table->json('custom_data')->nullable();

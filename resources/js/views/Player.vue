@@ -86,12 +86,7 @@ export default Vue.extend({
           }, timing);
         }
 
-        for (let timing in recording.mouse_movements) {
-          setTimeout(() => {
-            console.info(recording.mouse_movements[timing]);
-            this.updateMouseMovements(recording.mouse_movements[timing]);
-          }, timing);
-        }
+        this.updateMouseMovements(recording.mouse_movements);
 
         for (let timing in recording.mouse_clicks) {
           setTimeout(() => {
@@ -196,13 +191,15 @@ export default Vue.extend({
       window.scrollTo(0, scrollPosition);
     },
     updateMouseMovements(movements) {
-      movements.forEach((movement) => {
-        setTimeout(() => {
-          this.updateCursorPosition(movement.x, movement.y);
-        }, movement.timing);
-      });
+      if (movements) {
+        movements.forEach((movement) => {
+          setTimeout(() => {
+            this.updateCursorPosition(movement.x, movement.y);
+          }, movement.timing);
+        });
 
-      this.lastCursorPosition = movements[movements.length - 1];
+        this.lastCursorPosition = movements[movements.length - 1];
+      }
     },
     updateCursorPosition(x, y) {
       this.previewDocument.getElementById("cursor").style.top = y + "px";

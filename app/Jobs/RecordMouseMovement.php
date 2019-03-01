@@ -40,8 +40,13 @@ class RecordMouseMovement implements ShouldQueue
                 'session' => $this->socketId,
             ]);
 
+            $mouseMovements = $this->data;
+            if (is_array($recording->mouse_movements)) {
+                $mouseMovements = array_merge($mouseMovements, $recording->mouse_movements);
+            }
+
             $recording->update([
-                "mouse_movements->{$this->data->timing}" => $this->data
+                "mouse_movements" => $mouseMovements
             ]);
         });
     }
