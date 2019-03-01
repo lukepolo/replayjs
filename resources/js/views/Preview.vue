@@ -133,7 +133,7 @@ export default Vue.extend({
           this.setupIframe({ rootId, children });
           this.channel.whisper("initialized");
         })
-        .listenForWhisper("windowSize", ({ width, height }) => {
+        .listenForWhisper("window-size", ({ width, height }) => {
           this.previewFrame.style.width = width + "px";
           this.previewFrame.style.height = height + "px";
           this.getScale();
@@ -156,7 +156,7 @@ export default Vue.extend({
             this.mirror.applyChanged(removed, addedOrMoved, attributes, text);
           },
         )
-        .listenForWhisper("mouseMovement", (movements) => {
+        .listenForWhisper("mouse-movement", (movements) => {
           movements.forEach((movement) => {
             setTimeout(() => {
               this.updateCursorPosition(movement.x, movement.y);

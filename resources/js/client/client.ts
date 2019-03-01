@@ -34,14 +34,13 @@ export default class Client {
       })
       .joining(() => {
         this.setupMirror();
-      })
-      .listenForWhisper("initialized", () => {
-        this.attachClickEvents();
-        this.attachScrollingEvents();
-        this.attachWindowResizeEvent();
-        this.attachMouseMovementEvents();
-        this.attachAttributeHandlersToInputs();
       });
+
+    this.attachClickEvents();
+    this.attachScrollingEvents();
+    this.attachWindowResizeEvent();
+    this.attachMouseMovementEvents();
+    this.attachAttributeHandlersToInputs();
   }
 
   protected setupMirror() {
@@ -58,6 +57,7 @@ export default class Client {
             baseHref,
             timing: new Date().getTime() - this.timing,
           });
+          this.resize();
         },
         applyChanged: (removed, addedOrMoved, attributes, text) => {
           this.channel.whisper("changes", {
@@ -97,14 +97,13 @@ export default class Client {
   }
 
   protected attachWindowResizeEvent() {
-    this.resize();
     window.onresize = () => {
       this.resize();
     };
   }
 
   private resize() {
-    this.channel.whisper("windowSize", {
+    this.channel.whisper("window-size", {
       width: window.innerWidth,
       height: window.innerHeight,
       timing: new Date().getTime() - this.timing,
@@ -125,7 +124,7 @@ export default class Client {
   protected sendMouseMovements() {
     setTimeout(() => {
       if (this.movements.length) {
-        this.channel.whisper("mouseMovement", this.movements);
+        this.channel.whisper("mouse-movement", this.movements);
         this.movements = [];
       }
       this.sendMouseMovements();
