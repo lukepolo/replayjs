@@ -18,19 +18,19 @@ class WebRecorderHandler extends WebSocketHandler
     public function onMessage(ConnectionInterface $connection, MessageInterface $message)
     {
         $messagePayload = json_decode($message->getPayload());
-        switch ($messagePayload->event) {
-            case 'client-changes':
-            case 'client-initialize':
+        switch (str_replace('client-', '', $messagePayload->event)) {
+            case 'changes':
+            case 'initialize':
                 dispatch(new RecordDomChanges($connection->socketId, $messagePayload->data));
                 dispatch(new CacheWebRecorderAssets($messagePayload->data));
                 break;
-            case 'client-click':
+            case 'click':
                 dispatch(new RecordClick($connection->socketId, $messagePayload->data));
                 break;
-            case 'client-scroll':
+            case 'scroll':
                 dispatch(new RecordScroll($connection->socketId, $messagePayload->data));
                 break;
-            case 'client-window-size':
+            case 'window-size':
                 dispatch(new RecordWindowSize($connection->socketId, $messagePayload->data));
                 break;
             case 'mouse-movement':
