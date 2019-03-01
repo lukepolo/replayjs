@@ -15,9 +15,7 @@ export default function($router: RouterInterface) {
   */
   $router.route("/", Welcome);
   $router.route("preview", Preview);
-  $router
-    .route("recordings/:recording/player", Player)
-    .setName("recordings.player");
+  $router.route("/recordings/:recording/player", Player);
 
   $router.route("*", ErrorViews.Error404);
 }

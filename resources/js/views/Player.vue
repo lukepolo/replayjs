@@ -24,7 +24,6 @@ body {
 </style>
 <template>
   <div class="container">
-    {{ recording }}
     <div class="left-nav">
       <h1>Scale</h1>
       <pre>{{ scale }}</pre>
@@ -43,7 +42,6 @@ import Vue from "vue";
 import { TreeMirror } from "./../client/mirror";
 
 export default Vue.extend({
-  $inject: ["BroadcastService"],
   data() {
     return {
       scale: null,
@@ -60,14 +58,23 @@ export default Vue.extend({
         this.$store.dispatch("recording/show", this.$route.params.recording);
       },
     },
+    recording: {
+      handler(recording) {
+        let domChanges = recording.dom_changes;
+        let { rootId, children, baseHref } = domChanges[
+          Object.keys(domChanges)[0]
+        ];
+        this.setupMirror(baseHref);
+        this.setupIframe({ rootId, children });
+      },
+    },
   },
   created() {
-    // window.addEventListener("resize", this.getScale);
+    window.addEventListener("resize", this.getScale);
   },
   mounted() {
     this.previewFrame = document.getElementById("preview");
     this.previewDocument = this.previewFrame.contentWindow.document;
-    // this.setupSockets();
   },
   methods: {
     clearIframe() {
@@ -134,46 +141,34 @@ export default Vue.extend({
       clicksNode.id = "clicks";
       this.previewDocument.body.appendChild(clicksNode);
     },
-    setupSockets() {
-      this.channel = this.broadcastService.join(`chat`);
-      this.channel
-        .listenForWhisper("initialize", ({ rootId, children, baseHref }) => {
-          this.setupMirror(baseHref);
-          this.setupIframe({ rootId, children });
-          this.channel.whisper("initialized");
-        })
-        .listenForWhisper("windowSize", ({ width, height }) => {
-          this.previewFrame.style.width = width + "px";
-          this.previewFrame.style.height = height + "px";
-          this.getScale();
-        })
-        .listenForWhisper("click", ({ x, y }) => {
-          let node = document.createElement("DIV");
-          node.style.top = y + "px";
-          node.style.left = x + "px";
-          this.previewDocument.getElementById("clicks").appendChild(node);
-          setTimeout(() => {
-            node.remove();
-          }, 1001);
-        })
-        .listenForWhisper("scroll", ({ scrollPosition }) => {
-          window.scrollTo(0, scrollPosition);
-        })
-        .listenForWhisper(
-          "changes",
-          ({ removed, addedOrMoved, attributes, text }) => {
-            this.mirror.applyChanged(removed, addedOrMoved, attributes, text);
-          },
-        )
-        .listenForWhisper("mouseMovement", (movements) => {
-          movements.forEach((movement) => {
-            setTimeout(() => {
-              this.updateCursorPosition(movement.x, movement.y);
-            }, movement.timing);
-          });
+    updateWindowSize(width, height) {
+      this.previewFrame.style.width = width + "px";
+      this.previewFrame.style.height = height + "px";
+      this.getScale();
+    },
+    addClick(x, y) {
+      let node = document.createElement("DIV");
+      node.style.top = y + "px";
+      node.style.left = x + "px";
+      this.previewDocument.getElementById("clicks").appendChild(node);
+      setTimeout(() => {
+        node.remove();
+      }, 1001);
+    },
+    updateDom(removed, addedOrMoved, attributes, text) {
+      this.mirror.applyChanged(removed, addedOrMoved, attributes, text);
+    },
+    updateScrollPosition(scrollPosition) {
+      window.scrollTo(0, scrollPosition);
+    },
+    updateMouseMovements(movements) {
+      movements.forEach((movement) => {
+        setTimeout(() => {
+          this.updateCursorPosition(movement.x, movement.y);
+        }, movement.timing);
+      });
 
-          this.lastCursorPosition = movements[movements.length - 1];
-        });
+      this.lastCursorPosition = movements[movements.length - 1];
     },
     updateCursorPosition(x, y) {
       this.previewDocument.getElementById("cursor").style.top = y + "px";

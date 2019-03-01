@@ -56,7 +56,7 @@ export default class Client {
             rootId,
             children,
             baseHref,
-            timing: this.timing,
+            timing: new Date().getTime() - this.timing,
           });
         },
         applyChanged: (removed, addedOrMoved, attributes, text) => {
