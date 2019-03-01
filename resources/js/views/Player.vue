@@ -85,7 +85,20 @@ export default Vue.extend({
             }
           }, timing);
         }
-        // start the recording automatically
+
+        for (let timing in recording.mouse_movements) {
+          setTimeout(() => {
+            console.info(recording.mouse_movements[timing]);
+            this.updateMouseMovements(recording.mouse_movements[timing]);
+          }, timing);
+        }
+
+        for (let timing in recording.mouse_clicks) {
+          setTimeout(() => {
+            let { x, y } = recording.mouse_clicks[timing];
+            this.addClick(x, y);
+          }, timing);
+        }
       },
     },
   },
@@ -177,7 +190,6 @@ export default Vue.extend({
       }, 1001);
     },
     updateDom(removed, addedOrMoved, attributes, text) {
-      console.info("UPDATE IT");
       this.mirror.applyChanged(removed, addedOrMoved, attributes, text);
     },
     updateScrollPosition(scrollPosition) {
