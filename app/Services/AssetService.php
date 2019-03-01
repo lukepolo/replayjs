@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Cache;
 
 class AssetService
 {
-    const CACHE_TIME = 1440; // 1 day
+    const CACHE_TIME = 1440 * 60; // 1 day
 
     public $asset_url = 'AssetController@index';
 

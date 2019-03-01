@@ -35,6 +35,7 @@ class RecordWindowSize implements ShouldQueue
      */
     public function handle()
     {
+        \Cache::lock($this->socketId)->get(function () {
             $recording = Recording::firstOrCreate([
                 'session' => $this->socketId,
             ]);
@@ -42,5 +43,6 @@ class RecordWindowSize implements ShouldQueue
             $recording->update([
                 "window_size_changes->{$this->data->timing}" => $this->data
             ]);
+        });
     }
 }

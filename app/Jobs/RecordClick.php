@@ -35,6 +35,7 @@ class RecordClick implements ShouldQueue
      */
     public function handle()
     {
+        \Cache::lock($this->socketId)->get(function () {
             $recording = Recording::firstOrCreate([
                 'session' => $this->socketId,
             ]);
@@ -42,5 +43,6 @@ class RecordClick implements ShouldQueue
             $recording->update([
                 "mouse_clicks->{$this->data->timing}" => $this->data
             ]);
+        });
     }
 }

@@ -54,6 +54,9 @@ return [
             'prefix_indexes' => true,
             'strict' => true,
             'engine' => null,
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+            ]) : [],
         ],
 
         'pgsql' => [
@@ -117,6 +120,10 @@ return [
             'password' => env('REDIS_PASSWORD', null),
             'port' => env('REDIS_PORT', 6379),
             'database' => env('REDIS_DB', 0),
+            'client' => env('REDIS_CLIENT', 'predis'),
+            'options' => [
+                'cluster' => env('REDIS_CLUSTER', 'predis'),
+            ],
         ],
 
         'cache' => [

@@ -35,6 +35,7 @@ class RecordXhrRequest implements ShouldQueue
      */
     public function handle()
     {
+        \Cache::lock($this->socketId)->get(function () {
             $recording = Recording::firstOrCreate([
                 'session' => $this->socketId,
             ]);
@@ -42,5 +43,6 @@ class RecordXhrRequest implements ShouldQueue
             $recording->update([
                 "xhr_requests->{$this->data->timing}" => $this->data
             ]);
+        });
     }
 }
