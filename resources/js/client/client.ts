@@ -2,6 +2,7 @@ import Echo from "laravel-echo";
 // @ts-ignore
 window.Pusher = require("pusher-js");
 import { TreeMirrorClient } from "./tree-mirror";
+require("./xhrInterceptor");
 
 const baseHref = window.location.origin;
 
