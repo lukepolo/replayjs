@@ -64,6 +64,7 @@ export default Vue.extend({
         let { rootId, children, baseHref } = domChanges[
           Object.keys(domChanges)[0]
         ];
+
         this.setupMirror(baseHref);
         this.setupIframe({ rootId, children });
 

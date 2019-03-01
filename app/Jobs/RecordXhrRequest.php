@@ -35,6 +35,8 @@ class RecordXhrRequest implements ShouldQueue
      */
     public function handle()
     {
+        Cache::lock($this->socketId)->get(function () {
             Cache::tags([$this->socketId, 'xhr_requests'])->put(hrtime(true), $this->data);
+        });
     }
 }

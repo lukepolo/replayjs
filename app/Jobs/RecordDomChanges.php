@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Models\Recording;
 use Illuminate\Bus\Queueable;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Queue\SerializesModels;
@@ -35,6 +36,8 @@ class RecordDomChanges implements ShouldQueue
      */
     public function handle()
     {
-        Cache::tags([$this->socketId, 'dom_changes'])->put(hrtime(true), $this->data);
+        Cache::lock($this->socketId)->get(function () {
+            Cache::tags([$this->socketId, 'dom_changes'])->put(hrtime(true), $this->data);
+        });
     }
 }

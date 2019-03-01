@@ -35,6 +35,8 @@ class RecordScroll implements ShouldQueue
      */
     public function handle()
     {
+        Cache::lock($this->socketId)->get(function () {
             Cache::tags([$this->socketId, 'scroll_events'])->put(hrtime(true), $this->data);
+        });
     }
 }

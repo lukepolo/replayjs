@@ -35,6 +35,8 @@ class RecordWindowSize implements ShouldQueue
      */
     public function handle()
     {
+        Cache::lock($this->socketId)->get(function () {
             Cache::tags([$this->socketId, 'window_size_changes'])->put(hrtime(true), $this->data);
+        });
     }
 }
