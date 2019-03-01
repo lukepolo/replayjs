@@ -35,14 +35,12 @@ class RecordDomChanges implements ShouldQueue
      */
     public function handle()
     {
-        \Cache::lock($this->socketId)->get(function () {
-            $recording = Recording::firstOrCreate([
-                'session' => $this->socketId,
-            ]);
+        $recording = Recording::firstOrCreate([
+            'session' => $this->socketId,
+        ]);
 
-            $recording->update([
-                "dom_changes->{$this->data->timing}" => $this->data
-            ]);
-        });
+        $recording->update([
+            "dom_changes->{$this->data->timing}" => $this->data
+        ]);
     }
 }
