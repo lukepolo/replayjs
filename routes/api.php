@@ -14,3 +14,4 @@ use Illuminate\Http\Request;
 */
 
 Route::get('asset', 'AssetController@index');
+Route::apiResource('recordings', 'RecordingController');
