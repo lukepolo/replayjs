@@ -57,6 +57,7 @@ class RecordingController extends Controller
         foreach (new Iterator\Keyspace($this->redis->client(), "replayjs_cache:$sha:*") as $key) {
             $data[str_replace("replayjs_cache:$sha:", '', $key)] =unserialize($this->redis->get($key));
         }
+        dump($data);
         return $data;
     }
 }

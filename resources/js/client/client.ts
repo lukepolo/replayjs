@@ -31,6 +31,7 @@ export default class Client {
       .join(`chat`)
       .here(() => {
         this.setupMirror();
+        this.sendSessionDetails();
       })
       .joining(() => {
         this.setupMirror();
@@ -108,6 +109,10 @@ export default class Client {
       height: window.innerHeight,
       timing: new Date().getTime() - this.timing,
     });
+  }
+
+  private sendSessionDetails() {
+    this.channel.whisper("session-details", {});
   }
 
   protected attachMouseMovementEvents() {

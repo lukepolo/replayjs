@@ -2,14 +2,14 @@
 
 namespace App\Jobs;
 
+use App\Models\Recording;
 use Illuminate\Bus\Queueable;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 
-class RecordClick implements ShouldQueue
+class RecordSessionDetails implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -35,6 +35,12 @@ class RecordClick implements ShouldQueue
      */
     public function handle()
     {
-        Cache::tags([$this->socketId, 'mouse_clicks'])->put(hrtime(true), $this->data);
+        $recording = Recording::firstOrCreate([
+            'session' => $this->socketId,
+        ]);
+
+        $recording->update([
+
+        ]);
     }
 }

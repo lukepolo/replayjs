@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-use App\Models\Recording;
 use Illuminate\Bus\Queueable;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Queue\SerializesModels;
@@ -36,11 +35,6 @@ class RecordMouseMovement implements ShouldQueue
      */
     public function handle()
     {
-        Cache::lock($this->socketId)->get(function () {
-            $recording = Recording::firstOrCreate([
-                'session' => $this->socketId,
-            ]);
-            Cache::tags([$this->socketId, 'mouse_movements'])->put($this->data[0]->timing, $this->data);
-        });
+            Cache::tags([$this->socketId, 'mouse_movements'])->put(hrtime(true), $this->data);
     }
 }
