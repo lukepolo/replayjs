@@ -66,6 +66,26 @@ export default Vue.extend({
         ];
         this.setupMirror(baseHref);
         this.setupIframe({ rootId, children });
+
+        let { height, width } = recording.window_size_changes[
+          Object.keys(recording.window_size_changes)[0]
+        ];
+        this.updateWindowSize(width, height);
+
+        for (let timing in recording.dom_changes) {
+          setTimeout(() => {
+            let {
+              removed,
+              addedOrMoved,
+              attributes,
+              text,
+            } = recording.dom_changes[timing];
+            if (removed) {
+              this.updateDom(removed, addedOrMoved, attributes, text);
+            }
+          }, timing);
+        }
+        // start the recording automatically
       },
     },
   },
@@ -77,6 +97,7 @@ export default Vue.extend({
     this.previewDocument = this.previewFrame.contentWindow.document;
   },
   methods: {
+    play() {},
     clearIframe() {
       while (this.previewDocument.firstChild) {
         this.previewDocument.removeChild(this.previewDocument.firstChild);
@@ -156,6 +177,7 @@ export default Vue.extend({
       }, 1001);
     },
     updateDom(removed, addedOrMoved, attributes, text) {
+      console.info("UPDATE IT");
       this.mirror.applyChanged(removed, addedOrMoved, attributes, text);
     },
     updateScrollPosition(scrollPosition) {
