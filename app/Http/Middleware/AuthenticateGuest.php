@@ -3,7 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use App\Models\User;
+use App\Models\User\User;
 
 class AuthenticateGuest
 {

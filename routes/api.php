@@ -13,5 +13,22 @@ use Illuminate\Http\Request;
 |
 */
 
+// Authentication / Register Routes...
+Route::post('login', 'Auth\AuthController@login');
+Route::post('logout', 'Auth\AuthController@logout');
+Route::post('refresh', 'Auth\AuthController@refresh');
+Route::post('register', 'Auth\RegisterController@register');
+
 Route::get('asset', 'AssetController@index');
-Route::apiResource('recordings', 'RecordingController');
+
+Route::group(['middleware' => [
+    'auth:api',
+],
+], function () {
+    Route::get('me', 'User\UserController@index');
+    Route::put('me', 'User\UserController@update');
+    Route::delete('me', 'User\UserController@destroy');
+    Route::apiResource('recordings', 'RecordingController');
+});
+
+
