@@ -21,19 +21,30 @@ body {
   max-height: 100%;
   flex: 1 1 auto;
 }
+
+.recordings {
+  height: 100px;
+  overflow: hidden;
+}
 </style>
 <template>
-  <div class="container">
-    <div class="left-nav">
-      <h1>Scale</h1>
-      <pre>{{ scale }}</pre>
+  <div>
+    <div class="">
+      <div class="left-nav">
+        <h1>Scale</h1>
+        <pre>{{ scale }}</pre>
+      </div>
+      <div class="preview-box" ref="previewBox">
+        <iframe
+          ref="preview"
+          id="preview"
+          sandbox="allow-scripts allow-same-origin"
+        ></iframe>
+      </div>
     </div>
-    <div class="preview-box" ref="previewBox">
-      <iframe
-        ref="preview"
-        id="preview"
-        sandbox="allow-scripts allow-same-origin"
-      ></iframe>
+    <h3>Network Requests</h3>
+    <div v-if="recording">
+      <pre>{{ recording.network_requests }}</pre>
     </div>
   </div>
 </template>
