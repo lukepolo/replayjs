@@ -29,7 +29,7 @@ body {
 </style>
 <template>
   <div>
-    <div class="">
+    <div class="container">
       <div class="left-nav">
         <h1>Scale</h1>
         <pre>{{ scale }}</pre>
