@@ -36,7 +36,7 @@ class RecordNetworkRequest implements ShouldQueue
     public function handle()
     {
         Cache::lock($this->socketId)->get(function () {
-            Cache::tags([$this->socketId, 'xhr_requests'])->put(hrtime(true), $this->data);
+            Cache::tags([$this->socketId, 'network_requests'])->put(hrtime(true), $this->data);
         });
     }
 }

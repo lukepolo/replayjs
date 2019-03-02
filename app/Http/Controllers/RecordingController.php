@@ -42,7 +42,7 @@ class RecordingController extends Controller
 
         $recording->dom_changes = $this->getFromCache($recording->session, 'dom_changes');
         $recording->mouse_clicks = $this->getFromCache($recording->session, 'mouse_clicks');
-        $recording->xhr_requests = $this->getFromCache($recording->session, 'xhr_requests');
+        $recording->network_requests = $this->getFromCache($recording->session, 'network_requests');
         $recording->window_size_changes = $this->getFromCache($recording->session, 'window_size_changes');
         $recording->scroll_events = $this->getFromCache($recording->session, 'scroll_events');
         $recording->mouse_movements = $this->getFromCache($recording->session, 'mouse_movements');

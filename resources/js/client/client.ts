@@ -37,7 +37,7 @@ export default class Client {
         this.setupMirror();
       });
 
-    this.attachXhrRequests();
+    this.setupNetworkMonitor();
     this.attachClickEvents();
     this.attachFetchRequests();
     this.attachScrollingEvents();
@@ -135,29 +135,37 @@ export default class Client {
   }
 
   protected sendNetworkRequest(requestData) {
+    console.info(requestData);
     return this.channel.whisper("network-request", requestData);
   }
 
-  protected attachXhrRequests() {
+  protected setupNetworkMonitor() {
     let origOpen = XMLHttpRequest.prototype.open;
     let origSend = XMLHttpRequest.prototype.send;
     let origSetRequestHeader = XMLHttpRequest.prototype.setRequestHeader;
     let sendNetworkRequest = this.sendNetworkRequest.bind(this);
     XMLHttpRequest.prototype.open = function(method, url) {
       this.requestData = {
-        method,
         url,
+        method,
+        headers: {},
         timestamp: new Date(),
       };
       this.addEventListener("load", function() {
         this.requestData.endTime = new Date();
-        this.requestData.response = this.response;
+        this.requestData.status = this.status;
+        this.requestData.statusText = this.statusText;
+        this.requestData.response = this.responseText;
         this.requestData.responseHeaders = this.getAllResponseHeaders();
         sendNetworkRequest(this.requestData);
       });
 
-      this.addEventListener("error", function(error) {
-        this.requestData.error = error;
+      this.addEventListener("error", function() {
+        this.requestData.endTime = new Date();
+        this.requestData.status = this.status;
+        this.requestData.statusText = this.statusText;
+        this.requestData.response = this.responseText;
+        this.requestData.responseHeaders = this.getAllResponseHeaders();
         sendNetworkRequest(this.requestData);
       });
       origOpen.apply(this, arguments);
@@ -172,7 +180,7 @@ export default class Client {
 
     XMLHttpRequest.prototype.setRequestHeader = function(name, value) {
       if (name.toLowerCase() !== "authorization") {
-        this.requestData[name] = value;
+        this.requestData.headers[name] = value;
       }
       return origSetRequestHeader.apply(this, arguments);
     };
