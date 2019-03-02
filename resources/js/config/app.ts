@@ -1,4 +1,5 @@
 import AppServiceProvider from "@app/providers/AppServiceProvider";
+import AuthServiceProvider from "@app/providers/AuthServiceProvider";
 import StateServiceProvider from "@app/providers/StateServiceProvider";
 import RoutingServiceProvider from "@app/providers/RouteServiceProvider";
 import BroadcastServiceProvider from "@app/providers/BroadcastServiceProvider";
@@ -94,6 +95,7 @@ export default {
      * Application Service Providers...
      */
     AppServiceProvider,
+    AuthServiceProvider,
     AlertServiceProvider,
     BroadcastServiceProvider,
   },
