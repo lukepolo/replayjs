@@ -6,10 +6,10 @@ use App\Jobs\RecordClick;
 use App\Jobs\RecordScroll;
 use App\Jobs\RecordDomChanges;
 use App\Jobs\RecordWindowSize;
-use App\Jobs\RecordXhrRequest;
 use Ratchet\ConnectionInterface;
 use App\Jobs\RecordMouseMovement;
 use App\Jobs\RecordSessionDetails;
+use App\Jobs\RecordNetworkRequest;
 use App\Jobs\CacheWebRecorderAssets;
 use Ratchet\RFC6455\Messaging\MessageInterface;
 use BeyondCode\LaravelWebSockets\WebSockets\WebSocketHandler;
@@ -37,8 +37,8 @@ class WebRecorderHandler extends WebSocketHandler
             case 'mouse-movement':
                 dispatch(new RecordMouseMovement($connection->socketId, $messagePayload->data));
                 break;
-            case 'xhr-request':
-                dispatch(new RecordXhrRequest($connection->socketId, $messagePayload->data));
+            case 'network-request':
+                dispatch(new RecordNetworkRequest($connection->socketId, $messagePayload->data));
                 break;
             case 'session-details':
                 // TODO - get IP / User Agent

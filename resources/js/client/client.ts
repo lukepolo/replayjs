@@ -2,7 +2,6 @@ import Echo from "laravel-echo";
 // @ts-ignore
 window.Pusher = require("pusher-js");
 import { TreeMirrorClient } from "./tree-mirror";
-require("./xhrInterceptor");
 
 const baseHref = window.location.origin;
 
@@ -38,7 +37,9 @@ export default class Client {
         this.setupMirror();
       });
 
+    this.attachXhrRequests();
     this.attachClickEvents();
+    this.attachFetchRequests();
     this.attachScrollingEvents();
     this.attachWindowResizeEvent();
     this.attachMouseMovementEvents();
@@ -126,12 +127,76 @@ export default class Client {
     };
     // TODO - sometimes this doesn't get attached properly?
     setInterval(() => {
-      console.info("OK WHISPER IT");
       if (this.movements.length) {
         this.channel.whisper("mouse-movement", this.movements);
         this.movements = [];
       }
     }, 1000);
+  }
+
+  protected sendNetworkRequest(requestData) {
+    return this.channel.whisper("network-request", requestData);
+  }
+
+  protected attachXhrRequests() {
+    let origOpen = XMLHttpRequest.prototype.open;
+    let origSend = XMLHttpRequest.prototype.send;
+    let origSetRequestHeader = XMLHttpRequest.prototype.setRequestHeader;
+    let sendNetworkRequest = this.sendNetworkRequest.bind(this);
+    XMLHttpRequest.prototype.open = function(method, url) {
+      this.requestData = {
+        method,
+        url,
+        timestamp: new Date(),
+      };
+      this.addEventListener("load", function() {
+        this.requestData.endTime = new Date();
+        this.requestData.response = this.response;
+        this.requestData.responseHeaders = this.getAllResponseHeaders();
+        sendNetworkRequest(this.requestData);
+      });
+
+      this.addEventListener("error", function(error) {
+        this.requestData.error = error;
+        sendNetworkRequest(this.requestData);
+      });
+      origOpen.apply(this, arguments);
+    };
+
+    XMLHttpRequest.prototype.send = function(data) {
+      this.requestData.data = data;
+      if (this.onreadystatechange) {
+        return origSend.apply(this, arguments);
+      }
+    };
+
+    XMLHttpRequest.prototype.setRequestHeader = function(name, value) {
+      if (name.toLowerCase() !== "authorization") {
+        this.requestData[name] = value;
+      }
+      return origSetRequestHeader.apply(this, arguments);
+    };
+  }
+
+  protected attachFetchRequests() {
+    if (window.fetch) {
+      let originalFetch = window.fetch;
+      window.fetch = function() {
+        console.info("FETCH STARTED");
+        return new Promise((resolve, reject) => {
+          originalFetch
+            .apply(this, arguments)
+            .then(function(data) {
+              console.info(data);
+              resolve(data);
+            })
+            .catch((error) => {
+              console.info("REQUEST FAILED");
+              reject(error);
+            });
+        });
+      };
+    }
   }
 
   protected attachAttributeHandlersToInputs() {
