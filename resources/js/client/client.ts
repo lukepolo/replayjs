@@ -1,19 +1,35 @@
+declare global {
+  interface Window {
+    replayjsQueue: Array<any>;
+    Pusher: PusherConnector;
+  }
+}
+
 import Echo from "laravel-echo";
-// @ts-ignore
-window.Pusher = require("pusher-js");
 import { TreeMirrorClient } from "./tree-mirror";
+import { PusherConnector } from "laravel-echo/dist/connector";
+
+window.Pusher = require("pusher-js");
 
 const baseHref = window.location.origin;
 
 export default class Client {
   protected echo = null;
+  protected streamClient;
+  protected apiKey = null;
   protected timing = null;
   protected channel = null;
   protected movements = [];
-  protected streamClient;
 
   constructor() {
+    window.replayjsQueue.forEach((args) => {
+      this[args[0]](args[1]);
+    });
     this.startClient();
+  }
+
+  public setApiKey(apiKey) {
+    this.apiKey = apiKey;
   }
 
   public startClient() {
@@ -25,6 +41,11 @@ export default class Client {
       key: __ENV_VARIABLES__.services.PUSHER_APP_KEY,
       authEndpoint: `${__ENV_VARIABLES__.app.APP_URL}/api/broadcasting/auth`,
       disableStats: true,
+      auth: {
+        headers: {
+          Authorization: "Bearer " + this.apiKey,
+        },
+      },
     });
 
     this.channel = this.echo
@@ -58,6 +79,7 @@ export default class Client {
             rootId,
             children,
             baseHref,
+            apiKey: this.apiKey,
             timing: new Date().getTime() - this.timing,
           });
           this.resize();
@@ -69,6 +91,7 @@ export default class Client {
             baseHref,
             attributes,
             addedOrMoved,
+            apiKey: this.apiKey,
             timing: new Date().getTime() - this.timing,
           });
           if (addedOrMoved.length) {
@@ -85,6 +108,7 @@ export default class Client {
       this.channel.whisper("click", {
         x: event.clientX,
         y: event.clientY,
+        apiKey: this.apiKey,
         timing: new Date().getTime() - this.timing,
       });
     };
@@ -93,6 +117,7 @@ export default class Client {
   protected attachScrollingEvents() {
     document.onscroll = () => {
       this.channel.whisper("scroll", {
+        apiKey: this.apiKey,
         timing: new Date().getTime() - this.timing,
         scrollPosition: document.documentElement.scrollTop,
       });
@@ -107,6 +132,7 @@ export default class Client {
 
   private resize() {
     this.channel.whisper("window-size", {
+      apiKey: this.apiKey,
       width: window.innerWidth,
       height: window.innerHeight,
       timing: new Date().getTime() - this.timing,
@@ -114,7 +140,9 @@ export default class Client {
   }
 
   private sendSessionDetails() {
-    this.channel.whisper("session-details", {});
+    this.channel.whisper("session-details", {
+      apiKey: this.apiKey,
+    });
   }
 
   protected attachMouseMovementEvents() {
@@ -128,15 +156,28 @@ export default class Client {
     // TODO - sometimes this doesn't get attached properly?
     setInterval(() => {
       if (this.movements.length) {
-        this.channel.whisper("mouse-movement", this.movements);
+        this.channel.whisper("mouse-movement", {
+          apiKey: this.apiKey,
+          movements: this.movements,
+        });
         this.movements = [];
       }
     }, 1000);
   }
 
   protected sendNetworkRequest(requestData) {
-    console.info(requestData);
-    return this.channel.whisper("network-request", requestData);
+    if (requestData.url.indexOf(__ENV_VARIABLES__.app.APP_URL) === -1) {
+      console.info(requestData);
+      return this.channel.whisper(
+        "network-request",
+        Object.assign(
+          {
+            apiKey: this.apiKey,
+          },
+          requestData,
+        ),
+      );
+    }
   }
 
   protected setupNetworkMonitor() {

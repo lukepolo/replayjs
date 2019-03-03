@@ -3,7 +3,9 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use App\Models\Site;
 use App\Models\User\User;
+use Vinkla\Hashids\Facades\Hashids;
 
 class AuthenticateGuest
 {
@@ -16,8 +18,17 @@ class AuthenticateGuest
      */
     public function handle($request, Closure $next)
     {
-        $user = factory(User::class)->create();
-        \Auth::login($user);
+        $site = Site::where(
+            'id',
+            Hashids::decode(
+                str_replace('Bearer ', '', $request->headers->get('Authorization'))
+            )
+        )->first();
+
+        if ($site && $site->domain === parse_url($request->headers->get('origin'))['host']) {
+            $user = factory(User::class)->create();
+            \Auth::login($user);
+        }
         return $next($request);
     }
 }

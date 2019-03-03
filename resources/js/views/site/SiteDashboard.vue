@@ -3,7 +3,7 @@
     <h3>Recordings for Site {{ site.domain }}</h3>
     <template v-if="recordings && recordings.length === 0">
       <code>
-        {{ installScript }}
+        <pre>{{ installScript }}</pre>
       </code>
     </template>
     <template v-else>
@@ -46,8 +46,12 @@ export default Vue.extend({
     },
     installScript() {
       return `
+
+      <script async src="http://replayjs.test/js/client.js"><\/script>
       <script>
-         ${this.site.api_key}
+        window.replayjsQueue = window.replayjsQueue || [];
+        function replayjs(){replayjsQueue.push(arguments);}
+        replayjs('api_key', "${this.site.api_key}");
       <\/script>
       `;
     },
