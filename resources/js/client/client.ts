@@ -79,7 +79,6 @@ export default class Client {
             rootId,
             children,
             baseHref,
-            apiKey: this.apiKey,
             timing: new Date().getTime() - this.timing,
           });
           this.resize();
@@ -91,7 +90,6 @@ export default class Client {
             baseHref,
             attributes,
             addedOrMoved,
-            apiKey: this.apiKey,
             timing: new Date().getTime() - this.timing,
           });
           if (addedOrMoved.length) {
@@ -108,7 +106,6 @@ export default class Client {
       this.channel.whisper("click", {
         x: event.clientX,
         y: event.clientY,
-        apiKey: this.apiKey,
         timing: new Date().getTime() - this.timing,
       });
     };
@@ -117,7 +114,6 @@ export default class Client {
   protected attachScrollingEvents() {
     document.onscroll = () => {
       this.channel.whisper("scroll", {
-        apiKey: this.apiKey,
         timing: new Date().getTime() - this.timing,
         scrollPosition: document.documentElement.scrollTop,
       });
@@ -132,7 +128,6 @@ export default class Client {
 
   private resize() {
     this.channel.whisper("window-size", {
-      apiKey: this.apiKey,
       width: window.innerWidth,
       height: window.innerHeight,
       timing: new Date().getTime() - this.timing,
@@ -156,10 +151,7 @@ export default class Client {
     // TODO - sometimes this doesn't get attached properly?
     setInterval(() => {
       if (this.movements.length) {
-        this.channel.whisper("mouse-movement", {
-          apiKey: this.apiKey,
-          movements: this.movements,
-        });
+        this.channel.whisper("mouse-movement", this.movements);
         this.movements = [];
       }
     }, 1000);
@@ -168,15 +160,7 @@ export default class Client {
   protected sendNetworkRequest(requestData) {
     if (requestData.url.indexOf(__ENV_VARIABLES__.app.APP_URL) === -1) {
       console.info(requestData);
-      return this.channel.whisper(
-        "network-request",
-        Object.assign(
-          {
-            apiKey: this.apiKey,
-          },
-          requestData,
-        ),
-      );
+      return this.channel.whisper("network-request", requestData);
     }
   }
 

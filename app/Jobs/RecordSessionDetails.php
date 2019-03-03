@@ -2,6 +2,8 @@
 
 namespace App\Jobs;
 
+use App\Models\Site;
+use Hashids\Hashids;
 use App\Models\SiteRecording;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
@@ -14,6 +16,7 @@ class RecordSessionDetails implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     private $data;
+    private $apiKey;
     private $socketId;
 
     /**
@@ -22,9 +25,10 @@ class RecordSessionDetails implements ShouldQueue
      * @param $socketId
      * @param $data
      */
-    public function __construct($socketId, $data)
+    public function __construct($apiKey, $socketId, $data)
     {
         $this->data = $data;
+        $this->apiKey = $apiKey;
         $this->socketId = $socketId;
     }
 
@@ -35,12 +39,24 @@ class RecordSessionDetails implements ShouldQueue
      */
     public function handle()
     {
-        $recording = SiteRecording::firstOrCreate([
-            'session' => $this->socketId,
-        ]);
+        $site = Site::where(
+            'id',
+            Hashids::decode(
+                str_replace('Bearer ', '', $this->apiKey)
+            )
+        )->first();
 
-        $recording->update([
+        if (!empty($site)) {
+            $recording = SiteRecording::firstOrNew([
+                'site_id' => $site->id,
+                'session' => $this->socketId,
+            ]);
 
-        ]);
+            $recording->fill([
+
+            ]);
+
+            $recording->save();
+        }
     }
 }
