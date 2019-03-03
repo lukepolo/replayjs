@@ -38,7 +38,7 @@ class SiteRecordingController extends Controller
      */
     public function show(Request $request, $siteId, $recordingId)
     {
-        $recording = SiteRecording::where('id', $recordingId)->where('site_id', $siteId)->get();
+        $recording = SiteRecording::where('id', $recordingId)->where('site_id', $siteId)->first();
 
         $recording->dom_changes = $this->getFromCache($recording->session, 'dom_changes');
         $recording->mouse_clicks = $this->getFromCache($recording->session, 'mouse_clicks');

@@ -30,10 +30,13 @@ export default function($router: RouterInterface) {
       .setName("dashboard");
 
     $router.route("site/:site/dashboard", siteViews.SiteDashboard);
-    $router.route(
-      "recordings/:recording/player",
-      siteViews.SiteRecordingPlayer,
-    );
+    // varie bug, naming it site.player
+    $router
+      .route(
+        "site/:site/recordings/:recording/player",
+        siteViews.SiteRecordingPlayer,
+      )
+      .setName("site.recordings.player");
   });
 
   $router.route("*", errorViews.Error404);

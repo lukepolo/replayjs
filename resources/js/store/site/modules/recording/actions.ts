@@ -12,9 +12,9 @@ export default function(recordingService: RecordingService) {
     },
     show: (
       context: ActionContext<RecordingState, RootState>,
-      { siteId, recordingId },
+      { site, recording },
     ) => {
-      return recordingService.show(siteId, recordingId).then(({ data }) => {
+      return recordingService.show(site, recording).then(({ data }) => {
         context.commit("SET_RECORDING", data);
       });
     },

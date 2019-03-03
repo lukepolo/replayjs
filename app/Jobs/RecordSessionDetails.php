@@ -3,13 +3,13 @@
 namespace App\Jobs;
 
 use App\Models\Site;
-use Hashids\Hashids;
 use App\Models\SiteRecording;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Vinkla\Hashids\Facades\Hashids;
 
 class RecordSessionDetails implements ShouldQueue
 {
@@ -39,13 +39,7 @@ class RecordSessionDetails implements ShouldQueue
      */
     public function handle()
     {
-        $site = Site::where(
-            'id',
-            Hashids::decode(
-                str_replace('Bearer ', '', $this->apiKey)
-            )
-        )->first();
-
+        $site = Site::where('id', Hashids::decode($this->apiKey))->first();
         if (!empty($site)) {
             $recording = SiteRecording::firstOrNew([
                 'site_id' => $site->id,

@@ -2,11 +2,16 @@
   <div v-if="site">
     <h3>Recordings for Site {{ site.domain }}</h3>
     <template v-if="recordings && recordings.length === 0">
+      <h3>
+        You haven't installed the script, or there have been no sessions to
+        record.
+      </h3>
       <code>
         <pre>{{ installScript }}</pre>
       </code>
     </template>
     <template v-else>
+      <h3>Recordings</h3>
       <div v-for="recording in recordings">
         <router-link
           :to="{
