@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use Predis\Client;
-use App\Models\Recording;
+use App\Models\SiteRecording;
 use Illuminate\Http\Request;
 use Predis\Collection\Iterator;
 use Illuminate\Support\Facades\Cache;
 
-class RecordingController extends Controller
+class SiteRecordingController extends Controller
 {
     private $redis;
 
@@ -24,11 +24,11 @@ class RecordingController extends Controller
 
     /**
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(Request $request, $siteId)
     {
-        return response()->json(Recording::all());
+        return SiteRecording::where('site_id', $siteId)->get();
     }
 
     /**
@@ -36,9 +36,9 @@ class RecordingController extends Controller
      * @param $recordingId
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Request $request, $recordingId)
+    public function show(Request $request, $siteId, $recordingId)
     {
-        $recording = Recording::findOrFail($recordingId);
+        $recording = SiteRecording::where('id', $recordingId)->where('site_id', $siteId)->get();
 
         $recording->dom_changes = $this->getFromCache($recording->session, 'dom_changes');
         $recording->mouse_clicks = $this->getFromCache($recording->session, 'mouse_clicks');
@@ -47,7 +47,7 @@ class RecordingController extends Controller
         $recording->scroll_events = $this->getFromCache($recording->session, 'scroll_events');
         $recording->mouse_movements = $this->getFromCache($recording->session, 'mouse_movements');
 
-        return response()->json($recording);
+        return $recording;
     }
 
     private function getFromCache($session, $cache)

@@ -28,7 +28,8 @@ Route::group(['middleware' => [
     Route::get('me', 'User\UserController@index');
     Route::put('me', 'User\UserController@update');
     Route::delete('me', 'User\UserController@destroy');
-    Route::apiResource('recordings', 'RecordingController');
+    Route::apiResource('sites', 'SiteController');
+    Route::apiResource('sites.recordings', 'SiteRecordingController');
 });
 
 

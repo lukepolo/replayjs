@@ -2,11 +2,11 @@ import RouterInterface from "varie/lib/routing/RouterInterface";
 
 import middleware from "./middleware";
 import authRoutes from "./authRoutes";
-import ErrorViews from "@views/errors";
+
+import siteViews from "@views/site";
+import errorViews from "@views/errors";
 
 import Home from "@views/Home.vue";
-import Player from "@views/Player.vue";
-import Preview from "@views/Preview.vue";
 import Dashboard from "@views/Dashboard.vue";
 
 export default function($router: RouterInterface) {
@@ -28,9 +28,13 @@ export default function($router: RouterInterface) {
       .middleware([middleware.HomeMiddleware])
       .route("/", Dashboard)
       .setName("dashboard");
-    $router.route("preview", Preview);
-    $router.route("recordings/:recording/player", Player);
+
+    $router.route("site/:site/dashboard", siteViews.SiteDashboard);
+    $router.route(
+      "recordings/:recording/player",
+      siteViews.SiteRecordingPlayer,
+    );
   });
 
-  $router.route("*", ErrorViews.Error404);
+  $router.route("*", errorViews.Error404);
 }

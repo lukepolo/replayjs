@@ -160,8 +160,7 @@ class OauthController extends Controller
                 $userNotificationProvider->delete();
             }
         }
-
-        return response()->json('OK');
+        return response();
     }
 
     /**

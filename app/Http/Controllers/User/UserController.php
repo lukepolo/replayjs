@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\User\UserUpdateRequest;
 
 class UserController extends Controller
@@ -16,7 +17,7 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        return response()->json($request->user());
+        return $request->user();
     }
 
     /**
@@ -44,12 +45,12 @@ class UserController extends Controller
         }
 
         if ($request->has('password')) {
-            $user->password = \Hash::make($request->get('password'));
+            $user->password = Hash::make($request->get('password'));
         }
 
         $user->save();
 
-        return response()->json($user->fresh());
+        return $user->fresh();
     }
 
 //    /**
@@ -71,12 +72,11 @@ class UserController extends Controller
 //    }
 
     /**
+     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
-     * @throws \Exception
      */
-    public function destroy()
+    public function destroy(Request $request)
     {
-        \Auth::user()->delete();
-        return response()->json('OK');
+        return $request->user()->delete();
     }
 }

@@ -1,6 +1,6 @@
+import SiteStore from "@store/site/SiteStore";
 import { StateServiceProvider as ServiceProvider } from "varie";
 import StateServiceInterface from "varie/lib/state/StateServiceInterface";
-import RecordingStore from "@store/recording/RecordingStore";
 
 /*
 |--------------------------------------------------------------------------
@@ -24,6 +24,6 @@ export default class StateServiceProvider extends ServiceProvider {
   }
 
   public map() {
-    this.$store.registerStore(RecordingStore);
+    this.$store.registerStore(SiteStore);
   }
 }

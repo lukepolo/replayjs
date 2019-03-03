@@ -6,7 +6,7 @@ import StoreModule from "varie/lib/state/StoreModule";
 import { injectable, inject, unmanaged } from "inversify";
 
 @injectable()
-export default class RecordingStore extends StoreModule {
+export default class SiteRecordingStore extends StoreModule {
   constructor(@inject("RecordingService") recordingService) {
     super();
     this.setName("recording")

@@ -1,3 +1,5 @@
+import domainRule from "@app/rules/domain_rule";
+
 export default {
   /*
   |--------------------------------------------------------------------------
@@ -9,6 +11,6 @@ export default {
   */
 
   rules: {
-    // ...
+    domain: domainRule,
   },
 };

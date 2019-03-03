@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Models\Recording;
+use App\Models\SiteRecording;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -35,7 +35,7 @@ class RecordSessionDetails implements ShouldQueue
      */
     public function handle()
     {
-        $recording = Recording::firstOrCreate([
+        $recording = SiteRecording::firstOrCreate([
             'session' => $this->socketId,
         ]);
 

@@ -8,11 +8,13 @@ export default class RecordingService {
     this.httpService = httpService;
   }
 
-  get() {
-    return this.httpService.get(`/api/recordings`);
+  get(siteId) {
+    return this.httpService.get(`/api/sites/${siteId}/recordings`);
   }
 
-  show(recordingId) {
-    return this.httpService.get(`/api/recordings/${recordingId}`);
+  show(siteId, recordingId) {
+    return this.httpService.get(
+      `/api/sites/${siteId}/recordings/${recordingId}`,
+    );
   }
 }

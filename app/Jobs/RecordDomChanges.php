@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Models\Recording;
+use App\Models\SiteRecording;
 use Illuminate\Bus\Queueable;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Queue\SerializesModels;
