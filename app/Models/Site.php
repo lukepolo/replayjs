@@ -6,6 +6,7 @@ use App\Models\User\User;
 use App\Models\Traits\ConnectedToUser;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Vinkla\Hashids\Facades\Hashids;
 
 class Site extends Model
 {
@@ -24,6 +25,10 @@ class Site extends Model
         'user'
     ];
 
+    protected $appends = [
+        'api_key'
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -32,5 +37,10 @@ class Site extends Model
     public function recordings()
     {
         return $this->hasMany(SiteRecording::class);
+    }
+
+    public function getApiKeyAttribute()
+    {
+        return Hashids::encode($this->id);
     }
 }
