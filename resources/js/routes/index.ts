@@ -23,21 +23,29 @@ export default function($router: RouterInterface) {
 
   authRoutes($router);
 
-  $router.middleware([]).group(() => {
-    $router
-      .middleware([middleware.HomeMiddleware])
-      .route("/", Dashboard)
-      .setName("dashboard");
+  $router
+    .layout("authed")
+    .middleware([])
+    .group(() => {
+      $router
+        .middleware([middleware.HomeMiddleware])
+        .route("/", Dashboard)
+        .setName("dashboard");
 
-    $router.route("site/:site/dashboard", siteViews.SiteDashboard);
-    // varie bug, naming it site.player
-    $router
-      .route(
-        "site/:site/recordings/:recording/player",
-        siteViews.SiteRecordingPlayer,
-      )
-      .setName("site.recordings.player");
-  });
+      $router
+        .prefix("site")
+        .area(siteViews.SiteArea)
+        .group(() => {
+          $router.route(":site/dashboard", siteViews.SiteDashboard);
+          // varie bug, naming it site.player
+          $router
+            .route(
+              ":site/recordings/:recording/player",
+              siteViews.SiteRecordingPlayer,
+            )
+            .setName("site.recordings.player");
+        });
+    });
 
   $router.route("*", errorViews.Error404);
 }

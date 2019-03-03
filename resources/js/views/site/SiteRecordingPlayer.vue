@@ -74,7 +74,6 @@ export default Vue.extend({
     },
     recording: {
       handler(recording) {
-        console.info(recording);
         let domChanges = recording.dom_changes;
         let { rootId, children, baseHref } = domChanges[
           Object.keys(domChanges)[0]
