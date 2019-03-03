@@ -6,7 +6,11 @@
 | in your routes file easily.
 */
 import Auth from "./Auth";
+import NoAuth from "./NoAuth";
+import HomeMiddleware from "./HomeMiddleware";
 
 export default {
   Auth,
+  NoAuth,
+  HomeMiddleware,
 };

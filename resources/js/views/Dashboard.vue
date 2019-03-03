@@ -1,5 +1,6 @@
 <template>
   <div>
+    <h3>Dashboard</h3>
     <router-link :to="{ name: 'preview' }">Preview</router-link>
 
     <div v-for="recording in recordings">

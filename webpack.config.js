@@ -3,7 +3,11 @@ const VarieBundler = require("varie-bundler");
 const ENV = require("dotenv").config().parsed;
 
 module.exports = function(env, argv) {
-  let bundle = new VarieBundler(argv, __dirname)
+  let bundle = new VarieBundler(argv, __dirname, {
+    vue: {
+      runtimeOnly: false,
+    },
+  })
     .webWorkers()
     .entry("app", ["resources/js/app/app.ts", "resources/sass/app.scss"])
     .aliases({
