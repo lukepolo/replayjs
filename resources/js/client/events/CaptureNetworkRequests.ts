@@ -7,6 +7,11 @@ export default class CaptureNetworkRequests implements ListenInterface {
   protected readonly event = "network-request";
   protected readonly channel: NullPresenceChannel;
 
+  protected originalFetch;
+  protected originalXMLHttpRequestOpen;
+  protected originalXMLHttpRequestSend;
+  protected originalXMLHttpSetRequestHeader;
+
   constructor(channel: NullPresenceChannel, timing: number) {
     this.timing = timing;
     this.channel = channel;
@@ -20,17 +25,21 @@ export default class CaptureNetworkRequests implements ListenInterface {
   }
 
   public teardown() {
-    // TODO
+    this.teardownXhrCapture();
+    this.tearDownFetchCapture();
   }
 
   private setupXhrCapture() {
-    let origOpen = XMLHttpRequest.prototype.open;
-    let origSend = XMLHttpRequest.prototype.send;
-    let origSetRequestHeader = XMLHttpRequest.prototype.setRequestHeader;
+    let originalXMLHttpRequestOpen = (this.originalXMLHttpRequestOpen =
+      XMLHttpRequest.prototype.open);
+    let originalXMLHttpRequestSend = (this.originalXMLHttpRequestSend =
+      XMLHttpRequest.prototype.send);
+    let originalXMLHttpSetRequestHeader = (this.originalXMLHttpSetRequestHeader =
+      XMLHttpRequest.prototype.setRequestHeader);
+
     let sendNetworkRequest = this.whisper.bind(this);
 
     XMLHttpRequest.prototype.open = function(method, url) {
-      // TODO - make sure this works
       this.setRequestData = (data) => {
         this.requestData = Object.assign({}, this.requestData, data);
       };
@@ -63,13 +72,13 @@ export default class CaptureNetworkRequests implements ListenInterface {
         });
         sendNetworkRequest(this.requestData);
       });
-      origOpen.apply(this, arguments);
+      originalXMLHttpRequestOpen.apply(this, arguments);
     };
 
     XMLHttpRequest.prototype.send = function(data) {
       this.requestData.data = data;
       if (this.onreadystatechange) {
-        return origSend.apply(this, arguments);
+        return originalXMLHttpRequestSend.apply(this, arguments);
       }
     };
 
@@ -77,14 +86,20 @@ export default class CaptureNetworkRequests implements ListenInterface {
       if (name.toLowerCase() !== "authorization") {
         this.requestData.headers[name] = value;
       }
-      return origSetRequestHeader.apply(this, arguments);
+      return originalXMLHttpSetRequestHeader.apply(this, arguments);
     };
+  }
+
+  private teardownXhrCapture() {
+    XMLHttpRequest.prototype.open = this.originalXMLHttpRequestOpen;
+    XMLHttpRequest.prototype.send = this.originalXMLHttpRequestSend;
+    XMLHttpRequest.prototype.setRequestHeader = this.originalXMLHttpSetRequestHeader;
   }
 
   private setupFetchCapture() {
     // TODO - verify it works
     if (window.fetch) {
-      let originalFetch = window.fetch;
+      let originalFetch = (this.originalFetch = window.fetch);
       window.fetch = function() {
         console.info("FETCH STARTED");
         return new Promise((resolve, reject) => {
@@ -101,6 +116,10 @@ export default class CaptureNetworkRequests implements ListenInterface {
         });
       };
     }
+  }
+
+  private tearDownFetchCapture() {
+    window.fetch = this.originalFetch;
   }
 
   public whisper(data: NetworkRequestDataInterface) {

@@ -28,6 +28,7 @@ export default class MirrorClient {
             baseHref: window.location.origin,
             timing: new Date().getTime() - this.timing,
           });
+          this.inputEvents.setup();
         },
         applyChanged: (removed, addedOrMoved, attributes, text) => {
           this.whisperChanges({

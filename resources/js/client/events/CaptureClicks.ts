@@ -13,17 +13,19 @@ export default class CaptureClicks implements ListenInterface {
   }
 
   public setup() {
-    document.onclick = (event: MouseEvent) => {
-      this.whisper({
-        x: event.clientX,
-        y: event.clientY,
-        timing: new Date().getTime() - this.timing,
-      });
-    };
+    window.addEventListener("click", this.clicked);
   }
 
   public teardown() {
-    // TODO
+    window.removeEventListener("click", this.clicked);
+  }
+
+  private clicked(event: MouseEvent) {
+    this.whisper({
+      x: event.clientX,
+      y: event.clientY,
+      timing: new Date().getTime() - this.timing,
+    });
   }
 
   private whisper(data: ClickDataInterface) {

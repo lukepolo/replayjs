@@ -16,14 +16,21 @@ export default class CaptureMouseMovements implements ListenInterface {
   }
 
   public setup() {
-    document.onmousemove = (event: MouseEvent) => {
-      this.movements.push({
-        x: event.pageX,
-        y: event.pageY,
-        timing: new Date().getTime() - this.timing,
-      });
-    };
+    window.addEventListener("mousemove", this.mouseMovement);
     this.setupInterval();
+  }
+
+  public teardown() {
+    clearInterval(this.mouseMovementInterval);
+    window.removeEventListener("mousemove", this.mouseMovement);
+  }
+
+  private mouseMovement(event: MouseEvent) {
+    this.movements.push({
+      x: event.pageX,
+      y: event.pageY,
+      timing: new Date().getTime() - this.timing,
+    });
   }
 
   private setupInterval() {
@@ -37,11 +44,7 @@ export default class CaptureMouseMovements implements ListenInterface {
     }, 0);
   }
 
-  public teardown() {
-    clearInterval(this.mouseMovementInterval);
-  }
-
-  public whisper(data: Array<MouseMovementDataInterface>) {
+  private whisper(data: Array<MouseMovementDataInterface>) {
     this.channel.whisper(this.event, data);
   }
 }

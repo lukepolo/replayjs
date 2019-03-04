@@ -5,6 +5,7 @@ import ScrollDataInterface from "../interfaces/ScrollDataInterface";
 export default class CaptureScrollEvents implements ListenInterface {
   protected readonly timing: number;
   protected readonly event = "scroll";
+  protected ticking: boolean = false;
   protected readonly channel: NullPresenceChannel;
 
   constructor(channel: NullPresenceChannel, timing: number) {
@@ -13,17 +14,25 @@ export default class CaptureScrollEvents implements ListenInterface {
   }
 
   public setup() {
-    document.onscroll = (event) => {
-      this.whisper({
-        target: event.target,
-        timing: new Date().getTime() - this.timing,
-        scrollPosition: document.documentElement.scrollTop,
-      });
-    };
+    window.addEventListener("scroll", this.scrolled);
   }
 
   public teardown() {
-    // TODO
+    window.removeEventListener("scroll", this.scrolled);
+  }
+
+  private scrolled(event) {
+    if (!this.ticking) {
+      window.requestAnimationFrame(() => {
+        this.whisper({
+          target: event.target,
+          timing: new Date().getTime() - this.timing,
+          scrollPosition: document.documentElement.scrollTop,
+        });
+        this.ticking = false;
+      });
+      this.ticking = true;
+    }
   }
 
   private whisper(data: ScrollDataInterface) {

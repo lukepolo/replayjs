@@ -1,16 +1,9 @@
-import ListenInterface from "../interfaces/ListenInterface";
-
-export default class InputEvents implements ListenInterface {
+export default class InputEvents {
   public setup() {
-    this.teardown();
     this.watchForInputChanges();
     this.watchForSelectChanges();
     this.watchForTextareaChanges();
     this.watchForRadioCheckBoxChanges();
-  }
-
-  public teardown() {
-    // TODO
   }
 
   private watchForInputChanges() {

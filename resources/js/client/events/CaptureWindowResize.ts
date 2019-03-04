@@ -14,13 +14,11 @@ export default class CaptureWindowResize implements ListenInterface {
 
   public setup() {
     this.resized();
-    window.onresize = () => {
-      this.resized();
-    };
+    window.addEventListener("resize", this.resized);
   }
 
   public teardown() {
-    // TODO
+    window.removeEventListener("resize", this.resized);
   }
 
   private resized() {
