@@ -4,7 +4,7 @@ import ConsoleDataInterface from "../interfaces/ConsoleDataInterface";
 
 export default class CaptureConsoleMessages implements ListenInterface {
   protected readonly timing: number;
-  protected readonly event = "console-messages";
+  protected readonly event = "console-message";
   protected readonly channel: NullPresenceChannel;
 
   protected originalConsoleLog;

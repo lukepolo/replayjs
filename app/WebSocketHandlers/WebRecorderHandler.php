@@ -21,11 +21,15 @@ class WebRecorderHandler extends WebSocketHandler
         $messagePayload = json_decode($message->getPayload());
 
         switch (str_replace('client-', '', $messagePayload->event)) {
-            case 'changes':
-            case 'initialize':
-                dispatch(new CacheWebRecorderAssets($messagePayload->data));
+             case 'initialize':
+               dispatch(new CacheWebRecorderAssets($messagePayload->data));
+               if(!$messagePayload->data->joiningEvent) {
                 dispatch(new RecordDomChanges($connection->socketId, $messagePayload->data));
-                break;
+               }
+               break;
+            case 'changes':
+                dispatch(new RecordDomChanges($connection->socketId, $messagePayload->data));
+            break;
             case 'click':
                 dispatch(new RecordClick($connection->socketId, $messagePayload->data));
                 break;
@@ -45,6 +49,9 @@ class WebRecorderHandler extends WebSocketHandler
                 // TODO - get IP / User Agent
                 $apiKey = $messagePayload->data->apiKey;
                 dispatch(new RecordSessionDetails($apiKey, $connection->socketId, $messagePayload->data));
+                break;
+            case 'console-message':
+                dispatch(new RecordConsoleMessage($apiKey, $connection->socketId, $messagePayload->data));
                 break;
             default:
                 dump($messagePayload->event);

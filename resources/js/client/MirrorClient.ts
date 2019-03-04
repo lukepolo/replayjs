@@ -16,7 +16,7 @@ export default class MirrorClient {
     this.inputEvents = new InputEvents();
   }
 
-  public connect() {
+  public connect(joiningEvent = false) {
     this.disconnect();
     this.treeMirrorClient = new TreeMirrorClient(
       document,
@@ -25,6 +25,7 @@ export default class MirrorClient {
           this.whisperInitialized({
             rootId,
             children,
+            joiningEvent,
             baseHref: window.location.origin,
             timing: new Date().getTime() - this.timing,
           });

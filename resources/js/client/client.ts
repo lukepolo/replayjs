@@ -96,7 +96,7 @@ export default class Client {
       })
       .joining(() => {
         // When someone joins, we want setup the mirror again
-        this.mirrorClient.connect();
+        this.mirrorClient.connect(true);
       });
   }
 
