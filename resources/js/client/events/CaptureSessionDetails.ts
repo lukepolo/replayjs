@@ -2,6 +2,7 @@ import { NullPresenceChannel } from "laravel-echo/dist/channel";
 import SessionDetailsDataInterface from "../interfaces/SessionDetailsDataInterface";
 
 export default class CaptureSessionDetails {
+  protected userData: object = {};
   protected readonly apiKey: string;
   protected readonly event = "session-details";
   protected readonly channel: NullPresenceChannel;
@@ -12,9 +13,18 @@ export default class CaptureSessionDetails {
   }
 
   public sendDetails() {
-    this.whisper({
-      apiKey: this.apiKey,
-    });
+    this.whisper(
+      Object.assign(
+        {
+          apiKey: this.apiKey,
+        },
+        this.userData,
+      ),
+    );
+  }
+
+  public set(data: object) {
+    this.userData = Object.assign({}, this.userData, data);
   }
 
   public whisper(data: SessionDetailsDataInterface) {

@@ -21,9 +21,10 @@ export default class Client {
   protected channel: NullPresenceChannel;
   protected socketConnection: SocketConnection;
   protected initialTiming = new Date().getTime();
-  protected captureWindowResize: CaptureWindowResize;
   protected captureScrollEvents: CaptureScrollEvents;
+  protected captureWindowResize: CaptureWindowResize;
   protected captureMouseMovements: CaptureMouseMovements;
+  protected captureSessionDetails: CaptureSessionDetails;
   protected captureNetworkRequests: CaptureNetworkRequests;
 
   constructor() {
@@ -38,6 +39,10 @@ export default class Client {
     this.socketConnection = new SocketConnection(this.apiKey);
     this.mirrorClient = new MirrorClient(this.channel, this.initialTiming);
     this.captureClicks = new CaptureClicks(this.channel, this.initialTiming);
+    this.captureSessionDetails = new CaptureSessionDetails(
+      this.channel,
+      this.apiKey,
+    );
     this.captureScrollEvents = new CaptureScrollEvents(
       this.channel,
       this.initialTiming,
@@ -56,11 +61,18 @@ export default class Client {
     );
   }
 
-  protected setApiKey(apiKey) {
+  protected setApiKey(apiKey: string) {
     this.apiKey = apiKey;
   }
 
-  public stream() {
+  protected clientDetails(data: object) {
+    this.captureSessionDetails.set(data);
+    if (this.channel) {
+      this.captureSessionDetails.sendDetails();
+    }
+  }
+
+  protected stream() {
     this.channel = this.socketConnection
       .connect()
       .join(`chat`)
@@ -72,7 +84,7 @@ export default class Client {
         this.captureWindowResize.setup();
         this.captureMouseMovements.setup();
         this.captureNetworkRequests.setup();
-        new CaptureSessionDetails(this.channel, this.apiKey);
+        this.captureSessionDetails.sendDetails();
       })
       .joining(() => {
         // When someone joins, we want setup the mirror again
@@ -80,7 +92,7 @@ export default class Client {
       });
   }
 
-  public disconnect() {
+  protected disconnect() {
     this.mirrorClient.disconnect();
     this.captureClicks.teardown();
     this.captureScrollEvents.teardown();
