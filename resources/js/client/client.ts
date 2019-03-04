@@ -2,7 +2,7 @@ import CaptureConsoleMessages from "./events/CaptureConsoleMessages";
 
 declare global {
   interface Window {
-    replayjsQueue: Array<any>;
+    replayjsQueue: ((fn: string, data: any) => void) | Array<any>;
   }
 }
 
@@ -31,9 +31,15 @@ export default class Client {
   protected captureNetworkRequests: CaptureNetworkRequests;
 
   constructor() {
-    window.replayjsQueue.forEach((args) => {
-      this[args[0]](args[1]);
-    });
+    if (Array.isArray(window.replayjsQueue)) {
+      window.replayjsQueue.forEach((args) => {
+        this[args[0]](args[1]);
+      });
+    }
+
+    window.replayjsQueue = (fn, data) => {
+      this[fn](data);
+    };
 
     if (!this.apiKey) {
       throw Error("You need to set your API Key.");
