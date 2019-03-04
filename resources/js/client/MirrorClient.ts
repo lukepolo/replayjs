@@ -28,8 +28,6 @@ export default class MirrorClient {
             baseHref: window.location.origin,
             timing: new Date().getTime() - this.timing,
           });
-          // TODO - need to resize
-          // this.resize();
         },
         applyChanged: (removed, addedOrMoved, attributes, text) => {
           this.whisperChanges({
