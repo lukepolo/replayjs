@@ -13,17 +13,22 @@ export default class CaptureWindowResize implements ListenInterface {
   }
 
   public setup() {
+    this.resized();
     window.onresize = () => {
-      this.whisper({
-        width: window.innerWidth,
-        height: window.innerHeight,
-        timing: new Date().getTime() - this.timing,
-      });
+      this.resized();
     };
   }
 
   public teardown() {
     // TODO
+  }
+
+  private resized() {
+    this.whisper({
+      width: window.innerWidth,
+      height: window.innerHeight,
+      timing: new Date().getTime() - this.timing,
+    });
   }
 
   private whisper(data: WindowResizeDataInterface) {
