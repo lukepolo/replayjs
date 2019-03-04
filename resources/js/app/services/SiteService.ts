@@ -17,6 +17,6 @@ export default class SiteService {
   }
 
   store(data) {
-    return this.httpService.post(`/api/site`, data);
+    return this.httpService.post(`/api/sites`, data);
   }
 }

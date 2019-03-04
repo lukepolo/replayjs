@@ -7,16 +7,16 @@ import DomChangesDataInterface from "./interfaces/DomChangesDataInterface";
 export default class MirrorClient {
   protected readonly timing: number;
   protected inputEvents: InputEvents;
+  protected channel: NullPresenceChannel;
   protected treeMirrorClient: TreeMirrorClient;
-  protected readonly channel: NullPresenceChannel;
 
-  constructor(channel: NullPresenceChannel, timing: number) {
+  constructor(timing: number) {
     this.timing = timing;
-    this.channel = channel;
     this.inputEvents = new InputEvents();
   }
 
-  public connect(joiningEvent = false) {
+  public connect(channel: NullPresenceChannel, joiningEvent = false) {
+    this.channel = channel;
     this.disconnect();
     this.treeMirrorClient = new TreeMirrorClient(
       document,

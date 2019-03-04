@@ -4,20 +4,20 @@ import NetworkRequestDataInterface from "../interfaces/NetworkRequestDataInterfa
 
 export default class CaptureNetworkRequests implements ListenInterface {
   protected readonly timing: number;
+  protected channel: NullPresenceChannel;
   protected readonly event = "network-request";
-  protected readonly channel: NullPresenceChannel;
 
   protected originalFetch;
   protected originalXMLHttpRequestOpen;
   protected originalXMLHttpRequestSend;
   protected originalXMLHttpSetRequestHeader;
 
-  constructor(channel: NullPresenceChannel, timing: number) {
+  constructor(timing: number) {
     this.timing = timing;
-    this.channel = channel;
   }
 
-  public setup() {
+  public setup(channel: NullPresenceChannel) {
+    this.channel = channel;
     this.setupXhrCapture();
     this.setupFetchCapture();
   }

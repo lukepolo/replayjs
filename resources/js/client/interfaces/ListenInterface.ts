@@ -1,4 +1,6 @@
+import { NullPresenceChannel } from "laravel-echo/dist/channel";
+
 export default interface ListenInterface {
-  setup();
+  setup(channel: NullPresenceChannel);
   teardown();
 }

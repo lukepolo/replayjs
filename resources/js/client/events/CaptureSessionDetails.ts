@@ -4,15 +4,15 @@ import SessionDetailsDataInterface from "../interfaces/SessionDetailsDataInterfa
 export default class CaptureSessionDetails {
   protected userData: object = {};
   protected readonly apiKey: string;
+  protected channel: NullPresenceChannel;
   protected readonly event = "session-details";
-  protected readonly channel: NullPresenceChannel;
 
-  constructor(channel: NullPresenceChannel, apiKey: string) {
+  constructor(apiKey: string) {
     this.apiKey = apiKey;
-    this.channel = channel;
   }
 
-  public sendDetails() {
+  public sendDetails(channel: NullPresenceChannel) {
+    this.channel = channel;
     this.whisper(
       Object.assign(
         {

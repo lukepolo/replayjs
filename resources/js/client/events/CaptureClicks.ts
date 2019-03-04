@@ -5,19 +5,19 @@ import ClickDataInterface from "../interfaces/ClickDataInterface";
 export default class CaptureClicks implements ListenInterface {
   protected readonly timing: number;
   protected readonly event = "click";
-  protected readonly channel: NullPresenceChannel;
+  protected channel: NullPresenceChannel;
 
-  constructor(channel: NullPresenceChannel, timing: number) {
+  constructor(timing: number) {
     this.timing = timing;
-    this.channel = channel;
   }
 
-  public setup() {
-    window.addEventListener("click", this.clicked);
+  public setup(channel: NullPresenceChannel) {
+    this.channel = channel;
+    window.addEventListener("click", this.clicked.bind(this));
   }
 
   public teardown() {
-    window.removeEventListener("click", this.clicked);
+    window.removeEventListener("click", this.clicked.bind(this));
   }
 
   private clicked(event: MouseEvent) {

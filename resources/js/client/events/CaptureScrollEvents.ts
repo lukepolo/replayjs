@@ -6,19 +6,19 @@ export default class CaptureScrollEvents implements ListenInterface {
   protected readonly timing: number;
   protected readonly event = "scroll";
   protected ticking: boolean = false;
-  protected readonly channel: NullPresenceChannel;
+  protected channel: NullPresenceChannel;
 
-  constructor(channel: NullPresenceChannel, timing: number) {
+  constructor(timing: number) {
     this.timing = timing;
-    this.channel = channel;
   }
 
-  public setup() {
-    window.addEventListener("scroll", this.scrolled);
+  public setup(channel: NullPresenceChannel) {
+    this.channel = channel;
+    window.addEventListener("scroll", this.scrolled.bind(this));
   }
 
   public teardown() {
-    window.removeEventListener("scroll", this.scrolled);
+    window.removeEventListener("scroll", this.scrolled.bind(this));
   }
 
   private scrolled(event) {

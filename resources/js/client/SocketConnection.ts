@@ -14,11 +14,15 @@ export default class SocketConnection {
 
   public client: Echo;
 
-  constructor(apiKey: string) {
+  public setApiKey(apiKey) {
     this.apiKey = apiKey;
   }
 
   public connect() {
+    if (!this.apiKey) {
+      throw Error("You need to set your API Key.");
+    }
+
     if (!this.client) {
       this.client = new Echo({
         broadcaster: "pusher",

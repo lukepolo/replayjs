@@ -31,51 +31,20 @@ export default class Client {
   protected captureNetworkRequests: CaptureNetworkRequests;
 
   constructor() {
+    this.socketConnection = new SocketConnection();
     if (Array.isArray(window.replayjsQueue)) {
       window.replayjsQueue.forEach((args) => {
         this[args[0]](args[1]);
       });
     }
-
     window.replayjsQueue = (fn, data) => {
       this[fn](data);
     };
-
-    if (!this.apiKey) {
-      throw Error("You need to set your API Key.");
-    }
-
-    this.socketConnection = new SocketConnection(this.apiKey);
-    this.mirrorClient = new MirrorClient(this.channel, this.initialTiming);
-    this.captureClicks = new CaptureClicks(this.channel, this.initialTiming);
-    this.captureSessionDetails = new CaptureSessionDetails(
-      this.channel,
-      this.apiKey,
-    );
-    this.captureScrollEvents = new CaptureScrollEvents(
-      this.channel,
-      this.initialTiming,
-    );
-    this.captureWindowResize = new CaptureWindowResize(
-      this.channel,
-      this.initialTiming,
-    );
-    this.captureMouseMovements = new CaptureMouseMovements(
-      this.channel,
-      this.initialTiming,
-    );
-    this.captureConsoleMessages = new CaptureConsoleMessages(
-      this.channel,
-      this.initialTiming,
-    );
-    this.captureNetworkRequests = new CaptureNetworkRequests(
-      this.channel,
-      this.initialTiming,
-    );
   }
 
-  protected setApiKey(apiKey: string) {
+  protected auth(apiKey: string) {
     this.apiKey = apiKey;
+    this.socketConnection.setApiKey(apiKey);
   }
 
   protected clientDetails(data: object) {
@@ -90,20 +59,34 @@ export default class Client {
       .connect()
       .join(`chat`)
       .here(() => {
+        console.info(this.channel);
         // Gets ran immediately after connecting
-        this.mirrorClient.connect();
-        this.captureClicks.setup();
-        this.captureScrollEvents.setup();
-        this.captureWindowResize.setup();
-        this.captureMouseMovements.setup();
-        this.captureConsoleMessages.setup();
-        this.captureNetworkRequests.setup();
-        this.captureSessionDetails.sendDetails();
+        this.mirrorClient.connect(this.channel);
+        this.captureClicks.setup(this.channel);
+        this.captureScrollEvents.setup(this.channel);
+        this.captureWindowResize.setup(this.channel);
+        this.captureMouseMovements.setup(this.channel);
+        this.captureConsoleMessages.setup(this.channel);
+        this.captureNetworkRequests.setup(this.channel);
+        this.captureSessionDetails.sendDetails(this.channel);
       })
       .joining(() => {
         // When someone joins, we want setup the mirror again
-        this.mirrorClient.connect(true);
+        this.mirrorClient.connect(this.channel, true);
       });
+
+    this.mirrorClient = new MirrorClient(this.initialTiming);
+    this.captureClicks = new CaptureClicks(this.initialTiming);
+    this.captureSessionDetails = new CaptureSessionDetails(this.apiKey);
+    this.captureScrollEvents = new CaptureScrollEvents(this.initialTiming);
+    this.captureWindowResize = new CaptureWindowResize(this.initialTiming);
+    this.captureMouseMovements = new CaptureMouseMovements(this.initialTiming);
+    this.captureConsoleMessages = new CaptureConsoleMessages(
+      this.initialTiming,
+    );
+    this.captureNetworkRequests = new CaptureNetworkRequests(
+      this.initialTiming,
+    );
   }
 
   protected disconnect() {

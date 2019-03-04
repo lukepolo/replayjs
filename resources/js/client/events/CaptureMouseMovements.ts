@@ -4,25 +4,25 @@ import MouseMovementDataInterface from "../interfaces/MouseMovementDataInterface
 
 export default class CaptureMouseMovements implements ListenInterface {
   protected readonly timing: number;
+  protected channel: NullPresenceChannel;
   protected readonly event = "mouse-movement";
-  protected readonly channel: NullPresenceChannel;
 
   private mouseMovementInterval;
   private movements: Array<MouseMovementDataInterface> = [];
 
-  constructor(channel: NullPresenceChannel, timing: number) {
+  constructor(timing: number) {
     this.timing = timing;
-    this.channel = channel;
   }
 
-  public setup() {
-    window.addEventListener("mousemove", this.mouseMovement);
+  public setup(channel: NullPresenceChannel) {
+    this.channel = channel;
+    window.addEventListener("mousemove", this.mouseMovement.bind(this));
     this.setupInterval();
   }
 
   public teardown() {
     clearInterval(this.mouseMovementInterval);
-    window.removeEventListener("mousemove", this.mouseMovement);
+    window.removeEventListener("mousemove", this.mouseMovement.bind(this));
   }
 
   private mouseMovement(event: MouseEvent) {

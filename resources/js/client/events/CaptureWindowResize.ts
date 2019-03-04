@@ -4,21 +4,21 @@ import WindowResizeDataInterface from "../interfaces/WindowResizeDataInterface";
 
 export default class CaptureWindowResize implements ListenInterface {
   protected readonly timing: number;
+  protected channel: NullPresenceChannel;
   protected readonly event = "window-size";
-  protected readonly channel: NullPresenceChannel;
 
-  constructor(channel: NullPresenceChannel, timing: number) {
+  constructor(timing: number) {
     this.timing = timing;
-    this.channel = channel;
   }
 
-  public setup() {
+  public setup(channel: NullPresenceChannel) {
+    this.channel = channel;
     this.resized();
-    window.addEventListener("resize", this.resized);
+    window.addEventListener("resize", this.resized.bind(this));
   }
 
   public teardown() {
-    window.removeEventListener("resize", this.resized);
+    window.removeEventListener("resize", this.resized.bind(this));
   }
 
   private resized() {

@@ -4,20 +4,20 @@ import ConsoleDataInterface from "../interfaces/ConsoleDataInterface";
 
 export default class CaptureConsoleMessages implements ListenInterface {
   protected readonly timing: number;
+  protected channel: NullPresenceChannel;
   protected readonly event = "console-message";
-  protected readonly channel: NullPresenceChannel;
 
   protected originalConsoleLog;
   protected originalConsoleInfo;
   protected originalConsoleWarn;
   protected originalConsoleError;
 
-  constructor(channel: NullPresenceChannel, timing: number) {
+  constructor(timing: number) {
     this.timing = timing;
-    this.channel = channel;
   }
 
-  public setup() {
+  public setup(channel: NullPresenceChannel) {
+    this.channel = channel;
     let originalConsoleLog = (this.originalConsoleLog = window.console.log);
     let originalConsoleInfo = (this.originalConsoleInfo = window.console.info);
     let originalConsoleWarn = (this.originalConsoleWarn = window.console.warn);
@@ -39,7 +39,7 @@ export default class CaptureConsoleMessages implements ListenInterface {
 
   private captureLog(originalFunction, type) {
     let timing = this.timing;
-    let whisper = this.whisper;
+    let whisper = this.whisper.bind(this);
 
     return function(...messages) {
       whisper({

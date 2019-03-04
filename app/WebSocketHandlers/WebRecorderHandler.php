@@ -8,6 +8,7 @@ use App\Jobs\RecordDomChanges;
 use App\Jobs\RecordWindowSize;
 use Ratchet\ConnectionInterface;
 use App\Jobs\RecordMouseMovement;
+use App\Jobs\RecordConsoleMessage;
 use App\Jobs\RecordNetworkRequest;
 use App\Jobs\RecordSessionDetails;
 use App\Jobs\CacheWebRecorderAssets;
@@ -23,6 +24,11 @@ class WebRecorderHandler extends WebSocketHandler
         switch (str_replace('client-', '', $messagePayload->event)) {
              case 'initialize':
                dispatch(new CacheWebRecorderAssets($messagePayload->data));
+               dump($messagePayload->data->joiningEvent);
+               dump($messagePayload->data->joiningEvent);
+               dump($messagePayload->data->joiningEvent);
+               dump($messagePayload->data->joiningEvent);
+               dump($messagePayload->data->joiningEvent);
                if(!$messagePayload->data->joiningEvent) {
                 dispatch(new RecordDomChanges($connection->socketId, $messagePayload->data));
                }
@@ -45,14 +51,15 @@ class WebRecorderHandler extends WebSocketHandler
             case 'network-request':
                 dispatch(new RecordNetworkRequest($connection->socketId, $messagePayload->data));
                 break;
+             case 'console-message':
+                    dispatch(new RecordConsoleMessage($connection->socketId, $messagePayload->data));
+                break;
             case 'session-details':
                 // TODO - get IP / User Agent
                 $apiKey = $messagePayload->data->apiKey;
                 dispatch(new RecordSessionDetails($apiKey, $connection->socketId, $messagePayload->data));
                 break;
-            case 'console-message':
-                dispatch(new RecordConsoleMessage($apiKey, $connection->socketId, $messagePayload->data));
-                break;
+
             default:
                 dump($messagePayload->event);
         }
