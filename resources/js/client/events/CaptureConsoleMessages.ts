@@ -41,10 +41,10 @@ export default class CaptureConsoleMessages implements ListenInterface {
     let timing = this.timing;
     let whisper = this.whisper;
 
-    return function() {
+    return function(...messages) {
       whisper({
         type,
-        arguments,
+        messages,
         timing: new Date().getTime() - timing,
       });
       return originalFunction.apply(this, arguments);
