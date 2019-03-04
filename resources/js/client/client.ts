@@ -38,7 +38,9 @@ export default class Client {
         this[args[0]](args[1]);
       });
     }
+    delete window.replayjsQueue;
     window.replayjsQueue = (fn, data) => {
+      console.info("ere");
       this[fn](data);
     };
   }
