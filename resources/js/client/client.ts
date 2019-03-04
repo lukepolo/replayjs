@@ -2,7 +2,8 @@ import CaptureConsoleMessages from "./events/CaptureConsoleMessages";
 
 declare global {
   interface Window {
-    replayjsQueue: ((fn: string, data: any) => void) | Array<any>;
+    replayjsQueue: Array<any>;
+    replayjs: (fn: string, data: any) => any;
   }
 }
 
@@ -39,9 +40,8 @@ export default class Client {
       });
     }
     delete window.replayjsQueue;
-    window.replayjsQueue = (fn, data) => {
-      console.info("ere");
-      this[fn](data);
+    window.replayjs = (fn, data) => {
+      return this[fn](data);
     };
   }
 
