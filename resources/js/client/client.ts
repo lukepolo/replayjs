@@ -1,3 +1,5 @@
+import CaptureConsoleMessages from "./events/CaptureConsoleMessages";
+
 declare global {
   interface Window {
     replayjsQueue: Array<any>;
@@ -25,6 +27,7 @@ export default class Client {
   protected captureWindowResize: CaptureWindowResize;
   protected captureMouseMovements: CaptureMouseMovements;
   protected captureSessionDetails: CaptureSessionDetails;
+  protected captureConsoleMessages: CaptureConsoleMessages;
   protected captureNetworkRequests: CaptureNetworkRequests;
 
   constructor() {
@@ -52,6 +55,10 @@ export default class Client {
       this.initialTiming,
     );
     this.captureMouseMovements = new CaptureMouseMovements(
+      this.channel,
+      this.initialTiming,
+    );
+    this.captureConsoleMessages = new CaptureConsoleMessages(
       this.channel,
       this.initialTiming,
     );
@@ -83,6 +90,7 @@ export default class Client {
         this.captureScrollEvents.setup();
         this.captureWindowResize.setup();
         this.captureMouseMovements.setup();
+        this.captureConsoleMessages.setup();
         this.captureNetworkRequests.setup();
         this.captureSessionDetails.sendDetails();
       })
@@ -98,6 +106,7 @@ export default class Client {
     this.captureScrollEvents.teardown();
     this.captureWindowResize.teardown();
     this.captureMouseMovements.teardown();
+    this.captureConsoleMessages.teardown();
     this.captureNetworkRequests.teardown();
   }
 }

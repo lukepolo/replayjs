@@ -15,8 +15,6 @@ export default class CaptureNetworkRequests implements ListenInterface {
   constructor(channel: NullPresenceChannel, timing: number) {
     this.timing = timing;
     this.channel = channel;
-    this.setupXhrCapture();
-    this.setupFetchCapture();
   }
 
   public setup() {
