@@ -70,7 +70,7 @@ export default class Client {
         this.captureScrollEvents.setup(this.channel);
         this.captureWindowResize.setup(this.channel);
         this.captureMouseMovements.setup(this.channel);
-        // this.captureConsoleMessages.setup(this.channel);
+        this.captureConsoleMessages.setup(this.channel);
         this.captureNetworkRequests.setup(this.channel);
         this.captureSessionDetails.sendDetails(this.channel);
       })
