@@ -24,13 +24,8 @@ class WebRecorderHandler extends WebSocketHandler
         switch (str_replace('client-', '', $messagePayload->event)) {
              case 'initialize':
                dispatch(new CacheWebRecorderAssets($messagePayload->data));
-               dump($messagePayload->data->joiningEvent);
-               dump($messagePayload->data->joiningEvent);
-               dump($messagePayload->data->joiningEvent);
-               dump($messagePayload->data->joiningEvent);
-               dump($messagePayload->data->joiningEvent);
-               if(!$messagePayload->data->joiningEvent) {
-                dispatch(new RecordDomChanges($connection->socketId, $messagePayload->data));
+               if (!$messagePayload->data->joiningEvent) {
+                   dispatch(new RecordDomChanges($connection->socketId, $messagePayload->data));
                }
                break;
             case 'changes':
