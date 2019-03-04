@@ -39,7 +39,7 @@ body {
 </template>
 <script>
 import Vue from "vue";
-import { TreeMirror } from "../../client/mirror";
+import { TreeMirror } from "../../client/vendor/mirror";
 
 export default Vue.extend({
   $inject: ["BroadcastService"],
