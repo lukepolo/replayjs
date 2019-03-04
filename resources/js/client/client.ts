@@ -50,7 +50,7 @@ export default class Client {
   protected clientDetails(data: object) {
     this.captureSessionDetails.set(data);
     if (this.channel) {
-      this.captureSessionDetails.sendDetails();
+      this.captureSessionDetails.sendDetails(this.channel);
     }
   }
 
@@ -59,7 +59,6 @@ export default class Client {
       .connect()
       .join(`chat`)
       .here(() => {
-        console.info(this.channel);
         // Gets ran immediately after connecting
         this.mirrorClient.connect(this.channel);
         this.captureClicks.setup(this.channel);
