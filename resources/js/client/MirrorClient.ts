@@ -5,13 +5,15 @@ import InitializeDataInterface from "./interfaces/InitializeDataInterface";
 import DomChangesDataInterface from "./interfaces/DomChangesDataInterface";
 
 export default class MirrorClient {
+  protected baseHref: string;
   protected readonly timing: number;
   protected inputEvents: InputEvents;
   protected channel: NullPresenceChannel;
   protected treeMirrorClient: TreeMirrorClient;
 
-  constructor(timing: number) {
+  constructor(baseHref: string, timing: number) {
     this.timing = timing;
+    this.baseHref = baseHref;
     this.inputEvents = new InputEvents();
   }
 
@@ -26,7 +28,7 @@ export default class MirrorClient {
             rootId,
             children,
             joiningEvent,
-            baseHref: window.location.origin,
+            baseHref: this.baseHref,
             timing: new Date().getTime() - this.timing,
           });
           this.inputEvents.setup();

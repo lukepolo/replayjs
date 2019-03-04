@@ -70,14 +70,15 @@ export default class CaptureNetworkRequests implements ListenInterface {
         });
         sendNetworkRequest(this.requestData);
       });
-      originalXMLHttpRequestOpen.apply(this, arguments);
+
+      return originalXMLHttpRequestOpen.apply(this, arguments);
     };
 
     XMLHttpRequest.prototype.send = function(data) {
       this.requestData.data = data;
-      if (this.onreadystatechange) {
-        return originalXMLHttpRequestSend.apply(this, arguments);
-      }
+      console.info("We made need this?");
+      console.info(this.onreadystatechange);
+      return originalXMLHttpRequestSend.apply(this, arguments);
     };
 
     XMLHttpRequest.prototype.setRequestHeader = function(name, value) {

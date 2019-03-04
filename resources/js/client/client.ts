@@ -21,6 +21,7 @@ export default class Client {
   protected mirrorClient: MirrorClient;
   protected captureClicks: CaptureClicks;
   protected channel: NullPresenceChannel;
+  protected _baseHref = window.location.origin;
   protected socketConnection: SocketConnection;
   protected initialTiming = new Date().getTime();
   protected captureScrollEvents: CaptureScrollEvents;
@@ -47,6 +48,10 @@ export default class Client {
     this.socketConnection.setApiKey(apiKey);
   }
 
+  protected baseHref(setBaseHref) {
+    this._baseHref = setBaseHref;
+  }
+
   protected clientDetails(data: object) {
     this.captureSessionDetails.set(data);
     if (this.channel) {
@@ -65,7 +70,7 @@ export default class Client {
         this.captureScrollEvents.setup(this.channel);
         this.captureWindowResize.setup(this.channel);
         this.captureMouseMovements.setup(this.channel);
-        this.captureConsoleMessages.setup(this.channel);
+        // this.captureConsoleMessages.setup(this.channel);
         this.captureNetworkRequests.setup(this.channel);
         this.captureSessionDetails.sendDetails(this.channel);
       })
@@ -74,7 +79,7 @@ export default class Client {
         this.mirrorClient.connect(this.channel, true);
       });
 
-    this.mirrorClient = new MirrorClient(this.initialTiming);
+    this.mirrorClient = new MirrorClient(this._baseHref, this.initialTiming);
     this.captureClicks = new CaptureClicks(this.initialTiming);
     this.captureSessionDetails = new CaptureSessionDetails(this.apiKey);
     this.captureScrollEvents = new CaptureScrollEvents(this.initialTiming);
