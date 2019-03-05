@@ -76,8 +76,6 @@ export default class CaptureNetworkRequests implements ListenInterface {
 
     XMLHttpRequest.prototype.send = function(data) {
       this.requestData.data = data;
-      console.info("We made need this?");
-      console.info(this.onreadystatechange);
       return originalXMLHttpRequestSend.apply(this, arguments);
     };
 
