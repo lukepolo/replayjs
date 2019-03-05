@@ -36,11 +36,17 @@ export default class Client {
     this.socketConnection = new SocketConnection();
     if (Array.isArray(window.replayjsQueue)) {
       window.replayjsQueue.forEach((args) => {
+        if (!this[args[0]]) {
+          throw Error(`${args[0]} is an invalid command.`);
+        }
         this[args[0]](args[1]);
       });
     }
     delete window.replayjsQueue;
     window.replayjs = (fn, data) => {
+      if (!this[fn]) {
+        throw Error(`${fn} is an invalid command.`);
+      }
       return this[fn](data);
     };
   }

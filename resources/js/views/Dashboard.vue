@@ -43,7 +43,7 @@ export default Vue.extend({
   methods: {
     createSite() {
       this.$store.dispatch("site/create", this.siteForm.data()).then((site) => {
-        this.$router.next({
+        this.$router.push({
           name: "site.dashboard",
           params: {
             site: site.id,
