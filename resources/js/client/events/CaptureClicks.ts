@@ -22,6 +22,7 @@ export default class CaptureClicks implements ListenInterface {
 
   private clicked(event: MouseEvent) {
     this.whisper({
+      // event : event,
       x: event.clientX,
       y: event.clientY,
       timing: new Date().getTime() - this.timing,

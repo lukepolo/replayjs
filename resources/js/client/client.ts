@@ -70,7 +70,7 @@ export default class Client {
   protected stream() {
     this.channel = this.socketConnection
       .connect()
-      .join(`chat`)
+      .join(`chat`) // TODO
       .here(() => {
         // Gets ran immediately after connecting
         this.mirrorClient.connect(this.channel);
