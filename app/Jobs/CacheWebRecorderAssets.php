@@ -2,8 +2,8 @@
 
 namespace App\Jobs;
 
-use App\Services\AssetService;
 use Illuminate\Bus\Queueable;
+use App\Services\AssetService;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;

@@ -26,8 +26,8 @@ class AuthenticateGuest
         )->first();
 
         //if ($site && $site->domain === parse_url($request->headers->get('origin'))['host']) {
-            $user = factory(User::class)->create();
-            \Auth::login($user);
+        $user = factory(User::class)->create();
+        \Auth::login($user);
         //}
         return $next($request);
     }

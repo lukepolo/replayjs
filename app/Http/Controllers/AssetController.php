@@ -37,6 +37,4 @@ class AssetController extends Controller
         }
         exit();
     }
-
-
 }

@@ -5,11 +5,11 @@ namespace App\Jobs;
 use App\Models\Site;
 use App\Models\SiteRecording;
 use Illuminate\Bus\Queueable;
+use Vinkla\Hashids\Facades\Hashids;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Vinkla\Hashids\Facades\Hashids;
 
 class RecordSessionDetails implements ShouldQueue
 {

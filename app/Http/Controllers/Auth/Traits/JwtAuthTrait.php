@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers\Auth\Traits;
 
-trait JwtAuthTrait {
+trait JwtAuthTrait
+{
     /**
      * Get the token array structure.
      *

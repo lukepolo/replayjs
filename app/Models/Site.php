@@ -3,10 +3,10 @@
 namespace App\Models;
 
 use App\Models\User\User;
+use Vinkla\Hashids\Facades\Hashids;
 use App\Models\Traits\ConnectedToUser;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Vinkla\Hashids\Facades\Hashids;
 
 class Site extends Model
 {

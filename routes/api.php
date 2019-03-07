@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,5 +30,3 @@ Route::group(['middleware' => [
     Route::apiResource('sites', 'SiteController');
     Route::apiResource('sites.recordings', 'SiteRecordingController');
 });
-
-

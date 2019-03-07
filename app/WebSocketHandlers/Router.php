@@ -2,7 +2,6 @@
 
 namespace App\WebSocketHandlers;
 
-use App\WebSocketHandlers\WebRecorderHandler;
 use BeyondCode\LaravelWebSockets\HttpApi\Controllers\FetchUsersController;
 use BeyondCode\LaravelWebSockets\HttpApi\Controllers\FetchChannelController;
 use BeyondCode\LaravelWebSockets\HttpApi\Controllers\TriggerEventController;
