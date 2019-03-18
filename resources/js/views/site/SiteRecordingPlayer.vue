@@ -2,6 +2,13 @@
 body {
   margin: 0;
 }
+
+.overlay {
+  z-index: 1;
+  position: absolute;
+}
+
+.overlay,
 #preview {
   transform-origin: 0 0;
 }
@@ -26,6 +33,46 @@ body {
   height: 100px;
   overflow: hidden;
 }
+
+@-webkit-keyframes load-progress {
+  100% {
+    opacity: 0;
+    margin-top: -40px;
+    margin-left: -40px;
+    border-width: 40px;
+  }
+}
+
+@keyframes load-progress {
+  100% {
+    opacity: 0;
+    margin-top: -40px;
+    margin-left: -40px;
+    border-width: 40px;
+  }
+}
+
+#clicks div {
+  width: 0;
+  height: 0;
+  opacity: 0.6;
+  position: fixed;
+  border-radius: 50%;
+  border: 1px solid #6c7a89;
+  background-color: #6c7a89;
+  animation: load-progress 1s;
+}
+
+#cursor {
+  top: 1px;
+  z-index: 999999999999999999;
+  width: 25px;
+  height: 25px;
+  position: absolute;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-image: url("./../../../images/cursor.png");
+}
 </style>
 <template>
   <div>
@@ -35,6 +82,10 @@ body {
         <pre>{{ scale }}</pre>
       </div>
       <div class="preview-box" ref="previewBox">
+        <div class="overlay" ref="overlay">
+          <div ref="clicks" id="clicks"></div>
+          <div ref="cursor" id="cursor"></div>
+        </div>
         <iframe
           ref="preview"
           id="preview"
@@ -169,36 +220,21 @@ export default Vue.extend({
     setupIframe({ rootId, children }) {
       this.clearIframe();
       this.mirror.initialize(rootId, children);
-      this.addClicks();
-      this.addCursor();
-      this.insertStyles();
-    },
-    addCursor() {
-      let cursorNode = document.createElement("DIV");
-      cursorNode.id = "cursor";
-      this.previewDocument.body.appendChild(cursorNode);
-      if (this.lastCursorPosition) {
-        this.updateCursorPosition(
-          this.lastCursorPosition.x,
-          this.lastCursorPosition.y,
-        );
-      }
-    },
-    addClicks() {
-      let clicksNode = document.createElement("DIV");
-      clicksNode.id = "clicks";
-      this.previewDocument.body.appendChild(clicksNode);
     },
     updateWindowSize(width, height) {
       this.previewFrame.style.width = width + "px";
       this.previewFrame.style.height = height + "px";
+
+      this.$refs.overlay.style.width = width + "px";
+      this.$refs.overlay.style.height = height + "px";
+
       this.getScale();
     },
     addClick(x, y) {
       let node = document.createElement("DIV");
       node.style.top = y + "px";
       node.style.left = x + "px";
-      this.previewDocument.getElementById("clicks").appendChild(node);
+      this.$refs.clicks.appendChild(node);
       setTimeout(() => {
         node.remove();
       }, 1001);
@@ -219,53 +255,8 @@ export default Vue.extend({
       }
     },
     updateCursorPosition(x, y) {
-      this.previewDocument.getElementById("cursor").style.top = y + "px";
-      this.previewDocument.getElementById("cursor").style.left = x + "px";
-    },
-    insertStyles() {
-      let styles = document.createElement("style");
-      styles.innerHTML = `
-@-webkit-keyframes load-progress {
-  100% {
-    opacity: 0;
-    margin-top: -40px;
-    margin-left: -40px;
-    border-width: 40px;
-  }
-}
-
-@keyframes load-progress {
-  100% {
-    opacity: 0;
-    margin-top: -40px;
-    margin-left: -40px;
-    border-width: 40px;
-  }
-}
-
-#clicks div {
-  width: 0;
-  height: 0;
-  opacity: 0.6;
-  position: fixed;
-  border-radius: 50%;
-  border: 1px solid #6c7a89;
-  background-color: #6c7a89;
-  animation: load-progress 1s;
-}
-
-#cursor {
-  top: 1px;
-  z-index: 999999999999999999;
-  width: 25px;
-  height: 25px;
-  position: absolute;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-image: url("${$config.get("app.APP_URL")}/img/cursor.png");
-}
-`;
-      this.previewDocument.head.appendChild(styles);
+      this.$refs.cursor.style.top = y + "px";
+      this.$refs.cursor.style.left = x + "px";
     },
     getScale() {
       this.$nextTick(() => {
@@ -279,6 +270,7 @@ export default Vue.extend({
         } else {
           this.scale = 1;
         }
+        this.$refs.overlay.style.transform = `scale(${this.scale})`;
         if (this.$refs.hasOwnProperty("preview")) {
           this.$refs.preview.style.transform = `scale(${this.scale})`;
         }
