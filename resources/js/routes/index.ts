@@ -16,22 +16,22 @@ export default function($router: RouterInterface) {
   |--------------------------------------------------------------------------
   |
   */
+
+  authRoutes($router);
+
   $router
     .middleware([middleware.HomeMiddleware])
     .route("/", Home)
     .setName("home");
 
-  authRoutes($router);
-
   $router
     .layout("authed")
-    .middleware([])
+    .middleware([middleware.Auth])
     .group(() => {
       $router
         .middleware([middleware.HomeMiddleware])
         .route("/", Dashboard)
         .setName("dashboard");
-
       $router
         .prefix("site")
         .area(siteViews.SiteArea)
