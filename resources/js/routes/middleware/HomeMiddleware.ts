@@ -19,11 +19,6 @@ export default class Auth implements RouteMiddlewareInterface {
               name: "dashboard",
             });
             break;
-          case "dashboard":
-            next({
-              name: "home",
-            });
-            break;
         }
       }
       return next();

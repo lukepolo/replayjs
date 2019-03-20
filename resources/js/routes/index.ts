@@ -16,6 +16,7 @@ export default function($router: RouterInterface) {
   |--------------------------------------------------------------------------
   |
   */
+
   $router
     .middleware([middleware.HomeMiddleware])
     .route("/", Home)
@@ -25,13 +26,12 @@ export default function($router: RouterInterface) {
 
   $router
     .layout("authed")
-    .middleware([])
+    .middleware([middleware.Auth])
     .group(() => {
       $router
         .middleware([middleware.HomeMiddleware])
         .route("/", Dashboard)
         .setName("dashboard");
-
       $router
         .prefix("site")
         .area(siteViews.SiteArea)
