@@ -17,12 +17,12 @@ export default function($router: RouterInterface) {
   |
   */
 
-  authRoutes($router);
-
   $router
     .middleware([middleware.HomeMiddleware])
     .route("/", Home)
     .setName("home");
+
+  authRoutes($router);
 
   $router
     .layout("authed")

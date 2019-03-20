@@ -15,8 +15,8 @@
     "laravel-echo": "^1.5.2",
     "mutation-summary": "^0.1.1",
     "pusher-js": "^4.4.0",
-    "varie": "^0.11.3",
-    "varie-auth-plugin": "^0.1.9",
+    "varie": "^0.11.8",
+    "varie-auth-plugin": "^0.1.10",
     "vue": "^2.6.2",
     "vue-router": "^3.0.2",
     "vuex": "^3.1.0"
