@@ -1,9 +1,9 @@
-const path = require("path");
 const VarieBundler = require("varie-bundler");
 const ENV = require("dotenv").config().parsed;
 
-module.exports = function(env, argv) {
-  let bundle = new VarieBundler(argv, __dirname, {
+module.exports = function(env) {
+  let bundle = new VarieBundler(env, {
+    bundleName: "web",
     vue: {
       runtimeOnly: false,
     },
@@ -11,16 +11,16 @@ module.exports = function(env, argv) {
     .webWorkers()
     .entry("app", ["resources/js/app/app.ts", "resources/sass/app.scss"])
     .aliases({
-      "@app": path.join(__dirname, "resources/js/app"),
-      "@views": path.join(__dirname, "resources/js/views"),
-      "@store": path.join(__dirname, "resources/js/store"),
-      "@config": path.join(__dirname, "resources/js/config"),
-      "@routes": path.join(__dirname, "resources/js/routes"),
-      "@models": path.join(__dirname, "resources/js/app/models"),
-      "@resources": path.join(__dirname, "resources/js/resources"),
-      "@components": path.join(__dirname, "resources/js/app/components"),
+      "@app": "resources/js/app",
+      "@views": "resources/js/views",
+      "@store": "resources/js/store",
+      "@config": "resources/js/config",
+      "@routes": "resources/js/routes",
+      "@models": "resources/js/app/models",
+      "@resources": "resources/js/resources",
+      "@components": "resources/js/app/components",
     })
-    .config({
+    .varieConfig({
       app: {
         ENV: ENV.APP_ENV,
         APP_URL: ENV.APP_URL,
@@ -32,16 +32,15 @@ module.exports = function(env, argv) {
         PUSHER_APP_KEY: ENV.PUSHER_APP_KEY,
       },
     })
+    .dontClean([
+      "svg",
+      "vendor",
+      ".htaccess",
+      "favicon.ico",
+      "index.php",
+      "robots.txt",
+    ])
     .chainWebpack((config, env) => {
-      config.plugin("clean").tap((opts) => {
-        opts[0] = [
-          "public/css",
-          "public/js",
-          "resources/views/layouts/app.blade.php",
-        ];
-        return opts;
-      });
-
       config.when(!env.isHot, () => {
         config.plugin("html").tap((opts) => {
           opts[0].filename = "../resources/views/layouts/app.blade.php";
@@ -52,8 +51,8 @@ module.exports = function(env, argv) {
     .proxy("/api", ENV.APP_URL)
     .build();
 
-  let clientBundle = new VarieBundler(argv, __dirname)
-    .config({
+  let clientBundle = new VarieBundler(env, "client")
+    .varieConfig({
       app: {
         ENV: ENV.APP_ENV,
         APP_URL: ENV.APP_URL,
