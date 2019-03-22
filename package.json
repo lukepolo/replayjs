@@ -16,6 +16,7 @@
   "dependencies": {
     "laravel-echo": "^1.5.2",
     "mutation-summary": "^0.1.1",
+    "nstall": "^0.2.0",
     "pusher-js": "^4.4.0",
     "varie": "^0.12.1",
     "varie-auth-plugin": "^0.1.10",
@@ -27,12 +28,12 @@
     "husky": "^1.3.1",
     "prettier": "^1.16.4",
     "pretty-quick": "^1.10.0",
-    "varie-bundler": "^0.9.4",
+    "varie-bundler": "^0.9.5",
     "vue-template-compiler": "^2.6.2",
     "webpack-bundle-analyzer": "^3.0.3"
   },
   "engines": {
-    "node": "10.15.0"
+    "node": "10.15.3"
   },
   "husky": {
     "hooks": {
