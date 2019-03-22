@@ -1,16 +1,15 @@
 import AuthService from "./services/AuthService";
-import WebSocketService from "./services/WebSocketService";
 import StreamService from "./services/StreamService";
+import WebSocketService from "./services/WebSocketService";
 
 declare global {
   interface Window {
     replayjsQueue: Array<any>;
-    replayjs: (fn: string, data: any) => any;
+    replayjs: (fn: string, data: any) => void;
   }
 }
 
 export default class Client {
-  protected identity;
   protected authService: AuthService;
   protected streamService: StreamService;
   protected websocketService: WebSocketService;
@@ -18,7 +17,10 @@ export default class Client {
   constructor() {
     this.authService = new AuthService();
     this.websocketService = new WebSocketService();
-    this.streamService = new StreamService(this.websocketService);
+    this.streamService = new StreamService(
+      this.authService,
+      this.websocketService,
+    );
 
     this.runQueued().then(() => {
       this.setupQueue();
@@ -49,7 +51,7 @@ export default class Client {
 
   protected async auth(apiKey: string) {
     this.websocketService.setApiKey(apiKey);
-    this.identity = await this.authService.identify(apiKey);
+    await this.authService.identify(apiKey);
   }
 
   protected async stream(options) {

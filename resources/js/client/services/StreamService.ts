@@ -1,3 +1,4 @@
+import AuthService from "./AuthService";
 import MirrorClient from "../MirrorClient";
 import WebSocketService from "./WebSocketService";
 import CaptureClicks from "../events/CaptureClicks";
@@ -10,6 +11,7 @@ import CaptureConsoleMessages from "../events/CaptureConsoleMessages";
 import CaptureNetworkRequests from "../events/CaptureNetworkRequests";
 
 export default class StreamService {
+  protected authService: AuthService;
   protected mirrorClient: MirrorClient;
   protected captureClicks: CaptureClicks;
   protected channel: NullPresenceChannel;
@@ -22,8 +24,9 @@ export default class StreamService {
   protected captureConsoleMessages: CaptureConsoleMessages;
   protected captureNetworkRequests: CaptureNetworkRequests;
 
-  constructor(socketConnection) {
-    this.webSocketService = socketConnection;
+  constructor(authService: AuthService, webSocketService: WebSocketService) {
+    this.authService = authService;
+    this.webSocketService = webSocketService;
   }
 
   public connect(
@@ -31,44 +34,48 @@ export default class StreamService {
       baseHref?: string;
     } = {},
   ) {
-    this.webSocketService.connect().then((channel) => {
-      this.channel = channel
-        .join(`chat`) // TODO
-        .here(() => {
-          // Gets ran immediately after connecting
-          this.mirrorClient.connect(this.channel);
-          this.captureClicks.setup(this.channel);
-          this.captureScrollEvents.setup(this.channel);
-          this.captureWindowResize.setup(this.channel);
-          this.captureMouseMovements.setup(this.channel);
-          this.captureConsoleMessages.setup(this.channel);
-          this.captureNetworkRequests.setup(this.channel);
-          this.captureSessionDetails.sendDetails(this.channel);
-        })
-        .joining(() => {
-          // When someone joins, we want setup the mirror again
-          this.mirrorClient.connect(this.channel, true);
-        });
+    if (this.authService.isAuthed()) {
+      let identity = this.authService.getIdentity();
+      console.info(identity);
+      this.webSocketService.connect().then((channel) => {
+        this.channel = channel
+          .join(`chat`) // TODO
+          .here(() => {
+            // Gets ran immediately after connecting
+            this.mirrorClient.connect(this.channel);
+            this.captureClicks.setup(this.channel);
+            this.captureScrollEvents.setup(this.channel);
+            this.captureWindowResize.setup(this.channel);
+            this.captureMouseMovements.setup(this.channel);
+            this.captureConsoleMessages.setup(this.channel);
+            this.captureNetworkRequests.setup(this.channel);
+            this.captureSessionDetails.sendDetails(this.channel);
+          })
+          .joining(() => {
+            // When someone joins, we want setup the mirror again
+            this.mirrorClient.connect(this.channel, true);
+          });
 
-      this.captureSessionDetails = new CaptureSessionDetails();
-      this.mirrorClient = new MirrorClient(
-        options.baseHref || window.location.origin,
-        this.initialTiming,
-      );
+        this.captureSessionDetails = new CaptureSessionDetails();
+        this.mirrorClient = new MirrorClient(
+          options.baseHref || window.location.origin,
+          this.initialTiming,
+        );
 
-      this.captureClicks = new CaptureClicks(this.initialTiming);
-      this.captureScrollEvents = new CaptureScrollEvents(this.initialTiming);
-      this.captureWindowResize = new CaptureWindowResize(this.initialTiming);
-      this.captureMouseMovements = new CaptureMouseMovements(
-        this.initialTiming,
-      );
-      this.captureConsoleMessages = new CaptureConsoleMessages(
-        this.initialTiming,
-      );
-      this.captureNetworkRequests = new CaptureNetworkRequests(
-        this.initialTiming,
-      );
-    });
+        this.captureClicks = new CaptureClicks(this.initialTiming);
+        this.captureScrollEvents = new CaptureScrollEvents(this.initialTiming);
+        this.captureWindowResize = new CaptureWindowResize(this.initialTiming);
+        this.captureMouseMovements = new CaptureMouseMovements(
+          this.initialTiming,
+        );
+        this.captureConsoleMessages = new CaptureConsoleMessages(
+          this.initialTiming,
+        );
+        this.captureNetworkRequests = new CaptureNetworkRequests(
+          this.initialTiming,
+        );
+      });
+    }
   }
 
   protected disconnect() {
