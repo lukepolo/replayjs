@@ -14,18 +14,18 @@ class RecordNetworkRequest implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     private $data;
-    private $socketId;
+    private $identity;
 
     /**
      * Create a new job instance.
      *
-     * @param $socketId
+     * @param $identity
      * @param $data
      */
-    public function __construct($socketId, $data)
+    public function __construct($identity, $data)
     {
         $this->data = $data;
-        $this->socketId = $socketId;
+        $this->identity = $identity;
     }
 
     /**
@@ -35,8 +35,8 @@ class RecordNetworkRequest implements ShouldQueue
      */
     public function handle()
     {
-        Cache::lock($this->socketId)->get(function () {
-            Cache::tags([$this->socketId, 'network_requests'])->put(hrtime(true), $this->data);
+        Cache::lock($this->identity)->get(function () {
+            Cache::tags([$this->identity, 'network_requests'])->put(hrtime(true), $this->data);
         });
     }
 }

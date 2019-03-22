@@ -25,40 +25,36 @@ class WebRecorderHandler extends WebSocketHandler
              case 'initialize':
                dispatch(new CacheWebRecorderAssets($messagePayload->data));
                if (!$messagePayload->data->joiningEvent) {
-                   dispatch(new RecordDomChanges($connection->socketId, $messagePayload->data));
+                   dispatch(new RecordDomChanges($messagePayload->data->identity, $messagePayload->data));
                }
                break;
             case 'changes':
-                dispatch(new RecordDomChanges($connection->socketId, $messagePayload->data));
+                dispatch(new RecordDomChanges($messagePayload->data->identity, $messagePayload->data));
             break;
             case 'click':
-                dispatch(new RecordClick($connection->socketId, $messagePayload->data));
+                dispatch(new RecordClick($messagePayload->data->identity, $messagePayload->data));
                 break;
             case 'scroll':
-                dispatch(new RecordScroll($connection->socketId, $messagePayload->data));
+                dispatch(new RecordScroll($messagePayload->data->identity, $messagePayload->data));
                 break;
             case 'window-size':
-                dispatch(new RecordWindowSize($connection->socketId, $messagePayload->data));
+                dispatch(new RecordWindowSize($messagePayload->data->identity, $messagePayload->data));
                 break;
             case 'mouse-movement':
-                dispatch(new RecordMouseMovement($connection->socketId, $messagePayload->data));
+                dispatch(new RecordMouseMovement($messagePayload->data->identity, $messagePayload->data));
                 break;
             case 'network-request':
-                dispatch(new RecordNetworkRequest($connection->socketId, $messagePayload->data));
+                dispatch(new RecordNetworkRequest($messagePayload->data->identity, $messagePayload->data));
                 break;
              case 'console-message':
-                    dispatch(new RecordConsoleMessage($connection->socketId, $messagePayload->data));
+                    dispatch(new RecordConsoleMessage($messagePayload->data->identity, $messagePayload->data));
                 break;
             case 'session-details':
-                // TODO - get IP / User Agent
-                $apiKey = $messagePayload->data->apiKey;
-                dispatch(new RecordSessionDetails($apiKey, $connection->socketId, $messagePayload->data));
+                dispatch(new RecordSessionDetails($messagePayload->data->identity, $messagePayload->data));
                 break;
-
             default:
                 dump($messagePayload->event);
         }
-
-        parent::onMessage($connection, $message);
+       parent::onMessage($connection, $message);
     }
 }

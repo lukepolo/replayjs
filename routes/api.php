@@ -30,3 +30,10 @@ Route::group(['middleware' => [
     Route::apiResource('sites', 'SiteController');
     Route::apiResource('sites.recordings', 'SiteRecordingController');
 });
+
+Route::group(['middleware' => [
+  \Barryvdh\Cors\HandleCors::class,
+]
+], function() {
+    Route::post('identify', 'GuestController@index');
+});

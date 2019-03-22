@@ -17,19 +17,19 @@ class RecordSessionDetails implements ShouldQueue
 
     private $data;
     private $apiKey;
-    private $socketId;
+    private $identity;
 
     /**
      * Create a new job instance.
      *
-     * @param $socketId
+     * @param $identity
      * @param $data
      */
-    public function __construct($apiKey, $socketId, $data)
+    public function __construct($identity, $userAgent, $data)
     {
         $this->data = $data;
         $this->apiKey = $apiKey;
-        $this->socketId = $socketId;
+        $this->identity = $identity;
     }
 
     /**
@@ -39,15 +39,14 @@ class RecordSessionDetails implements ShouldQueue
      */
     public function handle()
     {
-        $site = Site::where('id', Hashids::decode($this->apiKey))->first();
         if (!empty($site)) {
             $recording = SiteRecording::firstOrNew([
                 'site_id' => $site->id,
-                'session' => $this->socketId,
+                'session' => $this->identity,
             ]);
 
             $recording->fill([
-
+                'user_agent' => $this->data->userAgent
             ]);
 
             $recording->save();

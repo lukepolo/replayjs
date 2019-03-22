@@ -9,22 +9,20 @@ import { PusherConnector } from "laravel-echo/dist/connector";
 
 window.Pusher = require("pusher-js");
 
-export default class SocketConnection {
+export default class WebSocketService {
+  public channel: Echo;
   protected apiKey: string;
-
-  public client: Echo;
 
   public setApiKey(apiKey) {
     this.apiKey = apiKey;
   }
 
-  public connect() {
+  public async connect() {
     if (!this.apiKey) {
       throw Error("You need to set your API Key.");
     }
-
-    if (!this.client) {
-      this.client = new Echo({
+    if (!this.channel) {
+      this.channel = new Echo({
         broadcaster: "pusher",
         enabledTransports: ["ws", "wss"],
         wsHost: __ENV_VARIABLES__.app.WS_HOST,
@@ -39,11 +37,11 @@ export default class SocketConnection {
         },
       });
     }
-    return this.client;
+    return this.channel;
   }
 
   public disconnect() {
-    this.client.disconnect();
-    this.client = null;
+    this.channel.disconnect();
+    this.channel = null;
   }
 }
