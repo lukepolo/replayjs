@@ -52,7 +52,7 @@ export default Vue.extend({
     installScript() {
       return `
 
-      <script async src="http://replayjs.test/js/client.js"><\/script>
+      <script async src="${window.location.origin}/js/client.js"><\/script>
       <script>
         window.replayjsQueue = window.replayjsQueue || [];
         function replayjs(){replayjsQueue.push(arguments);}

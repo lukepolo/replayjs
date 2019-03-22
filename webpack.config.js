@@ -48,6 +48,9 @@ module.exports = function(env) {
         });
       });
     })
+    .chainWebpack((config) => {
+      config.devServer.disableHostCheck(true);
+    })
     .proxy("/api", ENV.APP_URL)
     .build();
 
@@ -81,6 +84,7 @@ module.exports = function(env) {
       config.plugins.delete("optimize-assets");
 
       config.devServer.hot(false);
+
       config.optimization.splitChunks({}).runtimeChunk(false);
 
       if (config.plugins.has("analyzer")) {
