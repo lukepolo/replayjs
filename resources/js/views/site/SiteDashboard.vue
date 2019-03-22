@@ -6,9 +6,6 @@
         You haven't installed the script, or there have been no sessions to
         record.
       </h3>
-      <code>
-        <pre>{{ installScript }}</pre>
-      </code>
     </template>
     <template v-else>
       <h3>Recordings</h3>
@@ -23,6 +20,9 @@
         </router-link>
       </div>
     </template>
+    <code>
+      <pre>{{ installScript }}</pre>
+    </code>
   </div>
 </template>
 
