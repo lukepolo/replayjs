@@ -26,6 +26,7 @@ export default class SocketConnection {
     if (!this.client) {
       this.client = new Echo({
         broadcaster: "pusher",
+        enabledTransports: ["ws", "wss"],
         wsHost: __ENV_VARIABLES__.app.WS_HOST,
         wsPort: __ENV_VARIABLES__.app.WS_PORT,
         key: __ENV_VARIABLES__.services.PUSHER_APP_KEY,
