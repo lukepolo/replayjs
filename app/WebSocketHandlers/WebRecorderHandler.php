@@ -6,6 +6,7 @@ use App\Jobs\RecordClick;
 use App\Jobs\RecordScroll;
 use App\Jobs\RecordDomChanges;
 use App\Jobs\RecordWindowSize;
+use Illuminate\Support\Str;
 use Ratchet\ConnectionInterface;
 use App\Jobs\RecordMouseMovement;
 use App\Jobs\RecordConsoleMessage;
@@ -25,36 +26,41 @@ class WebRecorderHandler extends WebSocketHandler
              case 'initialize':
                dispatch(new CacheWebRecorderAssets($messagePayload->data));
                if (!$messagePayload->data->joiningEvent) {
-                   dispatch(new RecordDomChanges($messagePayload->data->identity, $messagePayload->data));
+                   dispatch(new RecordDomChanges($this->getStreamSession($messagePayload), $messagePayload->data));
                }
                break;
             case 'changes':
-                dispatch(new RecordDomChanges($messagePayload->data->identity, $messagePayload->data));
+                dispatch(new RecordDomChanges($this->getStreamSession($messagePayload), $messagePayload->data));
             break;
             case 'click':
-                dispatch(new RecordClick($messagePayload->data->identity, $messagePayload->data));
+                dispatch(new RecordClick($this->getStreamSession($messagePayload), $messagePayload->data));
                 break;
             case 'scroll':
-                dispatch(new RecordScroll($messagePayload->data->identity, $messagePayload->data));
+                dispatch(new RecordScroll($this->getStreamSession($messagePayload), $messagePayload->data));
                 break;
             case 'window-size':
-                dispatch(new RecordWindowSize($messagePayload->data->identity, $messagePayload->data));
+                dispatch(new RecordWindowSize($this->getStreamSession($messagePayload), $messagePayload->data));
                 break;
             case 'mouse-movement':
-                dispatch(new RecordMouseMovement($messagePayload->data->identity, $messagePayload->data));
+                dispatch(new RecordMouseMovement($this->getStreamSession($messagePayload), $messagePayload->data));
                 break;
             case 'network-request':
-                dispatch(new RecordNetworkRequest($messagePayload->data->identity, $messagePayload->data));
+                dispatch(new RecordNetworkRequest($this->getStreamSession($messagePayload), $messagePayload->data));
                 break;
              case 'console-message':
-                    dispatch(new RecordConsoleMessage($messagePayload->data->identity, $messagePayload->data));
+                    dispatch(new RecordConsoleMessage($this->getStreamSession($messagePayload), $messagePayload->data));
                 break;
             case 'session-details':
-                dispatch(new RecordSessionDetails($messagePayload->data->identity, $messagePayload->data));
+                dispatch(new RecordSessionDetails($this->getStreamSession($messagePayload), $messagePayload->data));
                 break;
             default:
                 dump($messagePayload->event);
         }
-       parent::onMessage($connection, $message);
+        parent::onMessage($connection, $message);
+    }
+
+    private function getStreamSession($messagePayload)
+    {
+        return Str::after($messagePayload->channel, '.');
     }
 }

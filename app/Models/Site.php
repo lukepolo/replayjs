@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Traits\Hashable;
 use App\Models\User\User;
 use Vinkla\Hashids\Facades\Hashids;
 use App\Models\Traits\ConnectedToUser;
@@ -10,7 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Site extends Model
 {
-    use SoftDeletes, ConnectedToUser;
+    use SoftDeletes, ConnectedToUser, Hashable;
 
     protected $guarded = ['id'];
 

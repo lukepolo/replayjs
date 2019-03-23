@@ -20,7 +20,6 @@ class BroadcastServiceProvider extends ServiceProvider
                 \Barryvdh\Cors\HandleCors::class,
                 'bindings',
                 \App\Http\Middleware\AuthenticateGuest::class,
-
             ]
         ]);
 

@@ -10,13 +10,17 @@ import CaptureMouseMovements from "../events/CaptureMouseMovements";
 import CaptureConsoleMessages from "../events/CaptureConsoleMessages";
 import CaptureNetworkRequests from "../events/CaptureNetworkRequests";
 
+interface OptionsInterface {
+  baseHref?: string;
+}
+
 export default class StreamService {
   protected authService: AuthService;
   protected mirrorClient: MirrorClient;
   protected captureClicks: CaptureClicks;
   protected channel: NullPresenceChannel;
   protected webSocketService: WebSocketService;
-  protected initialTiming = new Date().getTime();
+  protected initialTiming;
   protected captureScrollEvents: CaptureScrollEvents;
   protected captureWindowResize: CaptureWindowResize;
   protected captureMouseMovements: CaptureMouseMovements;
@@ -29,17 +33,13 @@ export default class StreamService {
     this.webSocketService = webSocketService;
   }
 
-  public connect(
-    options: {
-      baseHref?: string;
-    } = {},
-  ) {
+  public connect(options: OptionsInterface = {}) {
+    this.initialTiming = new Date().getTime();
     if (this.authService.isAuthed()) {
-      let identity = this.authService.getIdentity();
-      console.info(identity);
-      this.webSocketService.connect().then((channel) => {
+      this.boot(options);
+      return this.webSocketService.connect().then((channel) => {
         this.channel = channel
-          .join(`chat`) // TODO
+          .join(`stream.${this.authService.getSession()}`)
           .here(() => {
             // Gets ran immediately after connecting
             this.mirrorClient.connect(this.channel);
@@ -55,27 +55,9 @@ export default class StreamService {
             // When someone joins, we want setup the mirror again
             this.mirrorClient.connect(this.channel, true);
           });
-
-        this.captureSessionDetails = new CaptureSessionDetails();
-        this.mirrorClient = new MirrorClient(
-          options.baseHref || window.location.origin,
-          this.initialTiming,
-        );
-
-        this.captureClicks = new CaptureClicks(this.initialTiming);
-        this.captureScrollEvents = new CaptureScrollEvents(this.initialTiming);
-        this.captureWindowResize = new CaptureWindowResize(this.initialTiming);
-        this.captureMouseMovements = new CaptureMouseMovements(
-          this.initialTiming,
-        );
-        this.captureConsoleMessages = new CaptureConsoleMessages(
-          this.initialTiming,
-        );
-        this.captureNetworkRequests = new CaptureNetworkRequests(
-          this.initialTiming,
-        );
       });
     }
+    throw Error("There was an error connecting you to the client.");
   }
 
   protected disconnect() {
@@ -86,5 +68,24 @@ export default class StreamService {
     this.captureMouseMovements.teardown();
     this.captureConsoleMessages.teardown();
     this.captureNetworkRequests.teardown();
+  }
+
+  protected boot(options: OptionsInterface = {}) {
+    this.captureSessionDetails = new CaptureSessionDetails();
+    this.mirrorClient = new MirrorClient(
+      options.baseHref || window.location.origin,
+      this.initialTiming,
+    );
+
+    this.captureClicks = new CaptureClicks(this.initialTiming);
+    this.captureScrollEvents = new CaptureScrollEvents(this.initialTiming);
+    this.captureWindowResize = new CaptureWindowResize(this.initialTiming);
+    this.captureMouseMovements = new CaptureMouseMovements(this.initialTiming);
+    this.captureConsoleMessages = new CaptureConsoleMessages(
+      this.initialTiming,
+    );
+    this.captureNetworkRequests = new CaptureNetworkRequests(
+      this.initialTiming,
+    );
   }
 }

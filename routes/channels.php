@@ -11,6 +11,6 @@
 |
 */
 
-Broadcast::channel('chat', function ($user) {
+Broadcast::channel('stream.{session}', function ($user) {
     return $user;
 });

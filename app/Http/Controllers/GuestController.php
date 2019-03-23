@@ -2,29 +2,38 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Site;
-use App\Models\Guest;
 use Illuminate\Http\Request;
-use Vinkla\Hashids\Facades\Hashids;
+use App\Services\GuestService;
 
 class GuestController extends Controller
 {
+    private $guestService;
+
+    /**
+     * GuestController constructor.
+     * @param GuestService $guestService
+     */
+    public function __construct(GuestService $guestService)
+    {
+        $this->guestService = $guestService;
+    }
+
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return array
      */
     public function index(Request $request)
     {
-        $site = Site::where('id', Hashids::decode($request->get('api_key'))[0])->first();
-        $guest = Guest::where('updated_at', '>', \Carbon\Carbon::now()->sub('1', 'hour'))->firstOrCreate([
-          'site_id' => $site->id,
-          'ip_address' => $request->ip(),
-          'user_agent' => $request->userAgent()
-        ]);
+        $guest = $this->guestService->getGuest(
+            $request->get('api_key'),
+            $request->ip(),
+            $request->userAgent()
+        );
 
         return [
-            "session" => Hashids::encode($guest->id),
+            "session" => $guest->encode(),
             "expires" => \Carbon\Carbon::now()->add('1', 'hour'),
         ];
     }

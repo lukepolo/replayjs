@@ -1,7 +1,8 @@
 import HttpService from "./../services/HttpService";
 
 export default class AuthService {
-  protected identity;
+  private identity;
+  protected apiKey: string;
   protected httpService: HttpService;
 
   constructor() {
@@ -9,16 +10,24 @@ export default class AuthService {
   }
 
   public async identify(apiKey) {
-    return (this.identity = await this.httpService.post(
+    this.apiKey = apiKey;
+    this.identity = await this.httpService.post(
       `${__ENV_VARIABLES__.app.APP_URL}/api/identify`,
       {
-        api_key: apiKey,
+        api_key: this.getApiKey(),
       },
-    ));
+    );
+    // TODO - session refresh needed?
   }
 
-  public getIdentity() {
-    return this.identity;
+  public getApiKey() {
+    return this.apiKey;
+  }
+
+  public getSession() {
+    if (this.identity) {
+      return this.identity.session;
+    }
   }
 
   public isAuthed() {
