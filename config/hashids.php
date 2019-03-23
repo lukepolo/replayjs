@@ -36,10 +36,22 @@ return [
     | you would like.
     |
     */
-
+    // TODO - make them different , so we can hide our hashes well
     'connections' => [
 
         'main' => [
+            'salt'     => env('APP_KEY'),
+            'length'   => 32,
+            'alphabet' => 'abcdefghijklmnopqrstuvwxyABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890',
+        ],
+
+        'api_key' => [
+            'salt'     => env('APP_KEY'),
+            'length'   => 32,
+            'alphabet' => 'abcdefghijklmnopqrstuvwxyABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890',
+        ],
+
+        'sessions' => [
             'salt'     => env('APP_KEY'),
             'length'   => 32,
             'alphabet' => 'abcdefghijklmnopqrstuvwxyABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890',

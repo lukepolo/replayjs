@@ -1,24 +1,18 @@
 <template>
   <div v-if="site">
-    <h3>Recordings for Site {{ site.domain }}</h3>
-    <template v-if="recordings && recordings.length === 0">
+    <h3>Guests for Site {{ site.domain }}</h3>
+    <template v-if="guests && guests.length === 0">
       <h3>
-        You haven't installed the script, or there have been no sessions to
-        record.
+        You haven't installed the script, or there hasn't been any recorded
+        sessions.
       </h3>
     </template>
     <template v-else>
-      <h3>Recordings</h3>
-      <div v-for="recording in recordings">
-        <router-link
-          :to="{
-            name: 'site.recordings.player',
-            params: { site: $route.params.site, recording: recording.id },
-          }"
+      <template v-for="guest in guests">
+        <router-link :to="{ name: 'site.guest', params: { guest: guest.id } }"
+          >{{ guest.name }} {{ guest.ip_address }}</router-link
         >
-          {{ recording.session }}
-        </router-link>
-      </div>
+      </template>
     </template>
     <code>
       <pre>{{ installScript }}</pre>
@@ -35,7 +29,7 @@ export default Vue.extend({
       immediate: true,
       handler() {
         this.$store.dispatch("site/show", this.siteId);
-        this.$store.dispatch("site/recording/get", this.siteId);
+        this.$store.dispatch("site/guest/get", this.siteId);
       },
     },
   },
@@ -46,8 +40,8 @@ export default Vue.extend({
     siteId() {
       return this.$route.params.site;
     },
-    recordings() {
-      return this.$store.state.site.recording.recordings;
+    guests() {
+      return this.$store.state.site.guest.guests;
     },
     installScript() {
       return `

@@ -117,10 +117,16 @@ export default Vue.extend({
     $route: {
       immediate: true,
       handler() {
-        this.$store.dispatch("site/recording/show", {
-          site: this.$route.params.site,
-          recording: this.$route.params.recording,
-        });
+        console.info(this.$route.params);
+        // this.$store.dispatch("site/guest/show", {
+        //   siteId: this.$route.params.site,
+        //   guestId: this.$route.params.guest,
+        // });
+        // this.$store.dispatch("site/guest/session/get", {
+        //   siteId: this.$route.params.site,
+        //   guestId: this.$route.params.guest,
+        //   session : this.$route.params.session
+        // });
       },
     },
     recording: {

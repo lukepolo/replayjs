@@ -29,8 +29,7 @@ class AuthenticateGuest
     {
         $guest = $this->guestService->getGuest(
             str_replace('Bearer ', '', $request->headers->get('Authorization')),
-            $request->ip(),
-            $request->userAgent()
+            $request->ip()
         );
 
         if (!empty($guest)) {

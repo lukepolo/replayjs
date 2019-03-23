@@ -12,5 +12,7 @@
 */
 
 Broadcast::channel('stream.{session}', function ($user) {
-    return $user;
+    return [
+        'name' => $user->name,
+    ];
 });

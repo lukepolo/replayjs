@@ -2,14 +2,12 @@
 
 namespace App\Jobs;
 
-use App\Models\Site;
-use App\Models\SiteRecording;
 use Illuminate\Bus\Queueable;
-use Vinkla\Hashids\Facades\Hashids;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use App\Models\Site\Guest\Session\GuestSessionRecording;
 
 class RecordSessionDetails implements ShouldQueue
 {
@@ -39,9 +37,9 @@ class RecordSessionDetails implements ShouldQueue
     public function handle()
     {
         if (!empty($site)) {
-            $recording = SiteRecording::firstOrNew([
+            $recording = GuestSessionRecording::firstOrNew([
                 'site_id' => $site->id,
-                'session' => $this->session,
+                'guest_session_id' => $this->session,
             ]);
 
 //            $recording->fill([

@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Site\Guest\Session;
 
+use App\Models\Site\Site;
 use App\Models\Traits\ConnectedToUser;
 use Illuminate\Database\Eloquent\Model;
 
-class SiteRecording extends Model
+class GuestSessionRecording extends Model
 {
     use ConnectedToUser;
 

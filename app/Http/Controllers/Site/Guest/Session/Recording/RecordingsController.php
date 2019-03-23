@@ -1,14 +1,16 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Site\Guest\Session\Recording;
+
 
 use Predis\Client;
 use Illuminate\Http\Request;
-use App\Models\SiteRecording;
 use Predis\Collection\Iterator;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Cache;
+use App\Models\Site\Guest\Session\GuestSessionRecording;
 
-class SiteRecordingController extends Controller
+class RecordingsController extends Controller
 {
     private $redis;
 
@@ -28,7 +30,7 @@ class SiteRecordingController extends Controller
      */
     public function index(Request $request, $siteId)
     {
-        return SiteRecording::where('site_id', $siteId)->get();
+        return GuestSessionRecording::where('site_id', $siteId)->get();
     }
 
     /**
@@ -38,7 +40,7 @@ class SiteRecordingController extends Controller
      */
     public function show(Request $request, $siteId, $recordingId)
     {
-        $recording = SiteRecording::where('id', $recordingId)->where('site_id', $siteId)->first();
+        $recording = GuestSessionRecording::where('id', $recordingId)->where('site_id', $siteId)->first();
 
         $recording->dom_changes = $this->getFromCache($recording->session, 'dom_changes');
         $recording->mouse_clicks = $this->getFromCache($recording->session, 'mouse_clicks');

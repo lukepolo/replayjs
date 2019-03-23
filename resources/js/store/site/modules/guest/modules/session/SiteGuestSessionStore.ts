@@ -6,12 +6,12 @@ import StoreModule from "varie/lib/state/StoreModule";
 import { injectable, inject, unmanaged } from "inversify";
 
 @injectable()
-export default class SiteRecordingStore extends StoreModule {
-  constructor(@inject("RecordingService") recordingService) {
+export default class SiteGuestSessionStore extends StoreModule {
+  constructor(@inject("SiteGuestSessionService") siteGuestSessionService) {
     super();
-    this.setName("recording")
+    this.setName("session")
       .addState(state)
-      .addActions(actions(recordingService))
+      .addActions(actions(siteGuestSessionService))
       .addMutations(mutations)
       .addGetters(getters);
   }

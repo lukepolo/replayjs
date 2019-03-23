@@ -4,14 +4,15 @@ namespace App\WebSocketHandlers;
 
 use App\Jobs\RecordClick;
 use App\Jobs\RecordScroll;
+use Illuminate\Support\Str;
 use App\Jobs\RecordDomChanges;
 use App\Jobs\RecordWindowSize;
-use Illuminate\Support\Str;
 use Ratchet\ConnectionInterface;
 use App\Jobs\RecordMouseMovement;
 use App\Jobs\RecordConsoleMessage;
 use App\Jobs\RecordNetworkRequest;
 use App\Jobs\RecordSessionDetails;
+use Vinkla\Hashids\Facades\Hashids;
 use App\Jobs\CacheWebRecorderAssets;
 use Ratchet\RFC6455\Messaging\MessageInterface;
 use BeyondCode\LaravelWebSockets\WebSockets\WebSocketHandler;
@@ -61,6 +62,6 @@ class WebRecorderHandler extends WebSocketHandler
 
     private function getStreamSession($messagePayload)
     {
-        return Str::after($messagePayload->channel, '.');
+        return Hashids::decode(Str::after($messagePayload->channel, '.'))[0];
     }
 }

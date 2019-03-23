@@ -2,8 +2,10 @@
 
 namespace App\Services;
 
-use App\Models\Site;
-use App\Models\Guest;
+use Carbon\Carbon;
+use App\Models\Site\Site;
+use App\Models\Site\Guest\Guest;
+use App\Models\Site\Guest\Session\GuestSession;
 
 class GuestService
 {
@@ -18,12 +20,23 @@ class GuestService
         $this->site = $site;
     }
 
-    public function getGuest($apiKey, $ipAddress, $userAgent) : Guest
+    public function getGuest($apiKey, $ipAddress) : Guest
     {
-        return Guest::where('updated_at', '>', \Carbon\Carbon::now()->sub('1', 'hour'))->firstOrCreate([
+        return Guest::firstOrCreate([
             'ip_address' => $ipAddress,
-            'user_agent' => $userAgent,
             'site_id' => $this->site->decode($apiKey)->id,
         ]);
+    }
+
+    public function getSession($apiKey, $ipAddress, $userAgent)
+    {
+        $guest = $this->getGuest($apiKey, $ipAddress);
+        $session = GuestSession::where('updated_at', '>', Carbon::now()->sub('1', 'hour'))
+            ->firstOrNew([
+                'guest_id' => $guest->id,
+                'user_agent' => $userAgent
+            ]);
+        $session->touch();
+        return $session;
     }
 }

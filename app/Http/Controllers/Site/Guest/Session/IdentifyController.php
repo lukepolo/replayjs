@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Site\Guest\Session;
 
 use Illuminate\Http\Request;
 use App\Services\GuestService;
+use App\Http\Controllers\Controller;
 
-class GuestController extends Controller
+class IdentifyController extends Controller
 {
     private $guestService;
 
@@ -26,14 +27,14 @@ class GuestController extends Controller
      */
     public function index(Request $request)
     {
-        $guest = $this->guestService->getGuest(
+        $session = $this->guestService->getSession(
             $request->get('api_key'),
             $request->ip(),
             $request->userAgent()
         );
 
         return [
-            "session" => $guest->encode(),
+            "session" => $session->encode(),
             "expires" => \Carbon\Carbon::now()->add('1', 'hour'),
         ];
     }

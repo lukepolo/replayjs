@@ -1,7 +1,7 @@
 import { ActionContext } from "vuex";
 import RootState from "../rootState";
 import { SiteState } from "./stateInterface";
-import SiteService from "@app/services/SiteService";
+import SiteService from "@app/services/site/SiteService";
 
 export default function(siteService: SiteService) {
   return {
@@ -19,7 +19,6 @@ export default function(siteService: SiteService) {
     },
     create: (context: ActionContext<SiteState, RootState>, data) => {
       return siteService.store(data).then(({ data }) => {
-        console.info(data);
         return data;
       });
     },

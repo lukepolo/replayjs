@@ -1,20 +1,24 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Site\Guest;
 
-use App\Models\Traits\Hashable;
+use App\Models\Site\Site;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use App\Models\Site\Guest\Session\GuestSession;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class Guest extends Authenticatable implements JWTSubject
 {
-    use Hashable;
-
     protected $guarded = ['id'];
 
     public function site()
     {
         return $this->belongsTo(Site::class);
+    }
+
+    public function sessions()
+    {
+        return $this->hasMany(GuestSession::class);
     }
 
     /**
