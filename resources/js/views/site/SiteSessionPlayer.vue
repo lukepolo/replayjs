@@ -29,7 +29,7 @@ body {
   flex: 1 1 auto;
 }
 
-.recordings {
+.sessions {
   height: 100px;
   overflow: hidden;
 }
@@ -94,8 +94,8 @@ body {
       </div>
     </div>
     <h3>Network Requests</h3>
-    <div v-if="recording">
-      <pre>{{ recording.network_requests }}</pre>
+    <div v-if="session">
+      <pre>{{ session.network_requests }}</pre>
     </div>
   </div>
 </template>
@@ -117,21 +117,20 @@ export default Vue.extend({
     $route: {
       immediate: true,
       handler() {
-        console.info(this.$route.params);
-        // this.$store.dispatch("site/guest/show", {
-        //   siteId: this.$route.params.site,
-        //   guestId: this.$route.params.guest,
-        // });
-        // this.$store.dispatch("site/guest/session/get", {
-        //   siteId: this.$route.params.site,
-        //   guestId: this.$route.params.guest,
-        //   session : this.$route.params.session
-        // });
+        this.$store.dispatch("site/guest/show", {
+          siteId: this.$route.params.site,
+          guestId: this.$route.params.guest,
+        });
+        this.$store.dispatch("site/guest/session/show", {
+          siteId: this.$route.params.site,
+          guestId: this.$route.params.guest,
+          sessionId: this.$route.params.session,
+        });
       },
     },
-    recording: {
-      handler(recording) {
-        let domChanges = recording.dom_changes;
+    session: {
+      handler(session) {
+        let domChanges = session.dom_changes;
         let { rootId, children, baseHref } = domChanges[
           Object.keys(domChanges)[0]
         ];
@@ -139,36 +138,36 @@ export default Vue.extend({
         this.setupMirror(baseHref);
         this.setupIframe({ rootId, children });
 
-        let { height, width } = recording.window_size_changes[
-          Object.keys(recording.window_size_changes)[0]
+        let { height, width } = session.window_size_changes[
+          Object.keys(session.window_size_changes)[0]
         ];
         this.updateWindowSize(width, height);
 
-        for (let timing in recording.dom_changes) {
+        for (let timing in session.dom_changes) {
           setTimeout(() => {
             let {
               removed,
               addedOrMoved,
               attributes,
               text,
-            } = recording.dom_changes[timing];
+            } = session.dom_changes[timing];
             if (removed) {
               setTimeout(() => {
                 this.updateDom(removed, addedOrMoved, attributes, text);
               }, 0);
             }
-          }, recording.dom_changes[timing].timing);
+          }, session.dom_changes[timing].timing);
         }
 
-        for (let timing in recording.mouse_movements) {
-          this.updateMouseMovements(recording.mouse_movements[timing]);
+        for (let timing in session.mouse_movements) {
+          this.updateMouseMovements(session.mouse_movements[timing]);
         }
 
-        for (let timing in recording.mouse_clicks) {
+        for (let timing in session.mouse_clicks) {
           setTimeout(() => {
-            let { x, y } = recording.mouse_clicks[timing];
+            let { x, y } = session.mouse_clicks[timing];
             this.addClick(x, y);
-          }, recording.mouse_clicks[timing].timing);
+          }, session.mouse_clicks[timing].timing);
         }
       },
     },
@@ -284,8 +283,9 @@ export default Vue.extend({
     },
   },
   computed: {
-    recording() {
-      return this.$store.state.site.recording.recording;
+    session() {
+      console.info(this.$store.state.site.guest.session.session);
+      return this.$store.state.site.guest.session.session;
     },
   },
   destroyed() {

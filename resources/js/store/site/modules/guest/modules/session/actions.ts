@@ -13,5 +13,15 @@ export default function(siteGuestSessionService: SiteGuestSessionService) {
         context.commit("SET_SESSIONS", data);
       });
     },
+    show: (
+      context: ActionContext<SiteGuestSessionState, RootState>,
+      { siteId, guestId, sessionId },
+    ) => {
+      return siteGuestSessionService
+        .show(siteId, guestId, sessionId)
+        .then(({ data }) => {
+          context.commit("SET_SESSION", data);
+        });
+    },
   };
 }

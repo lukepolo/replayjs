@@ -14,7 +14,9 @@ export default class SiteGuestSessionService {
     );
   }
 
-  show(siteId, recordingId) {
-    return this.httpService.get(`/api/sites/${siteId}/sessions/${recordingId}`);
+  show(siteId, guestId, sessionId) {
+    return this.httpService.get(
+      `/api/sites/${siteId}/guests/${guestId}/sessions/${sessionId}`,
+    );
   }
 }
