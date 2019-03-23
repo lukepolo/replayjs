@@ -284,7 +284,6 @@ export default Vue.extend({
   },
   computed: {
     session() {
-      console.info(this.$store.state.site.guest.session.session);
       return this.$store.state.site.guest.session.session;
     },
   },

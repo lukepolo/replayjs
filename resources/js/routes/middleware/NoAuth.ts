@@ -11,6 +11,7 @@ export default class NoAuth implements RouteMiddlewareInterface {
   }
 
   handler(to, from, next) {
+    console.info("OK NO AUTH PLEASE");
     this.authService.isLoggedIn().then((isLoggedIn) => {
       if (isLoggedIn) {
         return next({

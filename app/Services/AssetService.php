@@ -24,9 +24,9 @@ class AssetService
      */
     public function getCached($url)
     {
-        return Cache::remember($url, self::CACHE_TIME, function () use ($url) {
-            return $this->get($url);
-        });
+//        return Cache::remember($url, self::CACHE_TIME, function () use ($url) {
+        return $this->get($url);
+//        });
     }
 
     /**
