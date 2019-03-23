@@ -2,14 +2,12 @@
 
 namespace App\Jobs;
 
-use App\Models\Site;
-use App\Models\SiteRecording;
 use Illuminate\Bus\Queueable;
-use Vinkla\Hashids\Facades\Hashids;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use App\Models\Site\Guest\Session\GuestSessionRecording;
 
 class RecordSessionDetails implements ShouldQueue
 {
@@ -17,19 +15,18 @@ class RecordSessionDetails implements ShouldQueue
 
     private $data;
     private $apiKey;
-    private $socketId;
+    private $session;
 
     /**
      * Create a new job instance.
      *
-     * @param $socketId
+     * @param $session
      * @param $data
      */
-    public function __construct($apiKey, $socketId, $data)
+    public function __construct($session, $data)
     {
         $this->data = $data;
-        $this->apiKey = $apiKey;
-        $this->socketId = $socketId;
+        $this->session = $session;
     }
 
     /**
@@ -39,16 +36,15 @@ class RecordSessionDetails implements ShouldQueue
      */
     public function handle()
     {
-        $site = Site::where('id', Hashids::decode($this->apiKey))->first();
         if (!empty($site)) {
-            $recording = SiteRecording::firstOrNew([
+            $recording = GuestSessionRecording::firstOrNew([
                 'site_id' => $site->id,
-                'session' => $this->socketId,
+                'guest_session_id' => $this->session,
             ]);
 
-            $recording->fill([
-
-            ]);
+//            $recording->fill([
+//                'user_agent' => $this->data->userAgent
+//            ]);
 
             $recording->save();
         }

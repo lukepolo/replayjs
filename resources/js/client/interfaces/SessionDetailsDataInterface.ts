@@ -1,3 +1,1 @@
-export default interface SessionDetailsDataInterface {
-  apiKey: string;
-}
+export default interface SessionDetailsDataInterface {}

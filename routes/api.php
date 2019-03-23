@@ -13,20 +13,28 @@
 */
 
 // Authentication / Register Routes...
-Route::post('login', 'Auth\AuthController@login');
-Route::post('logout', 'Auth\AuthController@logout');
-Route::post('refresh', 'Auth\AuthController@refresh');
-Route::post('register', 'Auth\RegisterController@register');
+Route::post('login', [\App\Http\Controllers\Auth\AuthController::class, 'login']);
+Route::post('logout', [\App\Http\Controllers\Auth\AuthController::class, 'logout']);
+Route::post('refresh', [\App\Http\Controllers\Auth\AuthController::class, 'refresh']);
+Route::post('register', [\App\Http\Controllers\Auth\RegisterController::class, 'register']);
 
-Route::get('asset', 'AssetController@index');
+Route::get('asset', [\App\Http\Controllers\AssetController::class, 'index']);
 
 Route::group(['middleware' => [
     'auth:api',
 ],
 ], function () {
-    Route::get('me', 'User\UserController@index');
-    Route::put('me', 'User\UserController@update');
-    Route::delete('me', 'User\UserController@destroy');
-    Route::apiResource('sites', 'SiteController');
-    Route::apiResource('sites.recordings', 'SiteRecordingController');
+    Route::get('me', [\App\Http\Controllers\User\UsersController::class, 'index']);
+    Route::put('me', [\App\Http\Controllers\User\UsersController::class, 'update']);
+    Route::delete('me', [\App\Http\Controllers\User\UsersController::class, 'destroy']);
+    Route::apiResource('sites', "\\".\App\Http\Controllers\Site\SitesController::class);
+    Route::apiResource('sites.guests', "\\".\App\Http\Controllers\Site\Guest\GuestsController::class);
+    Route::apiResource('sites.guests.sessions', "\\".\App\Http\Controllers\Site\Guest\Session\SessionsController::class);
+});
+
+Route::group(['middleware' => [
+  \Barryvdh\Cors\HandleCors::class,
+]
+], function() {
+    Route::post('identify', [\App\Http\Controllers\Site\Guest\Session\IdentifyController::class, 'index']);
 });

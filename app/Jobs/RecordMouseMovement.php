@@ -14,18 +14,18 @@ class RecordMouseMovement implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     private $data;
-    private $socketId;
+    private $session;
 
     /**
      * Create a new job instance.
      *
-     * @param $socketId
+     * @param $session
      * @param $data
      */
-    public function __construct($socketId, $data)
+    public function __construct($session, $data)
     {
         $this->data = $data;
-        $this->socketId = $socketId;
+        $this->session = $session;
     }
 
     /**
@@ -35,8 +35,8 @@ class RecordMouseMovement implements ShouldQueue
      */
     public function handle()
     {
-        Cache::lock($this->socketId)->get(function () {
-            Cache::tags([$this->socketId, 'mouse_movements'])->put(hrtime(true), $this->data);
+        Cache::lock($this->session)->get(function () {
+            Cache::tags([$this->session, 'mouse_movements'])->put(hrtime(true), $this->data);
         });
     }
 }

@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Site;
 
-use App\Models\Site;
+use App\Models\Site\Site;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
-class SiteController extends Controller
+class SitesController extends Controller
 {
     /**
      * Display a listing of the resource.

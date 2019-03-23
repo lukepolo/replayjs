@@ -1,9 +1,11 @@
 import SiteArea from "./areas/SiteArea.vue";
 import SiteDashboard from "./SiteDashboard.vue";
-import SiteRecordingPlayer from "./SiteRecordingPlayer.vue";
+import SiteSessionPlayer from "./SiteSessionPlayer.vue";
+import SiteGuestSessions from "./SiteGuestSessions.vue";
 
 export default {
   SiteArea,
   SiteDashboard,
-  SiteRecordingPlayer,
+  SiteSessionPlayer,
+  SiteGuestSessions,
 };

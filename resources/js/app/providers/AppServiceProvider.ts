@@ -1,6 +1,7 @@
 import { ServiceProvider } from "varie";
-import SiteService from "@app/services/SiteService";
-import RecordingService from "@app/services/RecordingService";
+import SiteService from "@app/services/site/SiteService";
+import GuestService from "@app/services/site/guest/SiteGuestService";
+import SiteGuestSessionService from "@app/services/site/guest/session/SiteGuestSessionService";
 
 /*
 |--------------------------------------------------------------------------
@@ -17,6 +18,7 @@ export default class AppProviderServiceProvider extends ServiceProvider {
 
   public async register() {
     this.app.bind("SiteService", SiteService);
-    this.app.bind("RecordingService", RecordingService);
+    this.app.bind("SiteGuestService", GuestService);
+    this.app.bind("SiteGuestSessionService", SiteGuestSessionService);
   }
 }

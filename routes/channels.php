@@ -11,6 +11,8 @@
 |
 */
 
-Broadcast::channel('chat', function ($user) {
-    return $user;
+Broadcast::channel('stream.{session}', function ($user) {
+    return [
+        'name' => $user->name,
+    ];
 });

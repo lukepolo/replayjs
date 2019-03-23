@@ -3,12 +3,21 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use App\Models\Site;
-use App\Models\User\User;
-use Vinkla\Hashids\Facades\Hashids;
+use App\Services\GuestService;
 
 class AuthenticateGuest
 {
+    private $guestService;
+
+    /**
+     * AuthenticateGuest constructor.
+     * @param GuestService $guestService
+     */
+    public function __construct(GuestService $guestService)
+    {
+        $this->guestService = $guestService;
+    }
+
     /**
      * Handle an incoming request.
      *
@@ -18,17 +27,17 @@ class AuthenticateGuest
      */
     public function handle($request, Closure $next)
     {
-        $site = Site::where(
-            'id',
-            Hashids::decode(
-                str_replace('Bearer ', '', $request->headers->get('Authorization'))
-            )
-        )->first();
+        $guest = $this->guestService->getGuest(
+            str_replace('Bearer ', '', $request->headers->get('Authorization')),
+            $request->ip()
+        );
 
-        //if ($site && $site->domain === parse_url($request->headers->get('origin'))['host']) {
-        $user = factory(User::class)->create();
-        \Auth::login($user);
-        //}
+        if (!empty($guest)) {
+            $guest->load('site');
+            if ($guest->site->domain === parse_url($request->headers->get('origin'))['host']) {
+                \Auth::login($guest);
+            }
+        }
         return $next($request);
     }
 }

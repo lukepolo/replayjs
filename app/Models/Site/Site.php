@@ -1,16 +1,17 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Site;
 
 use App\Models\User\User;
-use Vinkla\Hashids\Facades\Hashids;
+use App\Models\Traits\Hashable;
 use App\Models\Traits\ConnectedToUser;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Site\Guest\Session\GuestSessionRecording;
 
 class Site extends Model
 {
-    use SoftDeletes, ConnectedToUser;
+    use SoftDeletes, ConnectedToUser, Hashable;
 
     protected $guarded = ['id'];
 
@@ -36,11 +37,11 @@ class Site extends Model
 
     public function recordings()
     {
-        return $this->hasMany(SiteRecording::class);
+        return $this->hasMany(GuestSessionRecording::class);
     }
 
     public function getApiKeyAttribute()
     {
-        return Hashids::encode($this->id);
+        return $this->encode($this->id);
     }
 }

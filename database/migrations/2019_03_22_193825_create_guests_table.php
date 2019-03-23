@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateSiteRecordingsTable extends Migration
+class CreateGuestsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,14 @@ class CreateSiteRecordingsTable extends Migration
      */
     public function up()
     {
-        Schema::create('site_recordings', function (Blueprint $table) {
+        Schema::create('guests', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('name')->default('Guest');
+            $table->string('email')->nullable();
+            $table->string('ip_address');
             $table->bigInteger('site_id');
-            $table->string('session')->unique();
-            $table->string('user_name')->nullable();
-            $table->integer('client_id')->nullable();
+            $table->unique(['email', 'site_id']);
             $table->json('custom_data')->nullable();
-            $table->string('user_agent')->nullable();
             $table->timestamps();
         });
     }
@@ -32,6 +32,6 @@ class CreateSiteRecordingsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('recordings');
+        Schema::dropIfExists('guests');
     }
 }

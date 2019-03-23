@@ -1,114 +1,61 @@
-import CaptureConsoleMessages from "./events/CaptureConsoleMessages";
+import AuthService from "./services/AuthService";
+import StreamService from "./services/StreamService";
+import WebSocketService from "./services/WebSocketService";
 
 declare global {
   interface Window {
     replayjsQueue: Array<any>;
-    replayjs: (fn: string, data: any) => any;
+    replayjs: (fn: string, data: any) => void;
   }
 }
 
-import MirrorClient from "./MirrorClient";
-import SocketConnection from "./SocketConnection";
-import CaptureClicks from "./events/CaptureClicks";
-import CaptureScrollEvents from "./events/CaptureScrollEvents";
-import CaptureWindowResize from "./events/CaptureWindowResize";
-import { NullPresenceChannel } from "laravel-echo/dist/channel";
-import CaptureMouseMovements from "./events/CaptureMouseMovements";
-import CaptureSessionDetails from "./events/CaptureSessionDetails";
-import CaptureNetworkRequests from "./events/CaptureNetworkRequests";
-
 export default class Client {
-  protected apiKey;
-  protected mirrorClient: MirrorClient;
-  protected captureClicks: CaptureClicks;
-  protected channel: NullPresenceChannel;
-  protected _baseHref = window.location.origin;
-  protected socketConnection: SocketConnection;
-  protected initialTiming = new Date().getTime();
-  protected captureScrollEvents: CaptureScrollEvents;
-  protected captureWindowResize: CaptureWindowResize;
-  protected captureMouseMovements: CaptureMouseMovements;
-  protected captureSessionDetails: CaptureSessionDetails;
-  protected captureConsoleMessages: CaptureConsoleMessages;
-  protected captureNetworkRequests: CaptureNetworkRequests;
+  protected authService: AuthService;
+  protected streamService: StreamService;
+  protected websocketService: WebSocketService;
 
   constructor() {
-    this.socketConnection = new SocketConnection();
+    this.authService = new AuthService();
+    this.websocketService = new WebSocketService();
+    this.streamService = new StreamService(
+      this.authService,
+      this.websocketService,
+    );
+
+    this.runQueued().then(() => {
+      this.setupQueue();
+    });
+  }
+
+  protected async runQueued() {
     if (Array.isArray(window.replayjsQueue)) {
-      window.replayjsQueue.forEach((args) => {
+      for (let queue in window.replayjsQueue) {
+        let args = window.replayjsQueue[queue];
         if (!this[args[0]]) {
           throw Error(`${args[0]} is an invalid command.`);
         }
-        this[args[0]](args[1]);
-      });
+        await this[args[0]](args[1]);
+      }
     }
+  }
+
+  protected setupQueue() {
     delete window.replayjsQueue;
-    window.replayjs = (fn, data) => {
+    window.replayjs = async (fn, data) => {
       if (!this[fn]) {
         throw Error(`${fn} is an invalid command.`);
       }
-      return this[fn](data);
+      await this[fn](data);
     };
   }
 
-  protected auth(apiKey: string) {
-    this.apiKey = apiKey;
-    this.socketConnection.setApiKey(apiKey);
+  protected async auth(apiKey: string) {
+    this.websocketService.setApiKey(apiKey);
+    await this.authService.identify(apiKey);
   }
 
-  protected baseHref(setBaseHref) {
-    this._baseHref = setBaseHref;
-  }
-
-  protected clientDetails(data: object) {
-    this.captureSessionDetails.set(data);
-    if (this.channel) {
-      this.captureSessionDetails.sendDetails(this.channel);
-    }
-  }
-
-  protected stream() {
-    this.channel = this.socketConnection
-      .connect()
-      .join(`chat`) // TODO
-      .here(() => {
-        // Gets ran immediately after connecting
-        this.mirrorClient.connect(this.channel);
-        this.captureClicks.setup(this.channel);
-        this.captureScrollEvents.setup(this.channel);
-        this.captureWindowResize.setup(this.channel);
-        this.captureMouseMovements.setup(this.channel);
-        this.captureConsoleMessages.setup(this.channel);
-        this.captureNetworkRequests.setup(this.channel);
-        this.captureSessionDetails.sendDetails(this.channel);
-      })
-      .joining(() => {
-        // When someone joins, we want setup the mirror again
-        this.mirrorClient.connect(this.channel, true);
-      });
-
-    this.mirrorClient = new MirrorClient(this._baseHref, this.initialTiming);
-    this.captureClicks = new CaptureClicks(this.initialTiming);
-    this.captureSessionDetails = new CaptureSessionDetails(this.apiKey);
-    this.captureScrollEvents = new CaptureScrollEvents(this.initialTiming);
-    this.captureWindowResize = new CaptureWindowResize(this.initialTiming);
-    this.captureMouseMovements = new CaptureMouseMovements(this.initialTiming);
-    this.captureConsoleMessages = new CaptureConsoleMessages(
-      this.initialTiming,
-    );
-    this.captureNetworkRequests = new CaptureNetworkRequests(
-      this.initialTiming,
-    );
-  }
-
-  protected disconnect() {
-    this.mirrorClient.disconnect();
-    this.captureClicks.teardown();
-    this.captureScrollEvents.teardown();
-    this.captureWindowResize.teardown();
-    this.captureMouseMovements.teardown();
-    this.captureConsoleMessages.teardown();
-    this.captureNetworkRequests.teardown();
+  protected async stream(options) {
+    this.streamService.connect(options);
   }
 }
 new Client();

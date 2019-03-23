@@ -4,7 +4,7 @@ import getters from "./getters";
 import mutations from "./mutations";
 import StoreModule from "varie/lib/state/StoreModule";
 import { injectable, inject, unmanaged } from "inversify";
-import SiteRecordingStore from "@store/site/modules/recording/SiteRecordingStore";
+import SiteGuestStore from "@store/site/modules/guest/SiteGuestStore";
 
 @injectable()
 export default class SiteStore extends StoreModule {
@@ -15,6 +15,6 @@ export default class SiteStore extends StoreModule {
       .addActions(actions(siteService))
       .addMutations(mutations)
       .addGetters(getters)
-      .addModule(SiteRecordingStore);
+      .addModule(SiteGuestStore);
   }
 }

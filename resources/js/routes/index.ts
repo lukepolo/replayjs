@@ -33,17 +33,17 @@ export default function($router: RouterInterface) {
         .route("/", Dashboard)
         .setName("dashboard");
       $router
-        .prefix("site")
+        .prefix("site/:site")
         .area(siteViews.SiteArea)
         .group(() => {
-          $router.route(":site/dashboard", siteViews.SiteDashboard);
-          // varie bug, naming it site.player
-          $router
-            .route(
-              ":site/recordings/:recording/player",
-              siteViews.SiteRecordingPlayer,
-            )
-            .setName("site.recordings.player");
+          $router.route("dashboard", siteViews.SiteDashboard);
+          $router.prefix("guest:guest").group(() => {
+            $router.route("", siteViews.SiteGuestSessions);
+            $router.route(
+              "session/:session/player",
+              siteViews.SiteSessionPlayer,
+            );
+          });
         });
     });
 
