@@ -37,7 +37,7 @@ export default {
     playAtPosition(event) {
       let rect = event.target.getBoundingClientRect();
       let percentageFromLeftSide = (event.clientX - rect.left) / rect.right;
-      this.$emit("play", percentageFromLeftSide * this.endingPosition);
+      this.$emit("navigate", percentageFromLeftSide * this.endingPosition);
     },
   },
   computed: {

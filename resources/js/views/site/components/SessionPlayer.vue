@@ -21,6 +21,7 @@
       v-if="session"
       @play="play"
       @stop="stop"
+      @navigate="navigate"
       :is-playing="isPlaying"
       :current-position="currentTimePosition"
       :ending-position="endTiming"

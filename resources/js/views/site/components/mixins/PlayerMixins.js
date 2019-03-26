@@ -13,6 +13,7 @@ export default {
       lastCursorPosition: null,
       currentTimePosition: 0,
       timeInterval: null,
+      timeoutUpdates: [],
     };
   },
   methods: {
@@ -22,7 +23,7 @@ export default {
         rootId: this.rootDom.rootId,
         children: this.rootDom.children,
       });
-      this.currentTimePosition = startTime;
+      this.currentTimePosition = startTime || 0;
       for (let timing in this.domChanges) {
         if (timing <= this.currentTimePosition) {
           this.domChanges[timing].forEach((domChanges) => {
@@ -48,30 +49,38 @@ export default {
       ];
       this.updateWindowSize(width, height);
     },
-    play(startTime) {
-      this.stop();
-      this.initializePlayer(startTime);
-
+    navigate(startTime) {
+      let wasPlaying = this.isPlaying;
+      if (this.isPlaying) {
+        this.stop();
+      }
       this.currentTimePosition = startTime;
+      this.initializePlayer(startTime);
+      if (wasPlaying) {
+        this.play();
+      }
+    },
+    play() {
       for (let timing in this.domChanges) {
         if (timing >= this.currentTimePosition) {
           this.domChanges[timing].forEach((domChanges) => {
             if (!domChanges.rootId) {
-              setTimeout(() => {
-                this.updateDom(
-                  domChanges.removed,
-                  domChanges.addedOrMoved,
-                  domChanges.attributes,
-                  domChanges.text,
-                );
-              }, timing - this.currentTimePosition);
+              this.timeoutUpdates.push(
+                setTimeout(() => {
+                  this.updateDom(
+                    domChanges.removed,
+                    domChanges.addedOrMoved,
+                    domChanges.attributes,
+                    domChanges.text,
+                  );
+                }, timing - this.currentTimePosition),
+              );
             } else {
               console.info("WE HAD A ROOT ELEMENT SOMEHOW");
             }
           });
         }
       }
-
       this.timeInterval = setInterval(() => {
         this.currentTimePosition = this.currentTimePosition + 100;
       }, 100);
@@ -88,6 +97,10 @@ export default {
       // }
     },
     stop() {
+      this.timeoutUpdates.forEach((update, index) => {
+        clearTimeout(update);
+        delete this.timeoutUpdates[index];
+      });
       clearInterval(this.timeInterval);
       this.timeInterval = null;
     },
