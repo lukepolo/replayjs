@@ -22,18 +22,38 @@ export default {
         rootId: this.rootDom.rootId,
         children: this.rootDom.children,
       });
+      this.currentTimePosition = startTime;
+      for (let timing in this.domChanges) {
+        if (timing <= this.currentTimePosition) {
+          this.domChanges[timing].forEach((domChanges) => {
+            if (!domChanges.rootId) {
+              setTimeout(() => {
+                this.updateDom(
+                  domChanges.removed,
+                  domChanges.addedOrMoved,
+                  domChanges.attributes,
+                  domChanges.text,
+                );
+              }, 0);
+            } else {
+              console.info("WE HAD A ROOT ELEMENT SOMEHOW");
+            }
+          });
+        }
+      }
 
       // TODO - window size / scroll position for initializing
       let { height, width } = this.session.window_size_changes[
         Object.keys(this.session.window_size_changes)[0]
       ];
       this.updateWindowSize(width, height);
-      this.currentTimePosition = startTime;
     },
     play(startTime) {
-      alert(startTime);
+      this.stop();
+      this.initializePlayer(startTime);
+
+      this.currentTimePosition = startTime;
       for (let timing in this.domChanges) {
-        this.currentTimePosition = startTime;
         if (timing >= this.currentTimePosition) {
           this.domChanges[timing].forEach((domChanges) => {
             if (!domChanges.rootId) {

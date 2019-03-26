@@ -59,6 +59,7 @@ export default {
   position: relative;
 
   &--bar {
+    pointer-events: none;
     background-color: #48acf0;
     border-top-left-radius: 8px;
     border-bottom-left-radius: 8px;
