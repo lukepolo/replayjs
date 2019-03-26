@@ -54,7 +54,10 @@ class GuestService
     {
         $session = $this->guestSessionModel->decode($sessionHash);
 
-        $session->dom_changes = $this->getFromCache($session->id, 'dom_changes');
+        $domChanges = Collect($this->getFromCache($session->id, 'dom_changes'));
+
+        $session->root = $domChanges->shift();
+        $session->dom_changes = $domChanges->groupBy('timing');
         $session->mouse_clicks = $this->getFromCache($session->id, 'mouse_clicks');
         $session->network_requests = $this->getFromCache($session->id, 'network_requests');
         $session->window_size_changes = $this->getFromCache($session->id, 'window_size_changes');
@@ -71,6 +74,6 @@ class GuestService
         foreach (new Iterator\Keyspace($this->redis->client(), "replayjs_cache:$sha:*") as $key) {
             $data[] =unserialize($this->redis->get($key));
         }
-        return collect($data)->sortBy('timing')->values();
+        return collect($data)->sortBy('timing')->all();
     }
 }

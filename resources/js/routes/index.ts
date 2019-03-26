@@ -40,7 +40,7 @@ export default function($router: RouterInterface) {
           $router.prefix("guest:guest").group(() => {
             $router.route("", siteViews.SiteGuestSessions);
             $router.route(
-              "session/:session/player",
+              "session/:session/components",
               siteViews.SiteSessionPlayer,
             );
           });
