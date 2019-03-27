@@ -60,7 +60,10 @@ class GuestService
         $session->dom_changes = $domChanges->keyBy('timing');
         $session->mouse_clicks = $this->getFromCache($session->id, 'mouse_clicks')->keyBy('timing');
         $session->network_requests = $this->getFromCache($session->id, 'network_requests')->keyBy('timing');
-        $session->window_size_changes = $this->getFromCache($session->id, 'window_size_changes')->keyBy('timing');
+
+        $windowSizes = $this->getFromCache($session->id, 'window_size_changes');
+        $session->window_size = $windowSizes->shift();
+        $session->window_size_changes = $windowSizes->keyBy('timing');
         $session->scroll_events = $this->getFromCache($session->id, 'scroll_events')->keyBy('timing');
 
         $session->mouse_movements = $this->getFromCache($session->id, 'mouse_movements')->collapse()->keyBy('timing');

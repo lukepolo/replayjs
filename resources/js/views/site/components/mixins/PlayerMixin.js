@@ -12,6 +12,7 @@ export default {
       this.queuedEvents = {};
 
       this.setupMirror(this.rootDom.baseHref);
+      this.updateWindowSize(this.rootWindowSize);
       this.setupIframe({
         rootId: this.rootDom.rootId,
         children: this.rootDom.children,
@@ -64,6 +65,9 @@ export default {
   computed: {
     rootDom() {
       return this.session.root;
+    },
+    rootWindowSize() {
+      return this.session.window_size;
     },
     domChanges() {
       return this.session.dom_changes;
