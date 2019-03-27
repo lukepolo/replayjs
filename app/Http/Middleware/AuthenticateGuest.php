@@ -33,6 +33,8 @@ class AuthenticateGuest
                 $request->ip()
             );
 
+            $guest->id = "GUEST-{$guest->id}";
+
             if (!empty($guest)) {
                 $guest->load('site');
                 if ($guest->site->domain === parse_url($request->headers->get('origin'))['host']) {
