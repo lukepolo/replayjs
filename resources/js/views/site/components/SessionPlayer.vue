@@ -17,6 +17,7 @@
       :is-playing="isPlaying"
       :current-position="currentTimePosition"
       :ending-position="endTiming"
+      :session="session"
     ></session-progress-bar>
     <div>
       <div class="preview-box" ref="previewBox">

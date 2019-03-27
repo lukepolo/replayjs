@@ -1,8 +1,6 @@
 <template>
   <div>
     <pre>{{ endingPosition }}</pre>
-    '
-
     <div class="playpause">
       <input
         type="checkbox"
@@ -20,13 +18,64 @@
           width: currentPositionPercentage,
         }"
       ></div>
-      <!--    <div class="progress&#45;&#45;moment" style="left: 23%;"></div>-->
+      <scroll-event
+        :event="event"
+        v-for="event in session.scroll_events"
+        :ending-position="endingPosition"
+      ></scroll-event>
+      <dom-change-event
+        :event="event"
+        v-for="event in session.dom_changes"
+        :ending-position="endingPosition"
+      ></dom-change-event>
+      <mouse-click-event
+        :event="event"
+        v-for="event in session.mouse_clicks"
+        :ending-position="endingPosition"
+      ></mouse-click-event>
+      <window-size-event
+        :event="event"
+        v-for="event in session.window_size_changes"
+        :ending-position="endingPosition"
+      ></window-size-event>
+      <mouse-movement-event
+        :event="event"
+        v-for="event in session.mouse_movements"
+        :ending-position="endingPosition"
+      ></mouse-movement-event>
+      <console-message-event
+        :event="event"
+        v-for="event in session.network_requests"
+        :ending-position="endingPosition"
+      ></console-message-event>
+      <network-request-event
+        :event="event"
+        v-for="event in session.console_messages"
+        :ending-position="endingPosition"
+      ></network-request-event>
     </div>
   </div>
 </template>
 
 <script>
+import ScrollEvent from "./session-progress-bar-events/ScrollEvent";
+import DomChangeEvent from "./session-progress-bar-events/DomChangeEvent";
+import MouseClickEvent from "./session-progress-bar-events/MouseClickEvent";
+import WindowSizeEvent from "./session-progress-bar-events/WindowSizeEvent";
+import MouseMovementEvent from "./session-progress-bar-events/MouseMovementEvent";
+import ConsoleMessageEvent from "./session-progress-bar-events/ConsoleMessageEvent";
+import NetworkRequestEvent from "./session-progress-bar-events/NetworkRequestEvent";
+
 export default {
+  components: {
+    ScrollEvent,
+    DomChangeEvent,
+    MouseClickEvent,
+    WindowSizeEvent,
+    MouseMovementEvent,
+    ConsoleMessageEvent,
+    NetworkRequestEvent,
+  },
   props: {
     currentPosition: {
       required: true,
@@ -36,6 +85,9 @@ export default {
       type: Boolean,
     },
     endingPosition: {
+      required: true,
+    },
+    session: {
       required: true,
     },
   },
