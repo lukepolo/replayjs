@@ -3,6 +3,8 @@
     <div class="left-nav">
       <h1>Scale</h1>
       <pre>{{ scale }}</pre>
+      <h1>User is Live</h1>
+      <pre>{{ canViewLive }}</pre>
     </div>
     <session-progress-bar
       v-if="session"

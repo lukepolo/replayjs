@@ -13,6 +13,7 @@
 
 Broadcast::channel('stream.{session}', function ($user) {
     return [
-        'name' => $user->name,
+        'guest' => $user->isGuest || false,
+        'name' => "{$user->name}-{$user->id}",
     ];
 });

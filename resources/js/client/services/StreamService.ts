@@ -38,9 +38,11 @@ export default class StreamService {
     if (this.authService.isAuthed()) {
       this.boot(options);
       return this.webSocketService.connect().then((channel) => {
+        console.info(`stream.${this.authService.getSession()}`);
         this.channel = channel
           .join(`stream.${this.authService.getSession()}`)
-          .here(() => {
+          .here((users) => {
+            console.info(users);
             // Gets ran immediately after connecting
             this.mirrorClient.connect(this.channel);
             this.captureClicks.setup(this.channel);
@@ -50,10 +52,6 @@ export default class StreamService {
             this.captureConsoleMessages.setup(this.channel);
             this.captureNetworkRequests.setup(this.channel);
             this.captureSessionDetails.sendDetails(this.channel);
-          })
-          .joining(() => {
-            // When someone joins, we want setup the mirror again
-            this.mirrorClient.connect(this.channel, true);
           });
       });
     }

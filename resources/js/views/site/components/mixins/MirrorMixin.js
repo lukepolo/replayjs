@@ -10,6 +10,7 @@ export default {
     return {
       scale: null,
       mirror: null,
+      userIsLive: false,
       previewFrame: null,
       previewDocument: null,
     };
@@ -81,40 +82,59 @@ export default {
       });
     },
     setupSockets() {
-      this.channel = this.broadcastService.join(
-        `stream.${this.$route.params.session}`,
-      );
-      this.channel
-        .listenForWhisper("initialize", ({ rootId, children, baseHref }) => {
-          console.info("initialize");
+      this.channel = this.broadcastService
+        .join(`stream.${this.$route.params.session}`)
+        .joining((user) => {
+          if (user.guest) {
+            this.userIsLive = true;
+          }
         })
-        .listenForWhisper("window-size", ({ width, height }) => {
-          console.info("window-size");
+        .leaving((user) => {
+          if (user.guest) {
+            this.userIsLive = false;
+          }
         })
-        .listenForWhisper("click", ({ x, y }) => {
-          console.info("click");
-        })
-        .listenForWhisper("scroll", ({ scrollPosition }) => {
-          console.info("scroll");
-        })
-        .listenForWhisper(
-          "changes",
-          ({ removed, addedOrMoved, attributes, text }) => {
-            console.info("changes");
-          },
-        )
-        .listenForWhisper("mouse-movement", (movements) => {
-          console.info("mouse-movement");
-        })
-        .listenForWhisper("network-request", () => {
-          console.info("network-request");
-        })
-        .listenForWhisper("console-message", () => {
-          console.info("console-message");
+        .here((usersInChannel) => {
+          console.info(usersInChannel);
+          let hasGuest = usersInChannel.find((guest) => {
+            console.info(guest);
+            return guest.guest === true;
+          });
+          console.info(hasGuest);
+
+          this.channel
+            .listenForWhisper("window-size", ({ width, height }) => {
+              console.info("window-size");
+            })
+            .listenForWhisper("click", ({ x, y }) => {
+              console.info("click");
+            })
+            .listenForWhisper("scroll", ({ scrollPosition }) => {
+              console.info("scroll");
+            })
+            .listenForWhisper(
+              "changes",
+              ({ removed, addedOrMoved, attributes, text }) => {
+                console.info("changes");
+              },
+            )
+            .listenForWhisper("mouse-movement", (movements) => {
+              console.info("mouse-movement");
+            })
+            .listenForWhisper("network-request", () => {
+              console.info("network-request");
+            })
+            .listenForWhisper("console-message", () => {
+              console.info("console-message");
+            });
         });
     },
   },
-  computed: {},
+  computed: {
+    canViewLive() {
+      return this.userIsLive;
+    },
+  },
   destroyed() {
     window.removeEventListener("resize", this.getScale);
   },
