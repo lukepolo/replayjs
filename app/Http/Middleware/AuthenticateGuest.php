@@ -27,15 +27,17 @@ class AuthenticateGuest
      */
     public function handle($request, Closure $next)
     {
-        $guest = $this->guestService->getGuest(
-            str_replace('Bearer ', '', $request->headers->get('Authorization')),
-            $request->ip()
-        );
+        if (!\Auth::check()) {
+            $guest = $this->guestService->getGuest(
+                str_replace('Bearer ', '', $request->headers->get('Authorization')),
+                $request->ip()
+            );
 
-        if (!empty($guest)) {
-            $guest->load('site');
-            if ($guest->site->domain === parse_url($request->headers->get('origin'))['host']) {
-                \Auth::login($guest);
+            if (!empty($guest)) {
+                $guest->load('site');
+                if ($guest->site->domain === parse_url($request->headers->get('origin'))['host']) {
+                    \Auth::login($guest);
+                }
             }
         }
         return $next($request);

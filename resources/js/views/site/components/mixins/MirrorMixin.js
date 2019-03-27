@@ -1,7 +1,9 @@
 import { TreeMirror } from "../../../../client/vendor/mirror";
 
 export default {
+  $inject: ["BroadcastService"],
   created() {
+    this.setupSockets();
     window.addEventListener("resize", this.getScale);
   },
   data() {
@@ -77,6 +79,49 @@ export default {
           return node;
         },
       });
+    },
+    setupSockets() {
+      this.channel = this.broadcastService.join(
+        `stream.${this.$route.params.session}`,
+      );
+      // this.channel
+      // .listenForWhisper("initialize", ({ rootId, children, baseHref }) => {
+      //   this.setupMirror(baseHref);
+      //   this.setupIframe({ rootId, children });
+      //   this.channel.whisper("initialized");
+      // })
+      // .listenForWhisper("window-size", ({ width, height }) => {
+      //   this.previewFrame.style.width = width + "px";
+      //   this.previewFrame.style.height = height + "px";
+      //   this.getScale();
+      // })
+      // .listenForWhisper("click", ({ x, y }) => {
+      //   let node = document.createElement("DIV");
+      //   node.style.top = y + "px";
+      //   node.style.left = x + "px";
+      //   this.previewDocument.getElementById("clicks").appendChild(node);
+      //   setTimeout(() => {
+      //     node.remove();
+      //   }, 1001);
+      // })
+      // .listenForWhisper("scroll", ({ scrollPosition }) => {
+      //   window.scrollTo(0, scrollPosition);
+      // })
+      // .listenForWhisper(
+      //   "changes",
+      //   ({ removed, addedOrMoved, attributes, text }) => {
+      //     this.mirror.applyChanged(removed, addedOrMoved, attributes, text);
+      //   },
+      // )
+      // .listenForWhisper("mouse-movement", (movements) => {
+      //   movements.forEach((movement) => {
+      //     setTimeout(() => {
+      //       this.updateCursorPosition(movement.x, movement.y);
+      //     }, movement.timing);
+      //   });
+      //
+      //   this.lastCursorPosition = movements[movements.length - 1];
+      // });
     },
   },
   computed: {},
