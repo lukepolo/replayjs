@@ -1,3 +1,15 @@
+<template>
+  <div>
+    <div
+      class="progress--moment"
+      :style="{
+        left: eventPosition,
+      }"
+    ></div>
+  </div>
+</template>
+
+<script>
 export default {
   props: {
     event: {
@@ -16,3 +28,4 @@ export default {
     },
   },
 };
+</script>

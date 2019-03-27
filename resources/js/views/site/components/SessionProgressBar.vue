@@ -18,63 +18,58 @@
           width: currentPositionPercentage,
         }"
       ></div>
-      <scroll-event
-        :event="event"
-        v-for="event in session.scroll_events"
-        :ending-position="endingPosition"
-      ></scroll-event>
-      <dom-change-event
-        :event="event"
-        v-for="event in session.dom_changes"
-        :ending-position="endingPosition"
-      ></dom-change-event>
-      <mouse-click-event
-        :event="event"
-        v-for="event in session.mouse_clicks"
-        :ending-position="endingPosition"
-      ></mouse-click-event>
-      <window-size-event
-        :event="event"
-        v-for="event in session.window_size_changes"
-        :ending-position="endingPosition"
-      ></window-size-event>
-      <mouse-movement-event
-        :event="event"
-        v-for="event in session.mouse_movements"
-        :ending-position="endingPosition"
-      ></mouse-movement-event>
-      <console-message-event
-        :event="event"
-        v-for="event in session.network_requests"
-        :ending-position="endingPosition"
-      ></console-message-event>
-      <network-request-event
-        :event="event"
-        v-for="event in session.console_messages"
-        :ending-position="endingPosition"
-      ></network-request-event>
+      <template v-for="event in session.scroll_events">
+        <progress-bar-event
+          :event="event"
+          :ending-position="endingPosition"
+        ></progress-bar-event>
+      </template>
+      <template v-for="event in session.dom_changes">
+        <progress-bar-event
+          :event="event"
+          :ending-position="endingPosition"
+        ></progress-bar-event>
+      </template>
+      <template v-for="event in session.mouse_clicks">
+        <progress-bar-event
+          :event="event"
+          :ending-position="endingPosition"
+        ></progress-bar-event>
+      </template>
+      <template v-for="event in session.window_size_changes">
+        <progress-bar-event
+          :event="event"
+          :ending-position="endingPosition"
+        ></progress-bar-event>
+      </template>
+      <template v-for="event in session.mouse_movements">
+        <progress-bar-event
+          :event="event"
+          :ending-position="endingPosition"
+        ></progress-bar-event>
+      </template>
+      <template v-for="event in session.network_requests">
+        <progress-bar-event
+          :event="event"
+          :ending-position="endingPosition"
+        ></progress-bar-event>
+      </template>
+      <template v-for="event in session.console_messages">
+        <progress-bar-event
+          :event="event"
+          :ending-position="endingPosition"
+        ></progress-bar-event>
+      </template>
     </div>
   </div>
 </template>
 
 <script>
-import ScrollEvent from "./session-progress-bar-events/ScrollEvent";
-import DomChangeEvent from "./session-progress-bar-events/DomChangeEvent";
-import MouseClickEvent from "./session-progress-bar-events/MouseClickEvent";
-import WindowSizeEvent from "./session-progress-bar-events/WindowSizeEvent";
-import MouseMovementEvent from "./session-progress-bar-events/MouseMovementEvent";
-import ConsoleMessageEvent from "./session-progress-bar-events/ConsoleMessageEvent";
-import NetworkRequestEvent from "./session-progress-bar-events/NetworkRequestEvent";
+import ProgressBarEvent from "./session-progress-bar-events/ProgressBarEvent";
 
 export default {
   components: {
-    ScrollEvent,
-    DomChangeEvent,
-    MouseClickEvent,
-    WindowSizeEvent,
-    MouseMovementEvent,
-    ConsoleMessageEvent,
-    NetworkRequestEvent,
+    ProgressBarEvent,
   },
   props: {
     currentPosition: {
