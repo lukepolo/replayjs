@@ -126,6 +126,7 @@ export default {
   }
 
   &--moment {
+    pointer-events: none;
     border-right: 2px solid #777;
     position: absolute;
     top: -10px;
