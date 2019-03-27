@@ -120,6 +120,7 @@ export default class CaptureNetworkRequests implements ListenInterface {
   }
 
   public whisper(data: NetworkRequestDataInterface) {
+    data.timing = this.timing;
     if (data.url.indexOf(__ENV_VARIABLES__.app.APP_URL) === -1) {
       this.channel.whisper(this.event, data);
     }

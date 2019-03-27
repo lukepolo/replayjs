@@ -30,12 +30,12 @@
 </template>
 
 <script>
-import PlayerMixin from "./mixins/PlayerMixins";
 import MirrorMixin from "./mixins/MirrorMixin";
-import MirrorEventsMixin from "./mixins/MirrorEventsMixin";
+import PlayerMixin from "./mixins/PlayerMixin";
 import SessionProgressBar from "./SessionProgressBar";
+import MirrorEventsMixin from "./mixins/MirrorEventsMixin";
 export default {
-  mixins: [PlayerMixin, MirrorMixin, MirrorEventsMixin],
+  mixins: [MirrorMixin, PlayerMixin, MirrorEventsMixin],
   components: {
     SessionProgressBar,
   },

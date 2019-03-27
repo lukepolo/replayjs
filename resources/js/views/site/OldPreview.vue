@@ -49,7 +49,6 @@ export default Vue.extend({
       mirror: null,
       previewFrame: null,
       previewDocument: null,
-      lastCursorPosition: null,
     };
   },
   created() {
