@@ -3,7 +3,7 @@ import AuthServiceInterface from "varie-auth-plugin/lib/AuthServiceInterface";
 import RouteMiddlewareInterface from "varie/lib/routing/RouteMiddlewareInterface";
 
 @injectable()
-export default class Auth implements RouteMiddlewareInterface {
+export default class HomeMiddleware implements RouteMiddlewareInterface {
   private authService;
 
   constructor(@inject("AuthService") authService: AuthServiceInterface) {

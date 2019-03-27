@@ -31,9 +31,11 @@
 
 <script>
 import PlayerMixin from "./mixins/PlayerMixins";
+import MirrorMixin from "./mixins/MirrorMixin";
+import MirrorEventsMixin from "./mixins/MirrorEventsMixin";
 import SessionProgressBar from "./SessionProgressBar";
 export default {
-  mixins: [PlayerMixin],
+  mixins: [PlayerMixin, MirrorMixin, MirrorEventsMixin],
   components: {
     SessionProgressBar,
   },
