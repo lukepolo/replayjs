@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Site\Guest\Session;
 
-use App\Services\GuestService;
 use Illuminate\Http\Request;
+use App\Services\GuestService;
 use App\Http\Controllers\Controller;
 use App\Models\Site\Guest\Session\GuestSession;
 

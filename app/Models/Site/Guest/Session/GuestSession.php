@@ -2,8 +2,8 @@
 
 namespace App\Models\Site\Guest\Session;
 
-use App\Models\Site\Guest\Guest;
 use App\Models\Traits\Hashable;
+use App\Models\Site\Guest\Guest;
 use Illuminate\Database\Eloquent\Model;
 
 class GuestSession extends Model
@@ -29,5 +29,4 @@ class GuestSession extends Model
     {
         return $this->encode($this->id);
     }
-
 }

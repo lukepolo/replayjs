@@ -35,6 +35,6 @@ Route::group(['middleware' => [
 Route::group(['middleware' => [
   \Barryvdh\Cors\HandleCors::class,
 ]
-], function() {
+], function () {
     Route::post('identify', [\App\Http\Controllers\Site\Guest\Session\IdentifyController::class, 'index']);
 });

@@ -32,10 +32,10 @@ class GuestService
 
     public function getGuest($apiKeyHash, $ipAddress) : Guest
     {
-    $guest = Guest::firstOrCreate([
-                         'ip_address' => $ipAddress,
-                         'site_id' => $this->siteModel->decode($apiKeyHash)->id,
-                     ]);
+        $guest = Guest::firstOrCreate([
+             'ip_address' => $ipAddress,
+             'site_id' => $this->siteModel->decode($apiKeyHash)->id,
+        ]);
 
         $guest->isGuest = true;
         return $guest;
