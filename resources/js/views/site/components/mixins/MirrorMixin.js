@@ -17,11 +17,35 @@ export default {
       while (this.previewDocument.firstChild) {
         this.previewDocument.removeChild(this.previewDocument.firstChild);
       }
+      this.previewDocument.innerHtml = "";
     },
     isValidTld() {
       return true;
     },
-    setupMirror(baseHref) {
+    setupIframe({ rootId, children, baseHref }) {
+      this.clearIframe();
+      this._setupMirror(baseHref);
+      this.mirror.initialize(rootId, children);
+    },
+    getScale() {
+      this.$nextTick(() => {
+        if (this.$refs.hasOwnProperty("previewBox")) {
+          this.scale = Math.min(
+            this.$refs.previewBox.offsetWidth /
+              parseInt(this.previewFrame.style.width),
+            this.$refs.previewBox.offsetHeight /
+              parseInt(this.previewFrame.style.height),
+          );
+        } else {
+          this.scale = 1;
+        }
+        this.$refs.overlay.style.transform = `scale(${this.scale})`;
+        if (this.$refs.hasOwnProperty("preview")) {
+          this.$refs.preview.style.transform = `scale(${this.scale})`;
+        }
+      });
+    },
+    _setupMirror(baseHref) {
       this.mirror = new TreeMirror(this.previewDocument, {
         createElement: (tagName) => {
           if (tagName === "HEAD") {
@@ -52,28 +76,6 @@ export default {
           }
           return node;
         },
-      });
-    },
-    setupIframe({ rootId, children }) {
-      this.clearIframe();
-      this.mirror.initialize(rootId, children);
-    },
-    getScale() {
-      this.$nextTick(() => {
-        if (this.$refs.hasOwnProperty("previewBox")) {
-          this.scale = Math.min(
-            this.$refs.previewBox.offsetWidth /
-              parseInt(this.previewFrame.style.width),
-            this.$refs.previewBox.offsetHeight /
-              parseInt(this.previewFrame.style.height),
-          );
-        } else {
-          this.scale = 1;
-        }
-        this.$refs.overlay.style.transform = `scale(${this.scale})`;
-        if (this.$refs.hasOwnProperty("preview")) {
-          this.$refs.preview.style.transform = `scale(${this.scale})`;
-        }
       });
     },
   },

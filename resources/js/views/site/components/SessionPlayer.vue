@@ -4,9 +4,18 @@
       <h1>Scale</h1>
       <pre>{{ scale }}</pre>
     </div>
-    <div class="container">
+    <session-progress-bar
+      v-if="session"
+      @play="play"
+      @stop="stop"
+      @seek="seek"
+      :is-playing="isPlaying"
+      :current-position="currentTimePosition"
+      :ending-position="endTiming"
+    ></session-progress-bar>
+    <div>
       <div class="preview-box" ref="previewBox">
-        <div class="overlay" ref="overlay">
+        <div class="overlay" ref="overlay" :class="{ loading: isLoading }">
           <div ref="clicks" id="clicks"></div>
           <div ref="cursor" id="cursor"></div>
         </div>
@@ -17,15 +26,6 @@
         ></iframe>
       </div>
     </div>
-    <session-progress-bar
-      v-if="session"
-      @play="play"
-      @stop="stop"
-      @seek="seek"
-      :is-playing="isPlaying"
-      :current-position="currentTimePosition"
-      :ending-position="endTiming"
-    ></session-progress-bar>
   </div>
 </template>
 
@@ -69,14 +69,24 @@ body {
 .overlay {
   z-index: 1;
   position: absolute;
+
+  &.loading {
+    &:after {
+      position: absolute;
+      content: "";
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.5;
+      background-color: red;
+    }
+  }
 }
 
 .overlay,
 #preview {
   transform-origin: 0 0;
-}
-
-.container {
 }
 
 .left-nav {

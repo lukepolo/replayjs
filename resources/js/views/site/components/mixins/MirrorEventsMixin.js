@@ -5,7 +5,7 @@ export default {
     };
   },
   methods: {
-    queueChanges(changes, event, shouldPlayImmediately = false) {
+    async queueChanges(changes, event, shouldPlayImmediately = false) {
       for (let timing in changes) {
         let change = changes[timing];
         if (timing >= this.currentTimePosition) {
@@ -17,14 +17,21 @@ export default {
             change,
           });
         } else if (shouldPlayImmediately) {
-          this[event](change);
+          await this[event](change);
         }
       }
     },
-    updateDom({ removed, addedOrMoved, attributes, text, rootId }) {
+    updateDom({
+      removed,
+      addedOrMoved,
+      attributes,
+      text,
+      rootId,
+      children,
+      baseHref,
+    }) {
       if (rootId) {
-        // TODO - need to restart the process to handle this as the main root
-        console.info("ROOT", rootId);
+        this.setupIframe({ rootId, children, baseHref });
         return;
       }
       this.mirror.applyChanged(removed, addedOrMoved, attributes, text);

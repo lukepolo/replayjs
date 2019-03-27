@@ -1,30 +1,34 @@
 export default {
   data() {
     return {
+      isLoading: true,
       timeInterval: null,
       timeoutUpdates: [],
       currentTimePosition: 0,
     };
   },
   methods: {
-    initializePlayer(startTime) {
+    async initializePlayer(startTime) {
+      this.isLoading = true;
       this.stop();
       this.queuedEvents = {};
 
-      this.setupMirror(this.rootDom.baseHref);
+      this.setupIframe(this.rootDom);
       this.updateWindowSize(this.rootWindowSize);
-      this.setupIframe({
-        rootId: this.rootDom.rootId,
-        children: this.rootDom.children,
-      });
 
       this.currentTimePosition = startTime || 0;
 
-      this.queueChanges(this.domChanges, "updateDom", true);
-      this.queueChanges(this.mouseClicks, "addMouseClick");
-      this.queueChanges(this.scrollEvents, "updateScrollPosition", true);
-      this.queueChanges(this.windowSizeChanges, "updateWindowSize", true);
-      this.queueChanges(this.mouseMovements, "updateMouseMovements", true);
+      await this.queueChanges(this.domChanges, "updateDom", true);
+      await this.queueChanges(this.mouseClicks, "addMouseClick");
+      await this.queueChanges(this.scrollEvents, "updateScrollPosition", true);
+      await this.queueChanges(this.windowSizeChanges, "updateWindowSize", true);
+      await this.queueChanges(
+        this.mouseMovements,
+        "updateMouseMovements",
+        true,
+      );
+
+      this.isLoading = false;
     },
     seek(startTime) {
       let wasPlaying = this.isPlaying;

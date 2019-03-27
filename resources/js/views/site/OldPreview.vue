@@ -61,6 +61,7 @@ export default Vue.extend({
   },
   methods: {
     clearIframe() {
+      console.info(this.previewDocument);
       while (this.previewDocument.firstChild) {
         this.previewDocument.removeChild(this.previewDocument.firstChild);
       }
