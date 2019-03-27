@@ -3,6 +3,11 @@ export default {
   created() {
     this.setupStream();
   },
+  data() {
+    return {
+      userIsLive: false,
+    };
+  },
   methods: {
     setupStream() {
       this.channel = this.broadcastService
@@ -18,12 +23,13 @@ export default {
           }
         })
         .here((usersInChannel) => {
-          console.info(usersInChannel);
           let hasGuest = usersInChannel.find((guest) => {
             console.info(guest);
             return guest.guest === true;
           });
-          console.info(hasGuest);
+          if (hasGuest) {
+            this.userIsLive = true;
+          }
         });
     },
     connectToStream() {

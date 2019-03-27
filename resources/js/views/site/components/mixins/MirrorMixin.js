@@ -8,7 +8,6 @@ export default {
     return {
       scale: null,
       mirror: null,
-      userIsLive: false,
       previewFrame: null,
       previewDocument: null,
     };
