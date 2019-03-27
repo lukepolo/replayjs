@@ -5,6 +5,9 @@
       <pre>{{ scale }}</pre>
       <h1>User is Live</h1>
       <pre>{{ canViewLive }}</pre>
+      <button @click="connectToStream" :disabled="!canViewLive">
+        Connect To Stream
+      </button>
     </div>
     <session-progress-bar
       v-if="session"
@@ -34,10 +37,11 @@
 <script>
 import MirrorMixin from "./mixins/MirrorMixin";
 import PlayerMixin from "./mixins/PlayerMixin";
+import StreamMixin from "./mixins/StreamMixin";
 import SessionProgressBar from "./SessionProgressBar";
 import MirrorEventsMixin from "./mixins/MirrorEventsMixin";
 export default {
-  mixins: [MirrorMixin, PlayerMixin, MirrorEventsMixin],
+  mixins: [MirrorMixin, PlayerMixin, StreamMixin, MirrorEventsMixin],
   components: {
     SessionProgressBar,
   },
