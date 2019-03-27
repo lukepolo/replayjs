@@ -1,11 +1,17 @@
 <template>
   <div>
     <pre>{{ endingPosition }}</pre>
-    <div @click="$emit('stop')" v-if="isPlaying">
-      stop
-    </div>
-    <div @click="$emit('play', 0)" v-else>
-      play
+    '
+
+    <div class="playpause">
+      <input
+        type="checkbox"
+        id="playpause"
+        name="playpause"
+        :checked="!isPlaying"
+        @click="playPause"
+      />
+      <label for="playpause"></label>
     </div>
     <div class="progress" @click="playAtPosition">
       <div
@@ -34,10 +40,16 @@ export default {
     },
   },
   methods: {
+    playPause() {
+      if (this.isPlaying) {
+        return this.$emit("stop");
+      }
+      this.$emit("play");
+    },
     playAtPosition(event) {
       let rect = event.target.getBoundingClientRect();
       let percentageFromLeftSide = (event.clientX - rect.left) / rect.right;
-      this.$emit("navigate", percentageFromLeftSide * this.endingPosition);
+      this.$emit("seek", percentageFromLeftSide * this.endingPosition);
     },
   },
   computed: {
@@ -72,6 +84,31 @@ export default {
     top: -10px;
     bottom: 0px;
     cursor: pointer;
+  }
+}
+
+$playPauseHeight: 10px;
+$playPauseWidth: $playPauseHeight / 1.5;
+.playpause {
+  label {
+    display: block;
+    box-sizing: border-box;
+    width: 0;
+    height: $playPauseHeight + 2px;
+
+    border-color: transparent transparent transparent #202020;
+    transition: 100ms all ease;
+    cursor: pointer;
+    border-style: double;
+    border-width: 0 0 0 $playPauseHeight;
+  }
+  input[type="checkbox"] {
+    position: absolute;
+    left: -9999px;
+    &:checked + label {
+      border-style: solid;
+      border-width: $playPauseWidth 0 $playPauseWidth $playPauseHeight;
+    }
   }
 }
 </style>
