@@ -4,6 +4,7 @@
       class="progress--moment"
       :style="{
         left: eventPosition,
+        'border-right-color': color,
       }"
     ></div>
   </div>
@@ -16,6 +17,9 @@ export default {
       required: true,
     },
     endingPosition: {
+      required: true,
+    },
+    color: {
       required: true,
     },
   },

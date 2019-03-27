@@ -20,42 +20,49 @@
       ></div>
       <template v-for="event in session.scroll_events">
         <progress-bar-event
+          color="blue"
           :event="event"
           :ending-position="endingPosition"
         ></progress-bar-event>
       </template>
       <template v-for="event in session.dom_changes">
         <progress-bar-event
+          color="gray"
           :event="event"
           :ending-position="endingPosition"
         ></progress-bar-event>
       </template>
       <template v-for="event in session.mouse_clicks">
         <progress-bar-event
+          color="red"
           :event="event"
           :ending-position="endingPosition"
         ></progress-bar-event>
       </template>
       <template v-for="event in session.window_size_changes">
         <progress-bar-event
+          color="blue"
           :event="event"
           :ending-position="endingPosition"
         ></progress-bar-event>
       </template>
       <template v-for="event in session.mouse_movements">
         <progress-bar-event
+          color="green"
           :event="event"
           :ending-position="endingPosition"
         ></progress-bar-event>
       </template>
       <template v-for="event in session.network_requests">
         <progress-bar-event
+          color="purple"
           :event="event"
           :ending-position="endingPosition"
         ></progress-bar-event>
       </template>
       <template v-for="event in session.console_messages">
         <progress-bar-event
+          color="orange"
           :event="event"
           :ending-position="endingPosition"
         ></progress-bar-event>
@@ -127,7 +134,7 @@ export default {
 
   &--moment {
     pointer-events: none;
-    border-right: 2px solid #777;
+    border-right: 2px solid;
     position: absolute;
     top: -10px;
     bottom: 0px;
