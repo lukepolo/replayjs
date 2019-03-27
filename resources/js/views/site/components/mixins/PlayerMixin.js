@@ -26,7 +26,7 @@ export default {
       this.queueChanges(this.windowSizeChanges, "updateWindowSize", true);
       this.queueChanges(this.mouseMovements, "updateMouseMovements", true);
     },
-    navigate(startTime) {
+    seek(startTime) {
       let wasPlaying = this.isPlaying;
       if (this.isPlaying) {
         this.stop();
