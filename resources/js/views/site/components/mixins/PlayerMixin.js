@@ -53,6 +53,7 @@ export default {
           }, timing - this.currentTimePosition),
         );
       }
+      // TODO - how todo this better?
       this.timeInterval = setInterval(() => {
         this.currentTimePosition = this.currentTimePosition + 100;
       }, 100);
