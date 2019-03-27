@@ -24,7 +24,6 @@ export default {
         })
         .here((usersInChannel) => {
           let hasGuest = usersInChannel.find((guest) => {
-            console.info(guest);
             return guest.guest === true;
           });
           if (hasGuest) {

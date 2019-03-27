@@ -38,12 +38,9 @@ export default class StreamService {
     if (this.authService.isAuthed()) {
       this.boot(options);
       return this.webSocketService.connect().then((channel) => {
-        console.info(`stream.${this.authService.getSession()}`);
         this.channel = channel
           .join(`stream.${this.authService.getSession()}`)
-          .here((users) => {
-            console.info(users);
-            // Gets ran immediately after connecting
+          .here(() => {
             this.mirrorClient.connect(this.channel);
             this.captureClicks.setup(this.channel);
             this.captureScrollEvents.setup(this.channel);

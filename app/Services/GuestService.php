@@ -36,7 +36,7 @@ class GuestService
              'ip_address' => $ipAddress,
              'site_id' => $this->siteModel->decode($apiKeyHash)->id,
         ]);
-
+        $guest->id = "GUEST-{$guest->id}";
         $guest->isGuest = true;
         return $guest;
     }

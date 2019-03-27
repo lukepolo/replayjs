@@ -9,7 +9,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class Guest extends Authenticatable implements JWTSubject
 {
-    protected $guarded = ['id'];
+    protected $guarded = [];
 
     public function site()
     {
