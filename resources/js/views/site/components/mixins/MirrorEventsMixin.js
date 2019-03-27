@@ -12,12 +12,16 @@ export default {
           if (!this.queuedEvents[timing]) {
             this.queuedEvents[timing] = [];
           }
-          this.queuedEvents[timing].push({
-            event,
-            change,
+          change.forEach((changeDetails) => {
+            this.queuedEvents[timing].push({
+              event,
+              change: changeDetails,
+            });
           });
         } else if (shouldPlayImmediately) {
-          await this[event](change);
+          for (let changeIndex in change) {
+            await this[event](change[changeIndex]);
+          }
         }
       }
     },

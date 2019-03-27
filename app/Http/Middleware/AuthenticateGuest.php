@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Support\Str;
 use App\Services\GuestService;
 
 class AuthenticateGuest
@@ -37,7 +38,10 @@ class AuthenticateGuest
 
             if (!empty($guest)) {
                 $guest->load('site');
-                if ($guest->site->domain === parse_url($request->headers->get('origin'))['host']) {
+
+                $host = parse_url($request->headers->get('origin'))['host'];
+
+                if (Str::contains($host, $guest->site->domain)) {
                     \Auth::login($guest);
                 }
             }
