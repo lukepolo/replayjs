@@ -128,7 +128,7 @@ export default {
         });
 
         let endTiming = Math.max(...numbers);
-        if (this.currentTimePosition) {
+        if (this.watchingLive) {
           this.currentTimePosition = endTiming;
         }
         return endTiming;
