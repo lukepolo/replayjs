@@ -1,5 +1,33 @@
 # ReplayJS
 
+ReplayJS is an Open Source Project to help support your clients with full session replays.
+
+## Features
+
+- Session Recording
+  - JS Errors - TODO
+  - Scrolling
+  - Mouse Clicks
+  - Mouse Movements
+  - Network Traffic
+  - Console Messages
+  - Window Size Changes
+  - Session / User Details
+  - Filter Private Data - TODO
+- Live Session Playback
+- Co-Browsing - TODO
+  - Drawling
+  - Mouse Pointing
+- Chat Support - TODO
+  - Slack / Discord / Email Notifications
+- Notifications - TODO
+  - Network Errors
+  - Console Errors
+- Session Analytics
+- Integrations
+  - TODO
+- Single Sign-on - TODO
+
 ## Installation
 
 1. Copy .env_example
@@ -86,3 +114,14 @@ When you refresh your database you will may leave left over recordings in redis.
 You should clear your cache whenever you refresh your database.
 
 `bash php artisan cache:clear`
+
+## Built With
+
+ReplayJS is built with Open Source technologies such as :
+
+- [VarieJS](https://varie.io)
+- [Laravel](https://laravel.com/)
+
+## Other Credits
+
+- [Mutation Summary](https://github.com/rafaelw/mutation-summary)
