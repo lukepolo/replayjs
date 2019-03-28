@@ -66,15 +66,15 @@ export default {
             this.updateDom(changes);
           })
           .listenForWhisper("mouse-movement", (changes) => {
+            let startTiming = changes[0].timing;
             changes.forEach((change) => {
               this.$store.commit("site/guest/session/ADD_EVENT", {
                 changes: change,
                 event: "mouse_movements",
               });
-              change.timing = new Date() - change.timing;
               setTimeout(() => {
                 this.updateMouseMovements(change);
-              }, new Date() - change.timing);
+              }, change.timing - startTiming);
             });
           })
           .listenForWhisper("network-request", (changes) => {
