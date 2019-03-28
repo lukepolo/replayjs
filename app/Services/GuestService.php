@@ -70,18 +70,6 @@ class GuestService
         $session->scroll_events = $this->getFromCache($session->id, 'scroll_events')->groupBy('timing');
         $session->mouse_movements = $this->getFromCache($session->id, 'mouse_movements')->groupBy('timing');
 
-        $session->end_timing = max(
-            array_filter([
-                $session->dom_changes->keys()->last(),
-                $session->mouse_clicks->keys()->last(),
-                $session->network_requests->keys()->last(),
-                $session->console_messages->keys()->last(),
-                $session->window_size_changes->keys()->last(),
-                $session->scroll_events->keys()->last(),
-                $session->mouse_movements->keys()->last(),
-            ])
-        );
-
         return $session;
     }
 

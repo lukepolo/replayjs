@@ -92,12 +92,42 @@ export default {
     windowSizeChanges() {
       return this.session && this.session.window_size_changes;
     },
+    consoleMessages() {
+      return this.session && this.session.console_messages;
+    },
+    networkRequests() {
+      return this.session && this.session.network_requests;
+    },
     startTiming() {
       return this.rootDom && this.rootDom.timing;
     },
     endTiming() {
-      // TODO - needs to be done via JS
-      return this.session && this.session.end_timing;
+      if (this.startTiming) {
+        let numbers = [
+          Object.keys(this.domChanges)[Object.keys(this.domChanges).length - 1],
+          Object.keys(this.mouseClicks)[
+            Object.keys(this.mouseClicks).length - 1
+          ],
+          Object.keys(this.networkRequests)[
+            Object.keys(this.networkRequests).length - 1
+          ],
+          Object.keys(this.consoleMessages)[
+            Object.keys(this.consoleMessages).length - 1
+          ],
+          Object.keys(this.windowSizeChanges)[
+            Object.keys(this.windowSizeChanges).length - 1
+          ],
+          Object.keys(this.scrollEvents)[
+            Object.keys(this.scrollEvents).length - 1
+          ],
+          Object.keys(this.mouseMovements)[
+            Object.keys(this.mouseMovements).length - 1
+          ],
+        ].filter((value) => {
+          return value !== undefined;
+        });
+        return Math.max(...numbers);
+      }
     },
     isPlaying() {
       return this.timeInterval !== null;
