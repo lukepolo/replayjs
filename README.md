@@ -23,9 +23,8 @@ ReplayJS is an Open Source Project to help support your clients with full sessio
 - Notifications - TODO
   - Network Errors
   - Console Errors
-- Session Analytics
-- Integrations
-  - TODO
+- Session Analytics - TODO
+- Integrations - TODO
 - Single Sign-on - TODO
 
 ## Installation
