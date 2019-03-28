@@ -57,7 +57,7 @@ export default {
         if (this.currentTimePosition > this.endTiming) {
           this.stop();
         }
-      }, 10);
+      });
     },
     stop() {
       this.watchingLive = false;
