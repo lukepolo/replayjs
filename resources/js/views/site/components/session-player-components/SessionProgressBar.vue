@@ -86,7 +86,7 @@
 </template>
 
 <script>
-import ProgressBarEvent from "./session-progress-bar-events/ProgressBarEvent";
+import ProgressBarEvent from "./session-progress-bar-components/ProgressBarEvent";
 
 export default {
   components: {

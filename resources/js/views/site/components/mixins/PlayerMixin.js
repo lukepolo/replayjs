@@ -90,11 +90,10 @@ export default {
       return this.session.window_size_changes;
     },
     startTiming() {
-      return this.rootDom && this.rootDom.timing;
+      return this.session.start_timing;
     },
     endTiming() {
-      let keys = Object.keys(this.domChanges);
-      return keys[keys.length - 1];
+      return this.session.end_timing;
     },
     isPlaying() {
       return this.timeInterval !== null;

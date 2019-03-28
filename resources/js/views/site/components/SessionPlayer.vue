@@ -39,8 +39,9 @@
 import MirrorMixin from "./mixins/MirrorMixin";
 import PlayerMixin from "./mixins/PlayerMixin";
 import StreamMixin from "./mixins/StreamMixin";
-import SessionProgressBar from "./SessionProgressBar";
 import MirrorEventsMixin from "./mixins/MirrorEventsMixin";
+import SessionProgressBar from "./session-player-components/SessionProgressBar";
+
 export default {
   mixins: [MirrorMixin, PlayerMixin, StreamMixin, MirrorEventsMixin],
   components: {
