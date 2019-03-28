@@ -58,8 +58,6 @@ To allow PHP to know how to get assets from other local sites you need to add th
 
 ### Valet
 
-ex :
-
 ```bash
     ...
 
