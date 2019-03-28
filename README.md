@@ -3,22 +3,24 @@
 ## Installation
 
 1. Copy .env_example
-2. Composer Install
-3. NVM
+   - `bash cp .env_example .env`
+2. Composer install
+   - `bash composer install`
+3. Update .env
+   - `bash php artisan key:generate`
+4. NVM
    This allows you to change node / npm versions on the fly :
    - [Installing NVM](https://github.com/creationix/nvm)
    - Set your default node version
-   - `bash nvm alias default {VESRION}`
-   - npm install --global yarn
-4. Installing Node Modules
+   - `bash nvm alias default 10.15.3`
+5. Installing Node Modules
    - `bash nvm use`
    - `bash npm ci`
-5. Look at package.json to see commands to build
+6. Look at package.json to see commands to build
    - `bash npm run dev`
-6. Run Web Socket Server
+7. Run Web Socket Server
    - `bash npm run websocket-server`
-7. Start Workers
-
+8. Start Workers
    - `bash php artisan horizon`
 
 ## Valet SPA Driver
@@ -75,3 +77,12 @@ To allow PHP to know how to get assets from other local sites you need to add th
 ### Homestaed
 
 // TODO
+
+## Common Problems
+
+### Clashing Recordings / Sessions
+
+When you refresh your database you will may leave left over recordings in redis.
+You should clear your cache whenever you refresh your database.
+
+`bash php artisan cache:clear`
