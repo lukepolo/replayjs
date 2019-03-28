@@ -72,15 +72,15 @@
           ></progress-bar-event>
         </template>
       </template>
-      <template v-for="timing in session.mouse_movements">
-        <template v-for="event in timing">
-          <progress-bar-event
-            color="green"
-            :event="event"
-            :ending-position="endingPosition"
-          ></progress-bar-event>
-        </template>
-      </template>
+      <!--      <template v-for="timing in session.mouse_movements">-->
+      <!--        <template v-for="event in timing">-->
+      <!--          <progress-bar-event-->
+      <!--            color="green"-->
+      <!--            :event="event"-->
+      <!--            :ending-position="endingPosition"-->
+      <!--          ></progress-bar-event>-->
+      <!--        </template>-->
+      <!--      </template>-->
     </div>
   </div>
 </template>

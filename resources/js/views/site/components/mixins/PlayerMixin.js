@@ -60,6 +60,7 @@ export default {
       }, 100);
     },
     stop() {
+      this.watchingLive = false;
       this.timeoutUpdates.forEach((timeout, index) => {
         clearTimeout(timeout);
         delete this.timeoutUpdates[index];
@@ -91,9 +92,11 @@ export default {
       return this.session.window_size_changes;
     },
     startTiming() {
+      // TODO - needs to be done via JS
       return this.session.start_timing;
     },
     endTiming() {
+      // TODO - needs to be done via JS
       return this.session.end_timing;
     },
     isPlaying() {
