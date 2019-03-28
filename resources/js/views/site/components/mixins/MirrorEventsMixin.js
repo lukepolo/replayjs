@@ -6,9 +6,10 @@ export default {
   },
   methods: {
     queueChanges(changes, event, shouldPlayImmediately = false) {
+      console.info(event);
       for (let timing in changes) {
         let change = changes[timing];
-        if (timing >= this.currentTimePosition) {
+        if (!this.watchingLive && timing >= this.currentTimePosition) {
           if (!this.queuedEvents[timing]) {
             this.queuedEvents[timing] = [];
           }
