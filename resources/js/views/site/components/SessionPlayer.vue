@@ -9,6 +9,7 @@
         Connect To Stream
       </button>
     </div>
+    <pre>Current : {{ currentTimePosition }}</pre>
     <session-progress-bar
       v-if="session"
       @play="play"

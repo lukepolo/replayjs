@@ -53,12 +53,12 @@ export default {
         );
       }
       // TODO - how todo this better?
-      this.timeInterval = setInterval(() => {
-        this.currentTimePosition = this.currentTimePosition + 100;
+      this.timeInterval = this.test(() => {
+        this.currentTimePosition = this.currentTimePosition + 13;
         if (this.currentTimePosition > this.endTiming) {
           this.stop();
         }
-      }, 100);
+      }, 13);
     },
     stop() {
       this.watchingLive = false;
@@ -66,8 +66,35 @@ export default {
         clearTimeout(timeout);
         delete this.timeoutUpdates[index];
       });
-      clearInterval(this.timeInterval);
-      this.timeInterval = null;
+
+      if (this.timeInterval) {
+        this.timeInterval.stop();
+        this.timeInterval = null;
+      }
+    },
+    test(fn, delay) {
+      let stop;
+      let start = new Date().getTime();
+
+      function loop() {
+        let current = new Date().getTime(),
+          delta = current - start;
+
+        if (delta >= delay) {
+          fn.call();
+          start = new Date().getTime();
+        }
+
+        if (!stop) {
+          requestAnimationFrame(loop);
+        }
+      }
+      requestAnimationFrame(loop);
+      return {
+        stop: function() {
+          stop = 1;
+        },
+      };
     },
   },
   computed: {
