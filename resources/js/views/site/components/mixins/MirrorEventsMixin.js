@@ -5,7 +5,7 @@ export default {
     };
   },
   methods: {
-    async queueChanges(changes, event, shouldPlayImmediately = false) {
+    queueChanges(changes, event, shouldPlayImmediately = false) {
       for (let timing in changes) {
         let change = changes[timing];
         if (timing >= this.currentTimePosition) {
@@ -20,7 +20,7 @@ export default {
           });
         } else if (shouldPlayImmediately) {
           for (let changeIndex in change) {
-            await this[event](change[changeIndex]);
+            this[event](change[changeIndex]);
           }
         }
       }

@@ -10,6 +10,25 @@ export default {
     };
   },
   methods: {
+    goLive() {
+      this.stop();
+      this.seek(this.endTiming);
+      this.watchingLive = true;
+    },
+    groupByTiming(changes) {
+      let finalChanges = {};
+      if (Array.isArray(changes)) {
+        changes.forEach((change) => {
+          if (!finalChanges[change.timing]) {
+            finalChanges[change.timing] = [];
+          }
+          finalChanges[change.timing].push(change);
+        });
+      } else {
+        finalChanges[changes.timing] = [changes];
+      }
+      return finalChanges;
+    },
     setupStream() {
       this.channel = this.broadcastService
         .join(`stream.${this.$route.params.session}`)
@@ -35,24 +54,22 @@ export default {
                   changes,
                   event: "window_size_changes",
                 });
-                if (this.watchingLive) {
-                  this.updateWindowSize(changes);
-                } else {
-                  // TODO - these changes need to be keyed by timing
-                  // this.queueChanges(changes, "updateWindowSize");
-                }
+                this.queueChanges(
+                  this.groupByTiming(changes),
+                  "updateWindowSize",
+                  this.watchingLive,
+                );
               })
               .listenForWhisper("click", (changes) => {
                 this.$store.commit("site/guest/session/ADD_EVENT", {
                   changes,
                   event: "mouse_clicks",
                 });
-                if (this.watchingLive) {
-                  this.addMouseClick(changes);
-                } else {
-                  // TODO - these changes need to be keyed by timing
-                  // this.queueChanges(changes, "addMouseClick");
-                }
+                this.queueChanges(
+                  this.groupByTiming(changes),
+                  "addMouseClick",
+                  this.watchingLive,
+                );
               })
               .listenForWhisper("scroll", (changes) => {
                 // TODO - this should act like mouse movements, as there will be big groupings
@@ -60,24 +77,33 @@ export default {
                   changes,
                   event: "scroll_events",
                 });
-                if (this.watchingLive) {
-                  this.updateScrollPosition(changes);
-                } else {
-                  // TODO - these changes need to be keyed by timing
-                  // this.queueChanges(this.scrollEvents, "updateScrollPosition");
-                }
+                this.queueChanges(
+                  this.groupByTiming(changes),
+                  "updateScrollPosition",
+                  this.watchingLive,
+                );
+              })
+              .listenForWhisper("initialize", (changes) => {
+                this.$store.commit("site/guest/session/ADD_EVENT", {
+                  changes,
+                  event: "dom_changes",
+                });
+                this.queueChanges(
+                  this.groupByTiming(changes),
+                  "updateDom",
+                  this.watchingLive,
+                );
               })
               .listenForWhisper("changes", (changes) => {
                 this.$store.commit("site/guest/session/ADD_EVENT", {
                   changes,
                   event: "dom_changes",
                 });
-                if (this.watchingLive) {
-                  this.updateDom(changes);
-                } else {
-                  // TODO - these changes need to be keyed by timing
-                  // this.queueChanges(this.domChanges, "updateDom");
-                }
+                this.queueChanges(
+                  this.groupByTiming(changes),
+                  "updateDom",
+                  this.watchingLive,
+                );
               })
               .listenForWhisper("mouse-movement", (changes) => {
                 let startTiming = changes[0].timing;
@@ -91,8 +117,10 @@ export default {
                       this.updateMouseMovements(change);
                     }, change.timing - startTiming);
                   } else {
-                    // TODO - these changes need to be keyed by timing
-                    // this.queueChanges(this.mouseMovements, "updateMouseMovements");
+                    this.queueChanges(
+                      this.groupByTiming(changes),
+                      "updateMouseMovements",
+                    );
                   }
                 });
               })
@@ -110,11 +138,6 @@ export default {
               });
           }
         });
-    },
-    goLive() {
-      this.stop();
-      this.watchingLive = true;
-      this.seek(this.endTiming);
     },
   },
 };

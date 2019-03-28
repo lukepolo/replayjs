@@ -16,15 +16,11 @@ export default {
       this.setupIframe(this.rootDom);
       this.updateWindowSize(this.rootWindowSize);
 
-      await this.queueChanges(this.domChanges, "updateDom", true);
-      await this.queueChanges(this.mouseClicks, "addMouseClick");
-      await this.queueChanges(this.scrollEvents, "updateScrollPosition", true);
-      await this.queueChanges(this.windowSizeChanges, "updateWindowSize", true);
-      await this.queueChanges(
-        this.mouseMovements,
-        "updateMouseMovements",
-        true,
-      );
+      this.queueChanges(this.domChanges, "updateDom", true);
+      this.queueChanges(this.mouseClicks, "addMouseClick");
+      this.queueChanges(this.scrollEvents, "updateScrollPosition", true);
+      this.queueChanges(this.windowSizeChanges, "updateWindowSize", true);
+      this.queueChanges(this.mouseMovements, "updateMouseMovements", true);
 
       this.isLoading = false;
     },
