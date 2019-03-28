@@ -52,13 +52,12 @@ export default {
           }, timing - this.currentTimePosition),
         );
       }
-      // TODO - how todo this better?
-      this.timeInterval = this.test(() => {
-        this.currentTimePosition = this.currentTimePosition + 13;
+      this.timeInterval = this.requestAnimationInterval(() => {
+        this.currentTimePosition = this.currentTimePosition + 10;
         if (this.currentTimePosition > this.endTiming) {
           this.stop();
         }
-      }, 13);
+      }, 10);
     },
     stop() {
       this.watchingLive = false;
@@ -71,30 +70,6 @@ export default {
         this.timeInterval.stop();
         this.timeInterval = null;
       }
-    },
-    test(fn, delay) {
-      let stop;
-      let start = new Date().getTime();
-
-      function loop() {
-        let current = new Date().getTime(),
-          delta = current - start;
-
-        if (delta >= delay) {
-          fn.call();
-          start = new Date().getTime();
-        }
-
-        if (!stop) {
-          requestAnimationFrame(loop);
-        }
-      }
-      requestAnimationFrame(loop);
-      return {
-        stop: function() {
-          stop = 1;
-        },
-      };
     },
   },
   computed: {
