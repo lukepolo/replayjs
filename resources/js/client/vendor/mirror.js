@@ -51,7 +51,7 @@ var TreeMirror = (function() {
             previous ? previous.nextSibling : parent.firstChild,
           );
         } catch (e) {
-          // console.warn(`Node is gone`);
+          console.warn(`Node is gone`);
         }
       }
     });
