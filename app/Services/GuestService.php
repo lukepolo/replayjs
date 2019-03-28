@@ -72,28 +72,25 @@ class GuestService
         $session->mouse_movements = $this->getFromCache($session->id, 'mouse_movements')->collapse()->groupBy('timing');
 
         $session->start_timing = min(
-            array_filter(
-                [
-             $session->dom_changes->keys()->first(),
+            array_filter([
+                $session->dom_changes->keys()->first(),
                 $session->mouse_clicks->keys()->first(),
                 $session->network_requests->keys()->first(),
                 $session->console_messages->keys()->first(),
                 $session->window_size_changes->keys()->first(),
                 $session->scroll_events->keys()->first()
-                ]
-
-            )
+            ])
         );
 
         $session->end_timing = max(
             array_filter([
-           $session->dom_changes->keys()->last(),
-                      $session->mouse_clicks->keys()->last(),
-                      $session->network_requests->keys()->last(),
-                      $session->console_messages->keys()->last(),
-                      $session->window_size_changes->keys()->last(),
-                      $session->scroll_events->keys()->last(),
-                      ])
+                $session->dom_changes->keys()->last(),
+                $session->mouse_clicks->keys()->last(),
+                $session->network_requests->keys()->last(),
+                $session->console_messages->keys()->last(),
+                $session->window_size_changes->keys()->last(),
+                $session->scroll_events->keys()->last(),
+            ])
         );
 
         return $session;
