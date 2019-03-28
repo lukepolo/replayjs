@@ -20,7 +20,7 @@ export default {
       this.queueChanges(this.mouseClicks, "addMouseClick");
       this.queueChanges(this.scrollEvents, "updateScrollPosition", true);
       this.queueChanges(this.windowSizeChanges, "updateWindowSize", true);
-      this.queueChanges(this.mouseMovements, "updateMouseMovements", true);
+      this.queueChanges(this.mouseMovements, "updateMouseMovement", true);
 
       this.isLoading = false;
     },

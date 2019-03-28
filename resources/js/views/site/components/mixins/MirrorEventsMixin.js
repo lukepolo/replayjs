@@ -61,7 +61,7 @@ export default {
     updateScrollPosition(scrollPosition) {
       window.scrollTo(0, scrollPosition);
     },
-    updateMouseMovements({ x, y }) {
+    updateMouseMovement({ x, y }) {
       this.$refs.cursor.style.top = y + "px";
       this.$refs.cursor.style.left = x + "px";
     },

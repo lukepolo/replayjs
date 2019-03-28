@@ -72,7 +72,6 @@ export default {
                 );
               })
               .listenForWhisper("scroll", (changes) => {
-                // TODO - this should act like mouse movements, as there will be big groupings
                 this.$store.commit("site/guest/session/ADD_EVENT", {
                   changes,
                   event: "scroll_events",
@@ -106,23 +105,15 @@ export default {
                 );
               })
               .listenForWhisper("mouse-movement", (changes) => {
-                let startTiming = changes[0].timing;
-                changes.forEach((change) => {
-                  this.$store.commit("site/guest/session/ADD_EVENT", {
-                    changes: change,
-                    event: "mouse_movements",
-                  });
-                  if (this.watchingLive) {
-                    setTimeout(() => {
-                      this.updateMouseMovements(change);
-                    }, change.timing - startTiming);
-                  } else {
-                    this.queueChanges(
-                      this.groupByTiming(changes),
-                      "updateMouseMovements",
-                    );
-                  }
+                this.$store.commit("site/guest/session/ADD_EVENT", {
+                  changes: changes,
+                  event: "mouse_movements",
                 });
+                this.queueChanges(
+                  this.groupByTiming(changes),
+                  "updateMouseMovement",
+                  this.watchingLive,
+                );
               })
               .listenForWhisper("network-request", (changes) => {
                 this.$store.commit("site/guest/session/ADD_EVENT", {

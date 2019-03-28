@@ -68,8 +68,7 @@ class GuestService
         $session->window_size = $windowSizes->shift();
         $session->window_size_changes = $windowSizes->groupBy('timing');
         $session->scroll_events = $this->getFromCache($session->id, 'scroll_events')->groupBy('timing');
-
-        $session->mouse_movements = $this->getFromCache($session->id, 'mouse_movements')->collapse()->groupBy('timing');
+        $session->mouse_movements = $this->getFromCache($session->id, 'mouse_movements')->groupBy('timing');
 
         $session->start_timing = min(
             array_filter([
@@ -78,7 +77,8 @@ class GuestService
                 $session->network_requests->keys()->first(),
                 $session->console_messages->keys()->first(),
                 $session->window_size_changes->keys()->first(),
-                $session->scroll_events->keys()->first()
+                $session->scroll_events->keys()->first(),
+                $session->mouse_movements->keys()->first(),
             ])
         );
 
@@ -90,6 +90,7 @@ class GuestService
                 $session->console_messages->keys()->last(),
                 $session->window_size_changes->keys()->last(),
                 $session->scroll_events->keys()->last(),
+                $session->mouse_movements->keys()->last(),
             ])
         );
 
