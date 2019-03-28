@@ -126,7 +126,12 @@ export default {
         ].filter((value) => {
           return value !== undefined;
         });
-        return Math.max(...numbers);
+
+        let endTiming = Math.max(...numbers);
+        if (this.currentTimePosition) {
+          this.currentTimePosition = endTiming;
+        }
+        return endTiming;
       }
     },
     isPlaying() {

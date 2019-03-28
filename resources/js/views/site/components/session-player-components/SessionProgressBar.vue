@@ -1,6 +1,6 @@
 <template>
   <div>
-    <pre>{{ startingPosition }}</pre>
+    <pre>{{ endingPosition }}</pre>
     <div class="playpause">
       <input
         type="checkbox"
