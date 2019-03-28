@@ -34,19 +34,21 @@ ReplayJS is an Open Source Project to help support your clients with full sessio
    - `bash composer install`
 3. Update .env
    - `bash php artisan key:generate`
-4. NVM
+4. Migrate
+   - `bash php artisan migrate -- seed`
+5. NVM
    This allows you to change node / npm versions on the fly :
    - [Installing NVM](https://github.com/creationix/nvm)
    - Set your default node version
    - `bash nvm alias default 10.15.3`
-5. Installing Node Modules
+6. Installing Node Modules
    - `bash nvm use`
    - `bash npm ci`
-6. Building UI
+7. Building UI
    - `bash npm run dev`
-7. Run Web Socket Server
+8. Run Web Socket Server
    - `bash npm run websocket-server`
-8. Start Workers
+9. Start Workers
    - `bash php artisan horizon`
 
 ## Valet SPA Driver
