@@ -54,10 +54,10 @@ export default {
       }
       // TODO - how todo this better?
       this.timeInterval = setInterval(() => {
-        if (this.currentTimePosition > this.endTiming) {
-          return this.stop();
-        }
         this.currentTimePosition = this.currentTimePosition + 100;
+        if (this.currentTimePosition > this.endTiming) {
+          this.stop();
+        }
       }, 100);
     },
     stop() {
