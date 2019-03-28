@@ -16,7 +16,7 @@
 5. Installing Node Modules
    - `bash nvm use`
    - `bash npm ci`
-6. Look at package.json to see commands to build
+6. Building UI
    - `bash npm run dev`
 7. Run Web Socket Server
    - `bash npm run websocket-server`
