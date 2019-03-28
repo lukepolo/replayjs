@@ -3,7 +3,6 @@ import { NullPresenceChannel } from "laravel-echo/dist/channel";
 import ConsoleDataInterface from "../interfaces/ConsoleDataInterface";
 
 export default class CaptureConsoleMessages implements ListenInterface {
-  protected readonly timing: number;
   protected channel: NullPresenceChannel;
   protected readonly event = "console-message";
 
@@ -11,10 +10,6 @@ export default class CaptureConsoleMessages implements ListenInterface {
   protected originalConsoleInfo;
   protected originalConsoleWarn;
   protected originalConsoleError;
-
-  constructor(timing: number) {
-    this.timing = timing;
-  }
 
   public setup(channel: NullPresenceChannel) {
     this.channel = channel;
@@ -38,14 +33,13 @@ export default class CaptureConsoleMessages implements ListenInterface {
   }
 
   private captureLog(originalFunction, type) {
-    let timing = this.timing;
     let whisper = this.whisper.bind(this);
 
     return function(...messages) {
       whisper({
         type,
         messages,
-        timing: new Date().getTime() - timing,
+        timing: new Date().getTime(),
       });
       return originalFunction.apply(this, arguments);
     };

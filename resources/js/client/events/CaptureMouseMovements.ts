@@ -3,13 +3,8 @@ import { NullPresenceChannel } from "laravel-echo/dist/channel";
 import MouseMovementDataInterface from "../interfaces/MouseMovementDataInterface";
 
 export default class CaptureMouseMovements implements ListenInterface {
-  protected readonly timing: number;
   protected channel: NullPresenceChannel;
   protected readonly event = "mouse-movement";
-
-  constructor(timing: number) {
-    this.timing = timing;
-  }
 
   public setup(channel: NullPresenceChannel) {
     this.channel = channel;
@@ -24,7 +19,7 @@ export default class CaptureMouseMovements implements ListenInterface {
     this.whisper({
       x: event.pageX,
       y: event.pageY,
-      timing: new Date().getTime() - this.timing,
+      timing: new Date().getTime(),
     });
   }
 

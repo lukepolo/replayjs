@@ -3,14 +3,9 @@ import { NullPresenceChannel } from "laravel-echo/dist/channel";
 import ScrollDataInterface from "../interfaces/ScrollDataInterface";
 
 export default class CaptureScrollEvents implements ListenInterface {
-  protected readonly timing: number;
   protected readonly event = "scroll";
   protected ticking: boolean = false;
   protected channel: NullPresenceChannel;
-
-  constructor(timing: number) {
-    this.timing = timing;
-  }
 
   public setup(channel: NullPresenceChannel) {
     this.channel = channel;
@@ -26,7 +21,7 @@ export default class CaptureScrollEvents implements ListenInterface {
       window.requestAnimationFrame(() => {
         this.whisper({
           target: event.target,
-          timing: new Date().getTime() - this.timing,
+          timing: new Date().getTime(),
           scrollPosition: document.documentElement.scrollTop,
         });
         this.ticking = false;

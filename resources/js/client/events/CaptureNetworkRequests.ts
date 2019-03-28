@@ -3,7 +3,6 @@ import { NullPresenceChannel } from "laravel-echo/dist/channel";
 import NetworkRequestDataInterface from "../interfaces/NetworkRequestDataInterface";
 
 export default class CaptureNetworkRequests implements ListenInterface {
-  protected readonly timing: number;
   protected channel: NullPresenceChannel;
   protected readonly event = "network-request";
 
@@ -11,10 +10,6 @@ export default class CaptureNetworkRequests implements ListenInterface {
   protected originalXMLHttpRequestOpen;
   protected originalXMLHttpRequestSend;
   protected originalXMLHttpSetRequestHeader;
-
-  constructor(timing: number) {
-    this.timing = timing;
-  }
 
   public setup(channel: NullPresenceChannel) {
     this.channel = channel;
@@ -120,7 +115,7 @@ export default class CaptureNetworkRequests implements ListenInterface {
   }
 
   public whisper(data: NetworkRequestDataInterface) {
-    data.timing = new Date().getTime() - this.timing;
+    data.timing = new Date().getTime();
     if (data.url.indexOf(__ENV_VARIABLES__.app.APP_URL) === -1) {
       this.channel.whisper(this.event, data);
     }

@@ -6,13 +6,11 @@ import DomChangesDataInterface from "./interfaces/DomChangesDataInterface";
 
 export default class MirrorClient {
   protected baseHref: string;
-  protected readonly timing: number;
   protected inputEvents: InputEvents;
   protected channel: NullPresenceChannel;
   protected treeMirrorClient: TreeMirrorClient;
 
-  constructor(baseHref: string, timing: number) {
-    this.timing = timing;
+  constructor(baseHref: string) {
     this.baseHref = baseHref;
     this.inputEvents = new InputEvents();
   }
@@ -29,7 +27,7 @@ export default class MirrorClient {
             children,
             joiningEvent,
             baseHref: this.baseHref,
-            timing: new Date().getTime() - this.timing,
+            timing: new Date().getTime(),
           });
           this.inputEvents.setup();
         },
@@ -39,7 +37,7 @@ export default class MirrorClient {
             removed,
             attributes,
             addedOrMoved,
-            timing: new Date().getTime() - this.timing,
+            timing: new Date().getTime(),
           });
           if (addedOrMoved.length) {
             this.inputEvents.setup();

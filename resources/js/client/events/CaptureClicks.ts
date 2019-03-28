@@ -3,13 +3,8 @@ import { NullPresenceChannel } from "laravel-echo/dist/channel";
 import ClickDataInterface from "../interfaces/ClickDataInterface";
 
 export default class CaptureClicks implements ListenInterface {
-  protected readonly timing: number;
   protected readonly event = "click";
   protected channel: NullPresenceChannel;
-
-  constructor(timing: number) {
-    this.timing = timing;
-  }
 
   public setup(channel: NullPresenceChannel) {
     this.channel = channel;
@@ -25,7 +20,7 @@ export default class CaptureClicks implements ListenInterface {
       // event : event,
       x: event.clientX,
       y: event.clientY,
-      timing: new Date().getTime() - this.timing,
+      timing: new Date().getTime(),
     });
   }
 

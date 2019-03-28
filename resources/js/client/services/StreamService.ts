@@ -20,7 +20,6 @@ export default class StreamService {
   protected captureClicks: CaptureClicks;
   protected channel: NullPresenceChannel;
   protected webSocketService: WebSocketService;
-  protected initialTiming;
   protected captureScrollEvents: CaptureScrollEvents;
   protected captureWindowResize: CaptureWindowResize;
   protected captureMouseMovements: CaptureMouseMovements;
@@ -34,7 +33,6 @@ export default class StreamService {
   }
 
   public connect(options: OptionsInterface = {}) {
-    this.initialTiming = new Date().getTime();
     if (this.authService.isAuthed()) {
       this.boot(options);
       return this.webSocketService.connect().then((channel) => {
@@ -69,18 +67,13 @@ export default class StreamService {
     this.captureSessionDetails = new CaptureSessionDetails();
     this.mirrorClient = new MirrorClient(
       options.baseHref || window.location.origin,
-      this.initialTiming,
     );
 
-    this.captureClicks = new CaptureClicks(this.initialTiming);
-    this.captureScrollEvents = new CaptureScrollEvents(this.initialTiming);
-    this.captureWindowResize = new CaptureWindowResize(this.initialTiming);
-    this.captureMouseMovements = new CaptureMouseMovements(this.initialTiming);
-    this.captureConsoleMessages = new CaptureConsoleMessages(
-      this.initialTiming,
-    );
-    this.captureNetworkRequests = new CaptureNetworkRequests(
-      this.initialTiming,
-    );
+    this.captureClicks = new CaptureClicks();
+    this.captureScrollEvents = new CaptureScrollEvents();
+    this.captureWindowResize = new CaptureWindowResize();
+    this.captureMouseMovements = new CaptureMouseMovements();
+    this.captureConsoleMessages = new CaptureConsoleMessages();
+    this.captureNetworkRequests = new CaptureNetworkRequests();
   }
 }
