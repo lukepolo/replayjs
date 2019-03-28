@@ -8,15 +8,13 @@ export default {
     };
   },
   methods: {
-    async initializePlayer(startTime) {
+    async initializePlayer() {
       this.isLoading = true;
       this.stop();
       this.queuedEvents = {};
 
       this.setupIframe(this.rootDom);
       this.updateWindowSize(this.rootWindowSize);
-
-      this.currentTimePosition = startTime || 0;
 
       await this.queueChanges(this.domChanges, "updateDom", true);
       await this.queueChanges(this.mouseClicks, "addMouseClick");
@@ -30,13 +28,13 @@ export default {
 
       this.isLoading = false;
     },
-    seek(startTime) {
+    seek(seekTo) {
       let wasPlaying = this.isPlaying;
       if (this.isPlaying) {
         this.stop();
       }
-      this.currentTimePosition = startTime;
-      this.initializePlayer(startTime);
+      this.currentTimePosition = seekTo;
+      this.initializePlayer(seekTo);
       if (wasPlaying) {
         this.play();
       }
@@ -55,6 +53,9 @@ export default {
       }
       // TODO - how todo this better?
       this.timeInterval = setInterval(() => {
+        if (this.currentTimePosition > this.endTiming) {
+          return this.stop();
+        }
         this.currentTimePosition = this.currentTimePosition + 100;
       }, 100);
     },

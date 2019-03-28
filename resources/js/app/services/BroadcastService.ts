@@ -57,9 +57,6 @@ export default class BroadcastService {
   }
 
   public isConnected() {
-    if (!this.$echo) {
-      this.connect();
-    }
-    return this.$echo.connector.socket.connected;
+    return !!this.$echo;
   }
 }

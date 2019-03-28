@@ -5,7 +5,7 @@
       <pre>{{ scale }}</pre>
       <h1>User is Live</h1>
       <pre>{{ canViewLive }}</pre>
-      <button @click="connectToStream" :disabled="!canViewLive">
+      <button @click="goLive" :disabled="!canViewLive">
         Connect To Stream
       </button>
     </div>
@@ -52,6 +52,11 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      initialized: false,
+    };
+  },
   mounted() {
     this.previewFrame = document.getElementById("preview");
     this.previewDocument = this.previewFrame.contentWindow.document;
@@ -60,7 +65,8 @@ export default {
     session: {
       immediate: true,
       handler(session) {
-        if (session) {
+        if (session && this.initialized === false) {
+          this.initialized = true;
           this.initializePlayer();
         }
       },
