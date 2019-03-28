@@ -1,6 +1,6 @@
 <template>
   <div>
-    <pre>{{ endingPosition }}</pre>
+    <pre>{{ startingPosition }}</pre>
     <div class="playpause">
       <input
         type="checkbox"
@@ -23,6 +23,7 @@
           <progress-bar-event
             color="blue"
             :event="event"
+            :starting-position="startingPosition"
             :ending-position="endingPosition"
           ></progress-bar-event>
         </template>
@@ -32,6 +33,7 @@
           <progress-bar-event
             color="gray"
             :event="event"
+            :starting-position="startingPosition"
             :ending-position="endingPosition"
           ></progress-bar-event>
         </template>
@@ -41,6 +43,7 @@
           <progress-bar-event
             color="blue"
             :event="event"
+            :starting-position="startingPosition"
             :ending-position="endingPosition"
           ></progress-bar-event>
         </template>
@@ -50,6 +53,7 @@
           <progress-bar-event
             color="purple"
             :event="event"
+            :starting-position="startingPosition"
             :ending-position="endingPosition"
           ></progress-bar-event>
         </template>
@@ -59,6 +63,7 @@
           <progress-bar-event
             color="orange"
             :event="event"
+            :starting-position="startingPosition"
             :ending-position="endingPosition"
           ></progress-bar-event>
         </template>
@@ -68,19 +73,21 @@
           <progress-bar-event
             color="red"
             :event="event"
+            :starting-position="startingPosition"
             :ending-position="endingPosition"
           ></progress-bar-event>
         </template>
       </template>
-      <!--      <template v-for="timing in session.mouse_movements">-->
-      <!--        <template v-for="event in timing">-->
-      <!--          <progress-bar-event-->
-      <!--            color="green"-->
-      <!--            :event="event"-->
-      <!--            :ending-position="endingPosition"-->
-      <!--          ></progress-bar-event>-->
-      <!--        </template>-->
-      <!--      </template>-->
+      <template v-for="timing in session.mouse_movements">
+        <template v-for="event in timing">
+          <progress-bar-event
+            color="green"
+            :event="event"
+            :starting-position="startingPosition"
+            :ending-position="endingPosition"
+          ></progress-bar-event>
+        </template>
+      </template>
     </div>
   </div>
 </template>
@@ -100,6 +107,9 @@ export default {
       required: true,
       type: Boolean,
     },
+    startingPosition: {
+      required: true,
+    },
     endingPosition: {
       required: true,
     },
@@ -117,12 +127,19 @@ export default {
     playAtPosition(event) {
       let rect = event.target.getBoundingClientRect();
       let percentageFromLeftSide = (event.clientX - rect.left) / rect.right;
-      this.$emit("seek", percentageFromLeftSide * this.endingPosition);
+      this.$emit(
+        "seek",
+        this.startingPosition +
+          percentageFromLeftSide *
+            (this.endingPosition - this.startingPosition),
+      );
     },
   },
   computed: {
     currentPositionPercentage() {
-      return `${(this.currentPosition / this.endingPosition) * 100}%`;
+      return `${((this.currentPosition - this.startingPosition) /
+        (this.endingPosition - this.startingPosition)) *
+        100}%`;
     },
   },
 };

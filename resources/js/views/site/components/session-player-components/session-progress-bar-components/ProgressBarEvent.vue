@@ -16,6 +16,9 @@ export default {
     event: {
       required: true,
     },
+    startingPosition: {
+      required: true,
+    },
     endingPosition: {
       required: true,
     },
@@ -25,7 +28,9 @@ export default {
   },
   computed: {
     eventPosition() {
-      return `${(this.event.timing / this.endingPosition) * 100}%`;
+      return `${((this.event.timing - this.startingPosition) /
+        (this.endingPosition - this.startingPosition)) *
+        100}%`;
     },
   },
 };

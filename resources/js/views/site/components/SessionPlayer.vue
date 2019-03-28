@@ -16,6 +16,7 @@
       @seek="seek"
       :is-playing="isPlaying"
       :current-position="currentTimePosition"
+      :starting-position="startTiming"
       :ending-position="endTiming"
       :session="session"
     ></session-progress-bar>

@@ -4,8 +4,13 @@ export default {
       isLoading: true,
       timeInterval: null,
       timeoutUpdates: [],
-      currentTimePosition: 0,
+      currentTimePosition: null,
     };
+  },
+  watch: {
+    startTiming(startTiming) {
+      this.currentTimePosition = startTiming;
+    },
   },
   methods: {
     async initializePlayer() {
@@ -67,33 +72,32 @@ export default {
   },
   computed: {
     rootDom() {
-      return this.session.root;
+      return this.session && this.session.root;
     },
     rootWindowSize() {
-      return this.session.window_size;
+      return this.session && this.session.window_size;
     },
     domChanges() {
-      return this.session.dom_changes;
+      return this.session && this.session.dom_changes;
     },
     mouseClicks() {
-      return this.session.mouse_clicks;
+      return this.session && this.session.mouse_clicks;
     },
     mouseMovements() {
-      return this.session.mouse_movements;
+      return this.session && this.session.mouse_movements;
     },
     scrollEvents() {
-      return this.session.scroll_events;
+      return this.session && this.session.scroll_events;
     },
     windowSizeChanges() {
-      return this.session.window_size_changes;
+      return this.session && this.session.window_size_changes;
     },
     startTiming() {
-      // TODO - needs to be done via JS
-      return this.session.start_timing;
+      return this.rootDom && this.rootDom.timing;
     },
     endTiming() {
       // TODO - needs to be done via JS
-      return this.session.end_timing;
+      return this.session && this.session.end_timing;
     },
     isPlaying() {
       return this.timeInterval !== null;
