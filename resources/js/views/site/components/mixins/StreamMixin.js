@@ -50,7 +50,7 @@ export default {
             this.userIsLive = true;
             this.channel
               .listenForWhisper("window-size", (changes) => {
-                this.$store.commit("site/guest/session/ADD_EVENT", {
+                this.$store.dispatch("site/guest/session/addEvent", {
                   changes,
                   event: "window_size_changes",
                 });
@@ -61,7 +61,7 @@ export default {
                 );
               })
               .listenForWhisper("click", (changes) => {
-                this.$store.commit("site/guest/session/ADD_EVENT", {
+                this.$store.dispatch("site/guest/session/addEvent", {
                   changes,
                   event: "mouse_clicks",
                 });
@@ -72,7 +72,7 @@ export default {
                 );
               })
               .listenForWhisper("scroll", (changes) => {
-                this.$store.commit("site/guest/session/ADD_EVENT", {
+                this.$store.dispatch("site/guest/session/addEvent", {
                   changes,
                   event: "scroll_events",
                 });
@@ -83,7 +83,7 @@ export default {
                 );
               })
               .listenForWhisper("initialize", (changes) => {
-                this.$store.commit("site/guest/session/ADD_EVENT", {
+                this.$store.dispatch("site/guest/session/addEvent", {
                   changes,
                   event: "dom_changes",
                 });
@@ -94,7 +94,7 @@ export default {
                 );
               })
               .listenForWhisper("changes", (changes) => {
-                this.$store.commit("site/guest/session/ADD_EVENT", {
+                this.$store.dispatch("site/guest/session/addEvent", {
                   changes,
                   event: "dom_changes",
                 });
@@ -105,7 +105,7 @@ export default {
                 );
               })
               .listenForWhisper("mouse-movement", (changes) => {
-                this.$store.commit("site/guest/session/ADD_EVENT", {
+                this.$store.dispatch("site/guest/session/addEvent", {
                   changes: changes,
                   event: "mouse_movements",
                 });
@@ -116,13 +116,13 @@ export default {
                 );
               })
               .listenForWhisper("network-request", (changes) => {
-                this.$store.commit("site/guest/session/ADD_EVENT", {
+                this.$store.dispatch("site/guest/session/addEvent", {
                   changes,
                   event: "network_requests",
                 });
               })
               .listenForWhisper("console-message", (changes) => {
-                this.$store.commit("site/guest/session/ADD_EVENT", {
+                this.$store.dispatch("site/guest/session/addEvent", {
                   changes,
                   event: "console_messages",
                 });
