@@ -17,84 +17,29 @@
           width: currentPositionPercentage,
         }"
       ></div>
-      <template v-for="timing in session.scroll_events">
-        <template v-for="event in timing">
-          <progress-bar-event
-            color="blue"
-            :event="event"
-            :starting-position="startingPosition"
-            :ending-position="endingPosition"
-          ></progress-bar-event>
-        </template>
-      </template>
-      <template v-for="timing in session.dom_changes">
-        <template v-for="event in timing">
-          <progress-bar-event
-            color="gray"
-            :event="event"
-            :starting-position="startingPosition"
-            :ending-position="endingPosition"
-          ></progress-bar-event>
-        </template>
-      </template>
-      <template v-for="timing in session.window_size_changes">
-        <template v-for="event in timing">
-          <progress-bar-event
-            color="blue"
-            :event="event"
-            :starting-position="startingPosition"
-            :ending-position="endingPosition"
-          ></progress-bar-event>
-        </template>
-      </template>
-      <template v-for="timing in session.network_requests">
-        <template v-for="event in timing">
-          <progress-bar-event
-            color="purple"
-            :event="event"
-            :starting-position="startingPosition"
-            :ending-position="endingPosition"
-          ></progress-bar-event>
-        </template>
-      </template>
-      <template v-for="timing in session.console_messages">
-        <template v-for="event in timing">
-          <progress-bar-event
-            color="orange"
-            :event="event"
-            :starting-position="startingPosition"
-            :ending-position="endingPosition"
-          ></progress-bar-event>
-        </template>
-      </template>
-      <template v-for="timing in session.mouse_clicks">
-        <template v-for="event in timing">
-          <progress-bar-event
-            color="red"
-            :event="event"
-            :starting-position="startingPosition"
-            :ending-position="endingPosition"
-          ></progress-bar-event>
-        </template>
-      </template>
-      <template v-for="timing in session.mouse_movements">
-        <template v-for="event in timing">
-          <progress-bar-event
-            color="green"
-            :event="event"
-            :starting-position="startingPosition"
-            :ending-position="endingPosition"
-          ></progress-bar-event>
-        </template>
+      <template v-for="event in events">
+        <progress-bar-event
+          :event="event"
+          :starting-position="startingPosition"
+          :ending-position="endingPosition"
+        ></progress-bar-event>
       </template>
     </div>
   </div>
 </template>
 
 <script>
-import ProgressBarEvent from "./session-progress-bar-components/ProgressBarEvent";
-
+import ProgressBarEvent from "./components/ProgressBarEvent";
+import SessionProgressBarWorker from "./workers/progress-bar.worker";
 export default {
+  beforeCreate() {
+    this.worker = new SessionProgressBarWorker();
+  },
+  mounted() {
+    this.worker.onmessage = ({ data }) => {
+      this.$set(this, "events", data.events);
+    };
+  },
   components: {
     ProgressBarEvent,
   },
@@ -114,6 +59,27 @@ export default {
     },
     session: {
       required: true,
+    },
+  },
+  data() {
+    return {
+      events: [],
+    };
+  },
+  watch: {
+    session: {
+      immediate: true,
+      handler(session) {
+        console.info("SEND TO WORKER");
+
+        this.worker.postMessage({
+          session,
+        });
+
+        // this.worker.onMessage((results) => {
+        //   console.info(results);
+        // })
+      },
     },
   },
   methods: {

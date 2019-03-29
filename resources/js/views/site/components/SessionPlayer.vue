@@ -22,8 +22,8 @@
       :session="session"
     ></session-progress-bar>
     <div>
-      <div class="preview-box" ref="previewBox">
-        <div class="overlay" ref="overlay" :class="{ loading: isLoading }">
+      <div class="preview-box" ref="previewBox" :class="{ loading: isLoading }">
+        <div class="overlay" ref="overlay">
           <div ref="clicks" id="clicks"></div>
           <div ref="cursor" id="cursor"></div>
         </div>
@@ -85,19 +85,6 @@ body {
 .overlay {
   z-index: 1;
   position: absolute;
-
-  &.loading {
-    &:after {
-      position: absolute;
-      content: "";
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      opacity: 0.5;
-      background-color: red;
-    }
-  }
 }
 
 .overlay,
@@ -114,6 +101,18 @@ body {
   overflow: hidden;
   max-height: 100%;
   flex: 1 1 auto;
+  &.loading {
+    &:after {
+      position: absolute;
+      content: "";
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.5;
+      background-color: red;
+    }
+  }
 }
 
 .sessions {
