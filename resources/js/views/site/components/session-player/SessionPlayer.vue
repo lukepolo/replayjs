@@ -22,6 +22,7 @@
       :session="session"
     ></session-progress-bar>
     <div>
+      <pre>IS LOADING : {{ isLoading }}</pre>
       <div class="preview-box" ref="previewBox" :class="{ loading: isLoading }">
         <div class="overlay" ref="overlay">
           <div ref="clicks" id="clicks"></div>
@@ -38,13 +39,21 @@
 </template>
 
 <script>
-import MirrorMixin from "./mixins/MirrorMixin";
-import PlayerMixin from "./mixins/PlayerMixin";
-import StreamMixin from "./mixins/StreamMixin";
-import MirrorEventsMixin from "./mixins/MirrorEventsMixin";
-import SessionProgressBar from "./session-player-components/SessionProgressBar";
+import MirrorMixin from "../mixins/MirrorMixin";
+import PlayerMixin from "../mixins/PlayerMixin";
+import StreamMixin from "../mixins/StreamMixin";
+import SessionProgressBar from "./SessionProgressBar";
+import MirrorEventsMixin from "../mixins/MirrorEventsMixin";
+import SessionPlayerWorker from "./workers/session-player.worker";
+
+const sessionPlayerWorker = new SessionPlayerWorker();
 
 export default {
+  provide() {
+    return {
+      worker: this.worker,
+    };
+  },
   mixins: [MirrorMixin, PlayerMixin, StreamMixin, MirrorEventsMixin],
   components: {
     SessionProgressBar,
@@ -70,8 +79,19 @@ export default {
         if (session && this.initialized === false) {
           this.initialized = true;
           this.initializePlayer();
+          this.worker.postMessage({
+            event: "addEvents",
+            data: {
+              session,
+            },
+          });
         }
       },
+    },
+  },
+  computed: {
+    worker() {
+      return sessionPlayerWorker;
     },
   },
 };
@@ -157,6 +177,6 @@ body {
   position: absolute;
   background-size: contain;
   background-repeat: no-repeat;
-  background-image: url("./../../../../images/cursor.png");
+  background-image: url("../../../../../images/cursor.png");
 }
 </style>

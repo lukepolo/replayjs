@@ -10,6 +10,7 @@
       />
       <label for="playpause"></label>
     </div>
+    <pre>EVENTS : {{ events.length }}</pre>
     <div class="progress" @click="playAtPosition">
       <div
         class="progress--bar"
@@ -17,8 +18,9 @@
           width: currentPositionPercentage,
         }"
       ></div>
-      <template v-for="event in events">
+      <template v-for="(event, index) in events">
         <progress-bar-event
+          :key="index"
           :event="event"
           :starting-position="startingPosition"
           :ending-position="endingPosition"
@@ -30,16 +32,9 @@
 
 <script>
 import ProgressBarEvent from "./components/ProgressBarEvent";
-import SessionProgressBarWorker from "./workers/progress-bar.worker";
+
 export default {
-  beforeCreate() {
-    this.worker = new SessionProgressBarWorker();
-  },
-  mounted() {
-    this.worker.onmessage = ({ data }) => {
-      this.$set(this, "events", data.events);
-    };
-  },
+  inject: ["worker"],
   components: {
     ProgressBarEvent,
   },
@@ -66,21 +61,12 @@ export default {
       events: [],
     };
   },
-  watch: {
-    session: {
-      immediate: true,
-      handler(session) {
-        console.info("SEND TO WORKER");
-
-        this.worker.postMessage({
-          session,
-        });
-
-        // this.worker.onMessage((results) => {
-        //   console.info(results);
-        // })
-      },
-    },
+  mounted() {
+    this.worker.onmessage = ({ data }) => {
+      requestAnimationFrame(() => {
+        this.events.push(data);
+      });
+    };
   },
   methods: {
     playPause() {

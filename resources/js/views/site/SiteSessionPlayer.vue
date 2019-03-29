@@ -9,8 +9,8 @@
 </template>
 <script>
 import Vue from "vue";
+import SessionPlayer from "./components/session-player/SessionPlayer";
 
-import SessionPlayer from "./components/SessionPlayer";
 export default Vue.extend({
   components: {
     SessionPlayer,

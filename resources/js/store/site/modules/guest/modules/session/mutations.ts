@@ -14,6 +14,7 @@ export default function() {
       }
       state.session[event][changes.timing].push(changes);
       state.session = Object.assign({}, state.session);
+      // state.session[event] = Object.assign({}, state.session[event]); // is actually slower...
     },
   };
 }

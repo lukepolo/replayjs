@@ -13,7 +13,7 @@ export default {
     },
   },
   methods: {
-    async initializePlayer() {
+    initializePlayer() {
       this.isLoading = true;
       this.stop();
       this.queuedEvents = {};
@@ -26,8 +26,9 @@ export default {
       this.queueChanges(this.scrollEvents, "updateScrollPosition", true);
       this.queueChanges(this.windowSizeChanges, "updateWindowSize", true);
       this.queueChanges(this.mouseMovements, "updateMouseMovement", true);
-
-      this.isLoading = false;
+      setTimeout(() => {
+        this.isLoading = false;
+      }, 0);
     },
     seek(seekTo) {
       let wasPlaying = this.isPlaying;

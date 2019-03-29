@@ -7,8 +7,8 @@ Vue.mixin({
       let start = new Date().getTime();
 
       function loop() {
-        let current = new Date().getTime(),
-          delta = current - start;
+        let current = new Date().getTime();
+        let delta = current - start;
 
         if (delta >= delay) {
           fn.call();

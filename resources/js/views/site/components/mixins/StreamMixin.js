@@ -59,6 +59,13 @@ export default {
                   "updateWindowSize",
                   this.watchingLive,
                 );
+                this.worker.postMessage({
+                  event: "addEvent",
+                  data: {
+                    timing: changes.timing,
+                    type: "window_size_changes",
+                  },
+                });
               })
               .listenForWhisper("click", (changes) => {
                 this.$store.dispatch("site/guest/session/addEvent", {
@@ -70,6 +77,13 @@ export default {
                   "addMouseClick",
                   this.watchingLive,
                 );
+                this.worker.postMessage({
+                  event: "addEvent",
+                  data: {
+                    timing: changes.timing,
+                    type: "mouse_clicks",
+                  },
+                });
               })
               .listenForWhisper("scroll", (changes) => {
                 this.$store.dispatch("site/guest/session/addEvent", {
@@ -81,6 +95,13 @@ export default {
                   "updateScrollPosition",
                   this.watchingLive,
                 );
+                this.worker.postMessage({
+                  event: "addEvent",
+                  data: {
+                    timing: changes.timing,
+                    type: "scroll_events",
+                  },
+                });
               })
               .listenForWhisper("initialize", (changes) => {
                 this.$store.dispatch("site/guest/session/addEvent", {
@@ -92,6 +113,13 @@ export default {
                   "updateDom",
                   this.watchingLive,
                 );
+                this.worker.postMessage({
+                  event: "addEvent",
+                  data: {
+                    timing: changes.timing,
+                    type: "dom_changes",
+                  },
+                });
               })
               .listenForWhisper("changes", (changes) => {
                 this.$store.dispatch("site/guest/session/addEvent", {
@@ -103,6 +131,13 @@ export default {
                   "updateDom",
                   this.watchingLive,
                 );
+                this.worker.postMessage({
+                  event: "addEvent",
+                  data: {
+                    timing: changes.timing,
+                    type: "dom_changes",
+                  },
+                });
               })
               .listenForWhisper("mouse-movement", (changes) => {
                 this.$store.dispatch("site/guest/session/addEvent", {
