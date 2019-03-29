@@ -17,6 +17,13 @@ export default class AppProviderServiceProvider extends ServiceProvider {
   }
 
   public async register() {
+    // @ts-ignore
+    String.prototype.lpad = function(padString, length) {
+      let str = this;
+      while (str.length < length) str = padString + str;
+      return str;
+    };
+
     this.app.bind("SiteService", SiteService);
     this.app.bind("SiteGuestService", GuestService);
     this.app.bind("SiteGuestSessionService", SiteGuestSessionService);

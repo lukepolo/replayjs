@@ -5,6 +5,10 @@
     <div v-if="session">
       <pre>{{ session.network_requests }}</pre>
     </div>
+    <h3>Console Messages</h3>
+    <div v-if="session">
+      <pre>{{ session.console_messages }}</pre>
+    </div>
   </div>
 </template>
 <script>

@@ -11,6 +11,8 @@
       <label for="playpause"></label>
     </div>
     <pre>EVENTS : {{ events.length }}</pre>
+    <pre>Current Time : {{ currentTimeDisplay }}</pre>
+    <pre>End Time : {{ endTimeDisplay }}</pre>
     <div class="progress" @click="playAtPosition">
       <div
         class="progress--bar"
@@ -80,17 +82,42 @@ export default {
       let percentageFromLeftSide = (event.clientX - rect.left) / rect.right;
       this.$emit(
         "seek",
-        this.startingPosition +
-          percentageFromLeftSide *
-            (this.endingPosition - this.startingPosition),
+        this.startingPosition + percentageFromLeftSide * this.endTime,
       );
+    },
+    convertMsToTime(ms) {
+      let seconds = ms / 1000;
+
+      let hours = parseInt(seconds / 3600);
+      seconds = seconds % 3600;
+
+      let minutes = parseInt(seconds / 60);
+      seconds = seconds % 60;
+
+      let timeString = `${minutes}:${parseInt(seconds)
+        .toString()
+        .lpad("0", 2)}`;
+      if (hours > 0) {
+        timeString = `${hours}:${timeString}`;
+      }
+      return timeString;
     },
   },
   computed: {
+    endTime() {
+      return this.endingPosition - this.startingPosition;
+    },
+    currentTime() {
+      return this.currentPosition - this.startingPosition;
+    },
+    endTimeDisplay() {
+      return this.convertMsToTime(this.endTime);
+    },
+    currentTimeDisplay() {
+      return this.convertMsToTime(this.currentTime);
+    },
     currentPositionPercentage() {
-      return `${((this.currentPosition - this.startingPosition) /
-        (this.endingPosition - this.startingPosition)) *
-        100}%`;
+      return `${(this.currentTime / this.endTime) * 100}%`;
     },
   },
 };
