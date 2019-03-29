@@ -27,7 +27,7 @@ export default function(siteGuestSessionService: SiteGuestSessionService) {
       context: ActionContext<SiteGuestSessionState, RootState>,
       { event, changes },
     ) {
-      // context.commit("ADD_EVENT", { event, changes })
+      context.commit("ADD_EVENT", { event, changes });
     },
   };
 }

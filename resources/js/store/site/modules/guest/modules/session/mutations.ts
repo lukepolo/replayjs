@@ -9,7 +9,6 @@ export default function() {
       state.sessions = sessions;
     },
     ADD_EVENT: (state: SiteGuestSessionState, { event, changes }) => {
-      console.info("ADDING EVENT");
       if (!state.session[event][changes.timing]) {
         state.session[event][changes.timing] = [];
       }
