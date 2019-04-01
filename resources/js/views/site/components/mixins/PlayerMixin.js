@@ -54,11 +54,11 @@ export default {
         );
       }
       this.timeInterval = this.requestAnimationInterval(() => {
-        this.currentTimePosition = this.currentTimePosition + 10;
+        this.currentTimePosition = this.currentTimePosition + 100;
         if (this.currentTimePosition > this.endTiming) {
           this.stop();
         }
-      }, 10);
+      }, 100);
     },
     stop() {
       this.watchingLive = false;
