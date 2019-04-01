@@ -14,6 +14,7 @@ use App\Jobs\RecordNetworkRequest;
 use App\Jobs\RecordSessionDetails;
 use Vinkla\Hashids\Facades\Hashids;
 use App\Jobs\CacheWebRecorderAssets;
+use App\Jobs\RecordTabVisibilityChange;
 use Ratchet\RFC6455\Messaging\MessageInterface;
 use BeyondCode\LaravelWebSockets\WebSockets\WebSocketHandler;
 
@@ -45,10 +46,13 @@ class WebRecorderHandler extends WebSocketHandler
             case 'mouse-movement':
                 dispatch(new RecordMouseMovement($this->getStreamSession($messagePayload), $messagePayload->data));
                 break;
+            case 'tab-visibility':
+                dispatch(new RecordTabVisibilityChange($this->getStreamSession($messagePayload), $messagePayload->data));
+                break;
             case 'network-request':
                 dispatch(new RecordNetworkRequest($this->getStreamSession($messagePayload), $messagePayload->data));
                 break;
-             case 'console-message':
+            case 'console-message':
                     dispatch(new RecordConsoleMessage($this->getStreamSession($messagePayload), $messagePayload->data));
                 break;
             case 'session-details':

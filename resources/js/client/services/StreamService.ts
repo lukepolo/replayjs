@@ -9,6 +9,7 @@ import CaptureSessionDetails from "../events/CaptureSessionDetails";
 import CaptureMouseMovements from "../events/CaptureMouseMovements";
 import CaptureConsoleMessages from "../events/CaptureConsoleMessages";
 import CaptureNetworkRequests from "../events/CaptureNetworkRequests";
+import CaptureTabVisibilityEvents from "../events/CaptureTabVisibilityEvents";
 
 interface OptionsInterface {
   baseHref?: string;
@@ -26,6 +27,7 @@ export default class StreamService {
   protected captureSessionDetails: CaptureSessionDetails;
   protected captureConsoleMessages: CaptureConsoleMessages;
   protected captureNetworkRequests: CaptureNetworkRequests;
+  protected captureTabVisibilityEvents: CaptureTabVisibilityEvents;
 
   constructor(authService: AuthService, webSocketService: WebSocketService) {
     this.authService = authService;
@@ -46,6 +48,7 @@ export default class StreamService {
             this.captureMouseMovements.setup(this.channel);
             this.captureConsoleMessages.setup(this.channel);
             this.captureNetworkRequests.setup(this.channel);
+            this.captureTabVisibilityEvents.setup(this.channel);
             this.captureSessionDetails.sendDetails(this.channel);
           });
       });
@@ -75,5 +78,6 @@ export default class StreamService {
     this.captureMouseMovements = new CaptureMouseMovements();
     this.captureConsoleMessages = new CaptureConsoleMessages();
     this.captureNetworkRequests = new CaptureNetworkRequests();
+    this.captureTabVisibilityEvents = new CaptureTabVisibilityEvents();
   }
 }
