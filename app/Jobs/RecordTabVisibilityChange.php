@@ -35,6 +35,6 @@ class RecordTabVisibilityChange implements ShouldQueue
      */
     public function handle()
     {
-        Cache::tags([$this->session, 'mouse_clicks'])->put(hrtime(true), $this->data);
+        Cache::tags([$this->session, 'tab_visibility'])->put(hrtime(true), $this->data);
     }
 }
