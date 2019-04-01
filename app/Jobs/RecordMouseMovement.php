@@ -35,8 +35,6 @@ class RecordMouseMovement implements ShouldQueue
      */
     public function handle()
     {
-        Cache::lock($this->session)->get(function () {
-            Cache::tags([$this->session, 'mouse_movements'])->put(hrtime(true), $this->data);
-        });
+        Cache::tags([$this->session, 'mouse_movements'])->put(hrtime(true), $this->data);
     }
 }

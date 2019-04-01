@@ -35,8 +35,6 @@ class RecordConsoleMessage implements ShouldQueue
      */
     public function handle()
     {
-        Cache::lock($this->session)->get(function () {
-            Cache::tags([$this->session, 'console_messages'])->put(hrtime(true), $this->data);
-        });
+        Cache::tags([$this->session, 'console_messages'])->put(hrtime(true), $this->data);
     }
 }

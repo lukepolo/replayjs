@@ -79,7 +79,7 @@ class GuestService
         $data = [];
         $sha = sha1(Cache::tags([$session, $cache])->getTags()->getNamespace());
         foreach (new Iterator\Keyspace($this->redis->client(), "replayjs_cache:$sha:*") as $key) {
-            $data[] =unserialize($this->redis->get($key));
+            $data[] = unserialize($this->redis->get($key));
         }
         return collect($data)->sortBy('timing');
     }

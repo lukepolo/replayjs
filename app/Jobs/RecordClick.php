@@ -35,8 +35,6 @@ class RecordClick implements ShouldQueue
      */
     public function handle()
     {
-        Cache::lock($this->session)->get(function () {
-            Cache::tags([$this->session, 'mouse_clicks'])->put(hrtime(true), $this->data);
-        });
+        Cache::tags([$this->session, 'mouse_clicks'])->put(hrtime(true), $this->data);
     }
 }

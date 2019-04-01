@@ -35,8 +35,6 @@ class RecordDomChanges implements ShouldQueue
      */
     public function handle()
     {
-        Cache::lock($this->session)->get(function () {
-            Cache::tags([$this->session, 'dom_changes'])->put(hrtime(true), $this->data);
-        });
+        Cache::tags([$this->session, 'dom_changes'])->put(hrtime(true), $this->data);
     }
 }
