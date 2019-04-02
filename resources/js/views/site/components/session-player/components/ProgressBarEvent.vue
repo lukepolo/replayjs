@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <div v-if="event.position">
     <div
       class="progress--moment"
       :style="{
-        left: eventPosition,
+        left: event.position,
         'border-right-color': event.color,
       }"
     ></div>
@@ -16,19 +16,11 @@ export default {
     event: {
       required: true,
     },
-    startingPosition: {
-      required: true,
-    },
-    endingPosition: {
-      required: true,
-    },
   },
-  computed: {
-    eventPosition() {
-      return `${((this.event.timing - this.startingPosition) /
-        (this.endingPosition - this.startingPosition)) *
-        100}%`;
-    },
+  data() {
+    return {
+      eventPosition: null,
+    };
   },
 };
 </script>

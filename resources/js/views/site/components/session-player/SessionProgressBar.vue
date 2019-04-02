@@ -20,13 +20,8 @@
           width: currentPositionPercentage,
         }"
       ></div>
-      <template v-for="(event, index) in events">
-        <progress-bar-event
-          :key="index"
-          :event="event"
-          :starting-position="startingPosition"
-          :ending-position="endingPosition"
-        ></progress-bar-event>
+      <template v-for="(event, index) in positionedEvents">
+        <progress-bar-event :key="index" :event="event"></progress-bar-event>
       </template>
     </div>
   </div>
@@ -34,6 +29,9 @@
 
 <script>
 import ProgressBarEvent from "./components/ProgressBarEvent";
+import SessionEventWorker from "./workers/session-event.worker";
+
+const sessionEventWorker = new SessionEventWorker();
 
 export default {
   inject: ["worker"],
@@ -61,12 +59,27 @@ export default {
   data() {
     return {
       events: [],
+      positionedEvents: [],
     };
   },
   mounted() {
     this.worker.onmessage = ({ data }) => {
       requestAnimationFrame(() => {
         this.events.push(data);
+      });
+    };
+
+    this.requestAnimationInterval(() => {
+      sessionEventWorker.postMessage({
+        events: this.events,
+        endingPosition: this.endingPosition,
+        startingPosition: this.startingPosition,
+      });
+    }, 1000);
+
+    sessionEventWorker.onmessage = ({ data }) => {
+      requestAnimationFrame(() => {
+        this.positionedEvents = data.events;
       });
     };
   },
