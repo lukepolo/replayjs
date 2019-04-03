@@ -34,7 +34,7 @@ import SessionEventWorker from "./workers/session-event.worker";
 const sessionEventWorker = new SessionEventWorker();
 
 export default {
-  inject: ["worker"],
+  inject: ["sessionPlayerWorker"],
   components: {
     ProgressBarEvent,
   },
@@ -63,7 +63,7 @@ export default {
     };
   },
   mounted() {
-    this.worker.onmessage = ({ data }) => {
+    this.sessionPlayerWorker.onmessage = ({ data }) => {
       requestAnimationFrame(() => {
         this.events.push(data);
       });

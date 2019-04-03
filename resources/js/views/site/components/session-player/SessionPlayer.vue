@@ -51,7 +51,7 @@ const sessionPlayerWorker = new SessionPlayerWorker();
 export default {
   provide() {
     return {
-      worker: this.worker,
+      sessionPlayerWorker: this.sessionPlayerWorker,
     };
   },
   mixins: [MirrorMixin, PlayerMixin, StreamMixin, MirrorEventsMixin],
@@ -79,7 +79,7 @@ export default {
         if (session && this.initialized === false) {
           this.initialized = true;
           this.initializePlayer();
-          this.worker.postMessage({
+          this.sessionPlayerWorker.postMessage({
             event: "addEvents",
             data: {
               session,
@@ -90,7 +90,7 @@ export default {
     },
   },
   computed: {
-    worker() {
+    sessionPlayerWorker() {
       return sessionPlayerWorker;
     },
   },

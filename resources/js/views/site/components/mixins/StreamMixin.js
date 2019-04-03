@@ -59,7 +59,7 @@ export default {
                   "updateWindowSize",
                   this.watchingLive,
                 );
-                this.worker.postMessage({
+                this.sessionPlayerWorker.postMessage({
                   event: "addEvent",
                   data: {
                     timing: changes.timing,
@@ -77,7 +77,7 @@ export default {
                   "addMouseClick",
                   this.watchingLive,
                 );
-                this.worker.postMessage({
+                this.sessionPlayerWorker.postMessage({
                   event: "addEvent",
                   data: {
                     timing: changes.timing,
@@ -95,7 +95,7 @@ export default {
                   "updateScrollPosition",
                   this.watchingLive,
                 );
-                this.worker.postMessage({
+                this.sessionPlayerWorker.postMessage({
                   event: "addEvent",
                   data: {
                     timing: changes.timing,
@@ -113,7 +113,7 @@ export default {
                   "updateDom",
                   this.watchingLive,
                 );
-                this.worker.postMessage({
+                this.sessionPlayerWorker.postMessage({
                   event: "addEvent",
                   data: {
                     timing: changes.timing,
@@ -131,7 +131,7 @@ export default {
                   "updateDom",
                   this.watchingLive,
                 );
-                this.worker.postMessage({
+                this.sessionPlayerWorker.postMessage({
                   event: "addEvent",
                   data: {
                     timing: changes.timing,
