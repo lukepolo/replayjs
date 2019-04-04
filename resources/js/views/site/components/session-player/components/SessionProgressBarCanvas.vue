@@ -1,6 +1,6 @@
 <template>
-  <div class="my-canvas-wrapper">
-    <canvas ref="progress-bar-canvas"></canvas>
+  <div class="session-progress-bar-canvas__container">
+    <canvas ref="canvas"></canvas>
     <slot></slot>
   </div>
 </template>
@@ -19,6 +19,14 @@ export default {
     endingTime: {
       required: true,
     },
+  },
+  mounted() {
+    this.context = this.canvas.getContext("2d");
+    // This is dictated by the sass
+    this.canvas.height = 20;
+    this.canvas.style.width = "100%";
+    this.canvas.style.height = "20px";
+    this.setCanvasWidth();
   },
   data() {
     return {
@@ -45,23 +53,17 @@ export default {
   },
   computed: {
     canvas() {
-      return this.$refs["progress-bar-canvas"];
+      return this.$refs.canvas;
     },
-  },
-  mounted() {
-    this.context = this.canvas.getContext("2d");
-    // This is dictated by the sass
-    this.canvas.height = 20;
-    this.canvas.style.width = "100%";
-    this.canvas.style.height = "20px";
-    this.setCanvasWidth();
   },
 };
 </script>
 
-<style>
-.my-canvas-wrapper {
-  position: absolute;
-  pointer-events: none;
+<style lang="scss">
+.session-progress-bar-canvas {
+  &__container {
+    position: absolute;
+    pointer-events: none;
+  }
 }
 </style>
