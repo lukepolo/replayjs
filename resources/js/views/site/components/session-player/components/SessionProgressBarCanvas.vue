@@ -9,7 +9,7 @@
 export default {
   provide() {
     return {
-      provider: this.provider,
+      context: this.context,
     };
   },
   props: {
@@ -22,9 +22,7 @@ export default {
   },
   data() {
     return {
-      provider: {
-        context: null,
-      },
+      context: null,
     };
   },
   watch: {
@@ -51,7 +49,7 @@ export default {
     },
   },
   mounted() {
-    this.provider.context = this.canvas.getContext("2d");
+    this.context = this.canvas.getContext("2d");
     this.canvas.height = 20;
     this.canvas.style.width = "100%";
     this.canvas.style.height = "20px";
