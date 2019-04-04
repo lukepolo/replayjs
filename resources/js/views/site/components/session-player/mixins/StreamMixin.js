@@ -1,5 +1,5 @@
 import { playerEventTypes } from "@app/constants/playerEventTypes";
-import { playerEventQueueFunctions } from "@app/constants/playerEventQueueFunctions";
+import { playerEventMirrorFunctions } from "@app/constants/playerEventMirrorFunctions";
 
 export default {
   $inject: ["BroadcastService"],
@@ -37,7 +37,7 @@ export default {
         data: {
           type,
           timing: changes.timing,
-          startingPosition: this.startTiming,
+          startingTime: this.startingTime,
         },
       });
     },
@@ -79,42 +79,42 @@ export default {
                 this._addEvent(
                   playerEventTypes.MouseClick,
                   changes,
-                  playerEventQueueFunctions.MouseClick,
+                  playerEventMirrorFunctions.MouseClick,
                 );
               })
               .listenForWhisper("window-size", (changes) => {
                 this._addEvent(
                   playerEventTypes.WindowSize,
                   changes,
-                  playerEventQueueFunctions.WindowSize,
+                  playerEventMirrorFunctions.WindowSize,
                 );
               })
               .listenForWhisper("scroll", (changes) => {
                 this._addEvent(
                   playerEventTypes.Scroll,
                   changes,
-                  playerEventQueueFunctions.Scroll,
+                  playerEventMirrorFunctions.Scroll,
                 );
               })
               .listenForWhisper("initialize", (changes) => {
                 this._addEvent(
                   playerEventTypes.DomChange,
                   changes,
-                  playerEventQueueFunctions.DomChange,
+                  playerEventMirrorFunctions.DomChange,
                 );
               })
               .listenForWhisper("changes", (changes) => {
                 this._addEvent(
                   playerEventTypes.DomChange,
                   changes,
-                  playerEventQueueFunctions.DomChange,
+                  playerEventMirrorFunctions.DomChange,
                 );
               })
               .listenForWhisper("mouse-movement", (changes) => {
                 this._addEvent(
                   playerEventTypes.MouseMovement,
                   changes,
-                  playerEventQueueFunctions.MouseMovement,
+                  playerEventMirrorFunctions.MouseMovement,
                 );
               })
               .listenForWhisper("network-request", (changes) => {

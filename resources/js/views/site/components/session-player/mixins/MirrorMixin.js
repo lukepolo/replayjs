@@ -19,9 +19,6 @@ export default {
       }
       this.previewDocument.innerHtml = "";
     },
-    isValidTld() {
-      return true;
-    },
     setupIframe({ rootId, children, baseHref }) {
       this.clearIframe();
       this._setupMirror(baseHref);
@@ -65,7 +62,7 @@ export default {
             if (node.tagName === "LINK" && attrName === "href") {
               let isRelativeUrlRx = new RegExp(/^\/(?!\/).*/g);
               if (isRelativeUrlRx.test(value)) {
-                if (this.isValidTld(value)) {
+                if (this._isValidTld(value)) {
                   value = `${$config.get(
                     "app.APP_URL",
                   )}/api/asset?url=${baseHref}${value}`;
@@ -77,6 +74,9 @@ export default {
           return node;
         },
       });
+    },
+    _isValidTld() {
+      return true; // TODO
     },
   },
   computed: {

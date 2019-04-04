@@ -13,10 +13,10 @@ export default {
     };
   },
   props: {
-    startingPosition: {
+    startingTime: {
       required: true,
     },
-    endingPosition: {
+    endingTime: {
       required: true,
     },
   },
@@ -28,7 +28,7 @@ export default {
     };
   },
   watch: {
-    endingPosition: {
+    endingTime: {
       handler() {
         this.setCanvasWidth();
       },
@@ -38,8 +38,7 @@ export default {
     setCanvasWidth() {
       if (this.canvas) {
         let width = Math.ceil(
-          (parseInt(this.endingPosition) - parseInt(this.startingPosition)) /
-            1000,
+          (parseInt(this.endingTime) - parseInt(this.startingTime)) / 1000,
         );
         this.canvas.width =
           width < window.innerWidth ? window.innerWidth : width;

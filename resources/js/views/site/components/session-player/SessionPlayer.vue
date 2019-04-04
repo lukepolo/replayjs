@@ -9,16 +9,16 @@
         Connect To Stream
       </button>
     </div>
-    <pre>Current : {{ currentTimePosition }}</pre>
+    <pre>Current : {{ currentTime }}</pre>
     <session-progress-bar
       v-if="session"
       @play="play"
       @stop="stop"
       @seek="seek"
       :is-playing="isPlaying"
-      :current-position="currentTimePosition"
-      :starting-position="startTiming"
-      :ending-position="endTiming"
+      :current-time="currentTime"
+      :starting-time="startingTime"
+      :ending-time="endingTime"
       :session="session"
     ></session-progress-bar>
     <div>
@@ -83,7 +83,7 @@ export default {
             event: "addEvents",
             data: {
               session,
-              startingPosition: this.startTiming,
+              startingTime: this.startingTime,
             },
           });
         }

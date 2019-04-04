@@ -1,4 +1,4 @@
-export enum playerEventQueueFunctions {
+export enum playerEventMirrorFunctions {
   Scroll = "updateScrollPosition",
   MouseClick = "addMouseClick",
   WindowSize = "updateWindowSize",

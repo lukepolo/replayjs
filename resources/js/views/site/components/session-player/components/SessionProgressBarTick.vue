@@ -5,15 +5,12 @@ export default {
     events: {
       required: true,
     },
-    startingPosition: {
-      required: true,
-    },
-    endingPosition: {
+    endingTime: {
       required: true,
     },
   },
   watch: {
-    endingPosition: {
+    endingTime: {
       immediate: true,
       handler() {
         this.draw();

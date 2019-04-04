@@ -8,7 +8,7 @@ export default {
     queueChanges(changes, event, shouldPlayImmediately = false) {
       for (let timing in changes) {
         let change = changes[timing];
-        if (!this.watchingLive && timing >= this.currentTimePosition) {
+        if (!this.watchingLive && timing >= this.currentTime) {
           if (!this.queuedEvents[timing]) {
             this.queuedEvents[timing] = [];
           }
