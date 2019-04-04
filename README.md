@@ -51,10 +51,6 @@ ReplayJS is an Open Source Project to help support your clients with full sessio
 9. Start Workers
    - `bash php artisan horizon`
 
-## Valet SPA Driver
-
-`bash curl -o ~/.config/valet/Drivers/JavaScriptSPAValetDriver.php https://gist.githubusercontent.com/jakecobley/366ae401f44f53bbaa65dcd7371050c2/raw/d7a5109f49e66c1589ec2d360869f22dcd6cd4fb/JavaScriptSPAValetDriver.php`
-
 ## Fonts and CORS
 
 By default fonts are no able to be cross site. To allow this we need to update our nginx config to allow CORS for fonts.
