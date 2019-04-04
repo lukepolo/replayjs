@@ -1,6 +1,6 @@
 <script>
 export default {
-  inject: ["context"],
+  inject: ["provider"],
   props: {
     events: {
       required: true,
@@ -22,7 +22,7 @@ export default {
       for (let index in this.events) {
         let event = this.events[index];
 
-        const ctx = this.context;
+        const ctx = this.provider.context;
 
         ctx.beginPath();
         ctx.strokeStyle = event.color;
