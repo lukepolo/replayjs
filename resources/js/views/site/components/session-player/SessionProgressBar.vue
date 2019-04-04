@@ -78,7 +78,6 @@ export default {
       if (Array.isArray(data)) {
         return (this.events = data);
       }
-      console.info(data);
       this.events.push(data);
     };
   },

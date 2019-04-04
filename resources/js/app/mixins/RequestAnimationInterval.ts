@@ -2,7 +2,7 @@ import Vue from "vue";
 
 Vue.mixin({
   methods: {
-    requestAnimationInterval(fn, delay = 10) {
+    requestAnimationInterval(fn, delay = 100) {
       let stop;
       let start = new Date().getTime();
 

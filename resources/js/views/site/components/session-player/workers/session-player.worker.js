@@ -17,6 +17,12 @@ const types = {
   window_size_changes: {
     color: "blue",
   },
+  mouse_movements: {
+    color: "gray",
+  },
+  tab_visibility: {
+    color: "black",
+  },
 };
 
 function addEvents(events) {

@@ -16,14 +16,14 @@ export default {
     endingPosition: {
       immediate: true,
       handler() {
-        this.draw();
+        this.draw(0);
       },
     },
   },
   methods: {
-    draw() {
-      for (let index in this.events) {
-        let event = this.events[index];
+    draw(index) {
+      let event = this.events[index];
+      if (event) {
         let x = Math.floor(
           (parseInt(event.timing) - parseInt(this.startingPosition)) / 1000,
         );
@@ -36,11 +36,13 @@ export default {
         ctx.lineTo(x, 100);
 
         ctx.stroke();
+
+        this.draw(index + 1);
       }
     },
   },
   render() {
-    this.draw();
+    this.draw(0);
   },
 };
 </script>
