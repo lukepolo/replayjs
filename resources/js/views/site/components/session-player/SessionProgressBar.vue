@@ -89,7 +89,7 @@ export default {
         this.startingTime + percentageFromLeftSide * this.endingTimeNormalized,
       );
     },
-    convertMsToTime(ms) {
+    _convertMsToTime(ms) {
       let seconds = ms / 1000;
 
       let hours = parseInt(seconds / 3600);
@@ -115,10 +115,10 @@ export default {
       return this.currentTime - this.startingTime;
     },
     endingTimeDisplay() {
-      return this.convertMsToTime(this.endingTimeNormalized);
+      return this._convertMsToTime(this.endingTimeNormalized);
     },
     currentTimeDisplay() {
-      return this.convertMsToTime(this.currentTimeNormalized);
+      return this._convertMsToTime(this.currentTimeNormalized);
     },
     currentTimePercentage() {
       return `${(this.currentTimeNormalized / this.endingTimeNormalized) *
