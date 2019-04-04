@@ -23,6 +23,8 @@ export default Vue.extend({
     $route: {
       immediate: true,
       handler() {
+        this.$store.commit("site/guest/session/SET_SESSION", null);
+
         this.$store.dispatch("site/guest/show", {
           siteId: this.$route.params.site,
           guestId: this.$route.params.guest,

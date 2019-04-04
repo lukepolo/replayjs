@@ -4,12 +4,12 @@ export default {
       isLoading: true,
       timeInterval: null,
       timeoutUpdates: [],
-      currentTimePosition: null,
+      currentTime: null,
     };
   },
   watch: {
-    startTiming(startTiming) {
-      this.currentTimePosition = startTiming;
+    startingTime(startingTime) {
+      this.currentTime = startingTime;
     },
   },
   methods: {
@@ -26,6 +26,7 @@ export default {
       this.queueChanges(this.scrollEvents, "updateScrollPosition", true);
       this.queueChanges(this.windowSizeChanges, "updateWindowSize", true);
       this.queueChanges(this.mouseMovements, "updateMouseMovement", true);
+
       setTimeout(() => {
         this.isLoading = false;
       }, 0);
@@ -35,7 +36,7 @@ export default {
       if (this.isPlaying) {
         this.stop();
       }
-      this.currentTimePosition = seekTo;
+      this.currentTime = seekTo;
       this.initializePlayer(seekTo);
       if (wasPlaying) {
         this.play();
@@ -50,12 +51,12 @@ export default {
               this[event](change);
               delete this.queuedEvents[timing];
             });
-          }, timing - this.currentTimePosition),
+          }, timing - this.currentTime),
         );
       }
       this.timeInterval = this.requestAnimationInterval(() => {
-        this.currentTimePosition = this.currentTimePosition + 100;
-        if (this.currentTimePosition > this.endTiming) {
+        this.currentTime = this.currentTime + 100;
+        if (this.currentTime > this.endTiming) {
           this.stop();
         }
       }, 100);
@@ -101,11 +102,11 @@ export default {
     networkRequests() {
       return this.session && this.session.network_requests;
     },
-    startTiming() {
+    startingTime() {
       return this.rootDom && this.rootDom.timing;
     },
-    endTiming() {
-      if (this.startTiming) {
+    endingTime() {
+      if (this.startingTime) {
         let numbers = [
           Object.keys(this.domChanges)[Object.keys(this.domChanges).length - 1],
           Object.keys(this.mouseClicks)[
@@ -132,7 +133,7 @@ export default {
 
         let endTiming = Math.max(...numbers);
         if (this.watchingLive) {
-          this.currentTimePosition = endTiming;
+          this.currentTime = endTiming;
         }
         return endTiming;
       }

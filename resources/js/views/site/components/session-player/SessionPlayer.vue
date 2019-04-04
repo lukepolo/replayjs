@@ -9,16 +9,16 @@
         Connect To Stream
       </button>
     </div>
-    <pre>Current : {{ currentTimePosition }}</pre>
+    <pre>Current : {{ currentTime }}</pre>
     <session-progress-bar
       v-if="session"
       @play="play"
       @stop="stop"
       @seek="seek"
       :is-playing="isPlaying"
-      :current-position="currentTimePosition"
-      :starting-position="startTiming"
-      :ending-position="endTiming"
+      :current-time="currentTime"
+      :starting-time="startingTime"
+      :ending-time="endingTime"
       :session="session"
     ></session-progress-bar>
     <div>
@@ -39,11 +39,11 @@
 </template>
 
 <script>
-import MirrorMixin from "../mixins/MirrorMixin";
-import PlayerMixin from "../mixins/PlayerMixin";
-import StreamMixin from "../mixins/StreamMixin";
+import MirrorMixin from "./mixins/MirrorMixin";
+import PlayerMixin from "./mixins/PlayerMixin";
+import StreamMixin from "./mixins/StreamMixin";
 import SessionProgressBar from "./SessionProgressBar";
-import MirrorEventsMixin from "../mixins/MirrorEventsMixin";
+import MirrorEventsMixin from "./mixins/MirrorEventsMixin";
 import SessionPlayerWorker from "./workers/session-player.worker";
 
 const sessionPlayerWorker = new SessionPlayerWorker();
@@ -83,6 +83,7 @@ export default {
             event: "addEvents",
             data: {
               session,
+              startingTime: this.startingTime,
             },
           });
         }
@@ -171,7 +172,7 @@ body {
 
 #cursor {
   top: 1px;
-  z-index: 999999999999999999;
+  z-index: 999999999999999999; // rofl
   width: 25px;
   height: 25px;
   position: absolute;

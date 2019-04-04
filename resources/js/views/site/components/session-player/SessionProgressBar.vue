@@ -1,55 +1,60 @@
 <template>
   <div>
-    <div class="playpause">
+    <div class="playAndPause">
       <input
         type="checkbox"
-        id="playpause"
-        name="playpause"
+        id="playAndPause"
+        name="playAndPause"
         :checked="!isPlaying"
-        @click="playPause"
+        @click="playAndPause"
       />
-      <label for="playpause"></label>
+      <label for="playAndPause"></label>
     </div>
     <pre>EVENTS : {{ events.length }}</pre>
     <pre>Current Time : {{ currentTimeDisplay }}</pre>
-    <pre>End Time : {{ endTimeDisplay }}</pre>
+    <pre>End Time : {{ endingTimeDisplay }}</pre>
     <div class="progress" @click="playAtPosition">
       <div
         class="progress--bar"
         :style="{
-          width: currentPositionPercentage,
+          width: currentTimePercentage,
         }"
       ></div>
-      <template v-for="(event, index) in positionedEvents">
-        <progress-bar-event :key="index" :event="event"></progress-bar-event>
-      </template>
+      <session-progress-bar-canvas
+        :starting-time="startingTime"
+        :ending-time="endingTime"
+      >
+        <session-progress-bar-tick
+          :events="events"
+          :ending-time="endingTime"
+        ></session-progress-bar-tick>
+      </session-progress-bar-canvas>
     </div>
   </div>
 </template>
 
 <script>
-import ProgressBarEvent from "./components/ProgressBarEvent";
-import SessionEventWorker from "./workers/session-event.worker";
-
-const sessionEventWorker = new SessionEventWorker();
+import SessionProgressBarTick from "./components/SessionProgressBarTick";
+import SessionProgressBarCanvas from "./components/SessionProgressBarCanvas";
 
 export default {
   inject: ["sessionPlayerWorker"],
   components: {
-    ProgressBarEvent,
+    SessionProgressBarTick,
+    SessionProgressBarCanvas,
   },
   props: {
-    currentPosition: {
+    currentTime: {
       required: true,
     },
     isPlaying: {
       required: true,
       type: Boolean,
     },
-    startingPosition: {
+    startingTime: {
       required: true,
     },
-    endingPosition: {
+    endingTime: {
       required: true,
     },
     session: {
@@ -59,32 +64,18 @@ export default {
   data() {
     return {
       events: [],
-      positionedEvents: [],
     };
   },
   mounted() {
     this.sessionPlayerWorker.onmessage = ({ data }) => {
-      requestAnimationFrame(() => {
-        this.events.push(data);
-      });
-    };
-
-    this.requestAnimationInterval(() => {
-      sessionEventWorker.postMessage({
-        events: this.events,
-        endingPosition: this.endingPosition,
-        startingPosition: this.startingPosition,
-      });
-    }, 1000);
-
-    sessionEventWorker.onmessage = ({ data }) => {
-      requestAnimationFrame(() => {
-        this.positionedEvents = data.events;
-      });
+      if (Array.isArray(data)) {
+        return (this.events = data);
+      }
+      this.events.push(data);
     };
   },
   methods: {
-    playPause() {
+    playAndPause() {
       if (this.isPlaying) {
         return this.$emit("stop");
       }
@@ -95,10 +86,10 @@ export default {
       let percentageFromLeftSide = (event.clientX - rect.left) / rect.right;
       this.$emit(
         "seek",
-        this.startingPosition + percentageFromLeftSide * this.endTime,
+        this.startingTime + percentageFromLeftSide * this.endingTimeNormalized,
       );
     },
-    convertMsToTime(ms) {
+    _convertMsToTime(ms) {
       let seconds = ms / 1000;
 
       let hours = parseInt(seconds / 3600);
@@ -117,20 +108,21 @@ export default {
     },
   },
   computed: {
-    endTime() {
-      return this.endingPosition - this.startingPosition;
+    endingTimeNormalized() {
+      return this.endingTime - this.startingTime;
     },
-    currentTime() {
-      return this.currentPosition - this.startingPosition;
+    currentTimeNormalized() {
+      return this.currentTime - this.startingTime;
     },
-    endTimeDisplay() {
-      return this.convertMsToTime(this.endTime);
+    endingTimeDisplay() {
+      return this._convertMsToTime(this.endingTimeNormalized);
     },
     currentTimeDisplay() {
-      return this.convertMsToTime(this.currentTime);
+      return this._convertMsToTime(this.currentTimeNormalized);
     },
-    currentPositionPercentage() {
-      return `${(this.currentTime / this.endTime) * 100}%`;
+    currentTimePercentage() {
+      return `${(this.currentTimeNormalized / this.endingTimeNormalized) *
+        100}%`;
     },
   },
 };
@@ -164,27 +156,27 @@ export default {
   }
 }
 
-$playPauseHeight: 10px;
-$playPauseWidth: $playPauseHeight / 1.5;
-.playpause {
+$playAndPauseHeight: 10px;
+$playAndPauseWidth: $playAndPauseHeight / 1.5;
+.playAndPause {
   label {
     display: block;
     box-sizing: border-box;
     width: 0;
-    height: $playPauseHeight + 2px;
+    height: $playAndPauseHeight + 2px;
 
     border-color: transparent transparent transparent #202020;
     transition: 100ms all ease;
     cursor: pointer;
     border-style: double;
-    border-width: 0 0 0 $playPauseHeight;
+    border-width: 0 0 0 $playAndPauseHeight;
   }
   input[type="checkbox"] {
     position: absolute;
     left: -9999px;
     &:checked + label {
       border-style: solid;
-      border-width: $playPauseWidth 0 $playPauseWidth $playPauseHeight;
+      border-width: $playAndPauseWidth 0 $playAndPauseWidth $playAndPauseHeight;
     }
   }
 }

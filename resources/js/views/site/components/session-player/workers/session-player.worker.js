@@ -5,43 +5,57 @@ const types = {
   mouse_clicks: {
     color: "orange",
   },
-  scroll_events: {
-    color: "purple",
-  },
   network_requests: {
     color: "green",
   },
   console_messages: {
     color: "red",
   },
-  window_size_changes: {
-    color: "blue",
+  tab_visibility: {
+    color: "black",
   },
 };
 
-function addEvent(event) {
-  postMessage({
-    type: event.type,
-    timing: event.timing,
-    color: types[event.type].color,
-  });
+function addEvents(events) {
+  postMessage(events);
+}
+
+function mapData(eventData, startingTime) {
+  let timing = Math.floor(
+    (parseInt(eventData.timing) - parseInt(startingTime)) / 1000,
+  );
+
+  return {
+    timing,
+    type: eventData.type,
+    color: types[eventData.type].color,
+  };
 }
 
 onmessage = ({ data }) => {
   let eventData = data.data;
   switch (data.event) {
     case "addEvent":
-      addEvent(eventData);
+      if (types[eventData.type]) {
+        addEvents(mapData(eventData, eventData.startingTime));
+      }
       break;
     case "addEvents":
+      let events = [];
       Object.keys(types).forEach((type) => {
         for (let timing in eventData.session[type]) {
-          addEvent({
-            type,
-            timing: timing,
-          });
+          events.push(
+            mapData(
+              {
+                type,
+                timing,
+              },
+              eventData.startingTime,
+            ),
+          );
         }
       });
+      addEvents(events);
       break;
   }
 };
