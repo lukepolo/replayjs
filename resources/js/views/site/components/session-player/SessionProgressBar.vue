@@ -67,7 +67,6 @@ export default {
   data() {
     return {
       events: [],
-      positionedEvents: [],
     };
   },
   mounted() {

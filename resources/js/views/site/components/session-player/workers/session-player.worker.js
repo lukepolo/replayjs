@@ -20,10 +20,14 @@ function addEvents(events) {
   postMessage(events);
 }
 
-function mapData(eventData) {
+function mapData(eventData, startingPosition) {
+  let timing = Math.floor(
+    (parseInt(eventData.timing) - parseInt(startingPosition)) / 1000,
+  );
+
   return {
+    timing,
     type: eventData.type,
-    timing: eventData.timing,
     color: types[eventData.type].color,
   };
 }
@@ -33,7 +37,7 @@ onmessage = ({ data }) => {
   switch (data.event) {
     case "addEvent":
       if (types[eventData.type]) {
-        addEvents(mapData(eventData));
+        addEvents(mapData(eventData, eventData.startingPosition));
       }
       break;
     case "addEvents":
@@ -41,10 +45,13 @@ onmessage = ({ data }) => {
       Object.keys(types).forEach((type) => {
         for (let timing in eventData.session[type]) {
           events.push(
-            mapData({
-              type,
-              timing,
-            }),
+            mapData(
+              {
+                type,
+                timing,
+              },
+              eventData.startingPosition,
+            ),
           );
         }
       });

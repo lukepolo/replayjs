@@ -39,11 +39,11 @@
 </template>
 
 <script>
-import MirrorMixin from "../mixins/MirrorMixin";
-import PlayerMixin from "../mixins/PlayerMixin";
-import StreamMixin from "../mixins/StreamMixin";
+import MirrorMixin from "./mixins/MirrorMixin";
+import PlayerMixin from "./mixins/PlayerMixin";
+import StreamMixin from "./mixins/StreamMixin";
 import SessionProgressBar from "./SessionProgressBar";
-import MirrorEventsMixin from "../mixins/MirrorEventsMixin";
+import MirrorEventsMixin from "./mixins/MirrorEventsMixin";
 import SessionPlayerWorker from "./workers/session-player.worker";
 
 const sessionPlayerWorker = new SessionPlayerWorker();
@@ -83,6 +83,7 @@ export default {
             event: "addEvents",
             data: {
               session,
+              startingPosition: this.startTiming,
             },
           });
         }
@@ -171,7 +172,7 @@ body {
 
 #cursor {
   top: 1px;
-  z-index: 999999999999999999;
+  z-index: 999999999999999999; // rofl
   width: 25px;
   height: 25px;
   position: absolute;

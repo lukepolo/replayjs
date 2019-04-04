@@ -1,4 +1,4 @@
-import { TreeMirror } from "../../../../client/vendor/mirror";
+import { TreeMirror } from "@app/../client/vendor/mirror";
 
 export default {
   created() {

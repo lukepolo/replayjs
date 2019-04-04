@@ -16,33 +16,28 @@ export default {
     endingPosition: {
       immediate: true,
       handler() {
-        this.draw(0);
+        this.draw();
       },
     },
   },
   methods: {
-    draw(index) {
-      let event = this.events[index];
-      if (event) {
-        let x = Math.floor(
-          (parseInt(event.timing) - parseInt(this.startingPosition)) / 1000,
-        );
+    draw() {
+      for (let index in this.events) {
+        let event = this.events[index];
 
         const ctx = this.provider.context;
 
         ctx.beginPath();
         ctx.strokeStyle = event.color;
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x, 20);
+        ctx.moveTo(event.timing, 0);
+        ctx.lineTo(event.timing, 20);
 
         ctx.stroke();
-
-        this.draw(index + 1);
       }
     },
   },
   render() {
-    this.draw(0);
+    this.draw();
   },
 };
 </script>
