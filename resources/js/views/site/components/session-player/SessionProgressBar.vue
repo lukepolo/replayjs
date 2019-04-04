@@ -20,23 +20,34 @@
           width: currentPositionPercentage,
         }"
       ></div>
-      <template v-for="(event, index) in positionedEvents">
-        <progress-bar-event :key="index" :event="event"></progress-bar-event>
-      </template>
+    </div>
+    <div>
+      <br />
+      <session-progress-bar-canvas
+        :starting-position="startingPosition"
+        :ending-position="endingPosition"
+      >
+        <session-progress-bar-tick
+          :events="events"
+          :starting-position="startingPosition"
+          :ending-position="endingPosition"
+        ></session-progress-bar-tick>
+      </session-progress-bar-canvas>
     </div>
   </div>
 </template>
 
 <script>
 import ProgressBarEvent from "./components/ProgressBarEvent";
-import SessionEventWorker from "./workers/session-event.worker";
-
-const sessionEventWorker = new SessionEventWorker();
+import SessionProgressBarTick from "./components/SessionProgressBarTick";
+import SessionProgressBarCanvas from "./components/SessionProgressBarCanvas";
 
 export default {
   inject: ["sessionPlayerWorker"],
   components: {
     ProgressBarEvent,
+    SessionProgressBarTick,
+    SessionProgressBarCanvas,
   },
   props: {
     currentPosition: {
@@ -64,23 +75,11 @@ export default {
   },
   mounted() {
     this.sessionPlayerWorker.onmessage = ({ data }) => {
-      requestAnimationFrame(() => {
-        this.events.push(data);
-      });
-    };
-
-    this.requestAnimationInterval(() => {
-      sessionEventWorker.postMessage({
-        events: this.events,
-        endingPosition: this.endingPosition,
-        startingPosition: this.startingPosition,
-      });
-    }, 1000);
-
-    sessionEventWorker.onmessage = ({ data }) => {
-      requestAnimationFrame(() => {
-        this.positionedEvents = data.events;
-      });
+      if (Array.isArray(data)) {
+        return (this.events = data);
+      }
+      console.info(data);
+      this.events.push(data);
     };
   },
   methods: {

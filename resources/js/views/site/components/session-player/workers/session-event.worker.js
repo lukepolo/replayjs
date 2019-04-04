@@ -2,7 +2,7 @@ onmessage = ({ data }) => {
   data.events.map((event) => {
     event.position = `${((event.timing - data.startingPosition) /
       (data.endingPosition - data.startingPosition)) *
-      100}%`;
+      100}`;
     return event;
   });
 

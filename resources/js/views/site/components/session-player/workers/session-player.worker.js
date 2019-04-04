@@ -19,29 +19,37 @@ const types = {
   },
 };
 
-function addEvent(event) {
-  postMessage({
-    type: event.type,
-    timing: event.timing,
-    color: types[event.type].color,
-  });
+function addEvents(events) {
+  postMessage(events);
+}
+
+function mapData(eventData) {
+  return {
+    type: eventData.type,
+    timing: eventData.timing,
+    color: types[eventData.type].color,
+  };
 }
 
 onmessage = ({ data }) => {
   let eventData = data.data;
   switch (data.event) {
     case "addEvent":
-      addEvent(eventData);
+      addEvents(mapData(eventData));
       break;
     case "addEvents":
+      let events = [];
       Object.keys(types).forEach((type) => {
         for (let timing in eventData.session[type]) {
-          addEvent({
-            type,
-            timing: timing,
-          });
+          events.push(
+            mapData({
+              type,
+              timing,
+            }),
+          );
         }
       });
+      addEvents(events);
       break;
   }
 };
