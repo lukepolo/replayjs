@@ -53,16 +53,17 @@ export default {
   },
   mounted() {
     this.provider.context = this.canvas.getContext("2d");
-    this.canvas.height = 100;
+    this.canvas.height = 20;
     this.canvas.style.width = "100%";
-    this.canvas.style.height = "100px";
+    this.canvas.style.height = "20px";
     this.setCanvasWidth();
   },
 };
 </script>
 
 <style>
-.scaleing {
-  /*transform: scale(1);*/
+.my-canvas-wrapper {
+  position: absolute;
+  pointer-events: none;
 }
 </style>

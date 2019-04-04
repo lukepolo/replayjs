@@ -20,9 +20,6 @@
           width: currentPositionPercentage,
         }"
       ></div>
-    </div>
-    <div>
-      <br />
       <session-progress-bar-canvas
         :starting-position="startingPosition"
         :ending-position="endingPosition"

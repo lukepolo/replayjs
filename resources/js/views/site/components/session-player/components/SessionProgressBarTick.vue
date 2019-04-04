@@ -33,7 +33,7 @@ export default {
         ctx.beginPath();
         ctx.strokeStyle = event.color;
         ctx.moveTo(x, 0);
-        ctx.lineTo(x, 100);
+        ctx.lineTo(x, 20);
 
         ctx.stroke();
 

@@ -5,20 +5,11 @@ const types = {
   mouse_clicks: {
     color: "orange",
   },
-  scroll_events: {
-    color: "purple",
-  },
   network_requests: {
     color: "green",
   },
   console_messages: {
     color: "red",
-  },
-  window_size_changes: {
-    color: "blue",
-  },
-  mouse_movements: {
-    color: "gray",
   },
   tab_visibility: {
     color: "black",
@@ -41,7 +32,9 @@ onmessage = ({ data }) => {
   let eventData = data.data;
   switch (data.event) {
     case "addEvent":
-      addEvents(mapData(eventData));
+      if (types[eventData.type]) {
+        addEvents(mapData(eventData));
+      }
       break;
     case "addEvents":
       let events = [];
