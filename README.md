@@ -1,3 +1,5 @@
+# !!! STILL IN EARLY DEVELOPMENT !!!
+
 # ReplayJS
 
 ReplayJS is an Open Source Project to help support your clients with full session replays.
