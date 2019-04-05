@@ -8,6 +8,8 @@ export default {
       timeInterval: null,
       timeoutUpdates: [],
       skipInactivity: true,
+      skipping: false,
+      skipThreshold: 3000,
     };
   },
   watch: {
@@ -19,20 +21,23 @@ export default {
     initializePlayer() {
       this.isLoading = true;
       this.stop();
-      this.queuedEvents = {};
 
       this.setupIframe(this.rootDom);
       this.updateWindowSize(this.rootWindowSize);
 
+      this.queueEvents();
+
+      setTimeout(() => {
+        this.isLoading = false;
+      }, 0);
+    },
+    queueEvents() {
+      this.queuedEvents = {};
       this.queueChanges(this.domChanges, "updateDom", true);
       this.queueChanges(this.mouseClicks, "addMouseClick");
       this.queueChanges(this.scrollEvents, "updateScrollPosition", true);
       this.queueChanges(this.windowSizeChanges, "updateWindowSize", true);
       this.queueChanges(this.mouseMovements, "updateMouseMovement", true);
-
-      setTimeout(() => {
-        this.isLoading = false;
-      }, 0);
     },
     seek(seekTo) {
       let wasPlaying = this.isPlaying;
@@ -67,11 +72,19 @@ export default {
         }
 
         if (
+          !this.skipping &&
           this.skipInactivity &&
           !this.watchingLive &&
-          this.nextEventTime - this.currentTime > 1500
+          this.nextEventTime - this.currentTime > this.skipThreshold
         ) {
-          this.seek(this.nextEventTime - 1500);
+          this.skipping = true;
+          setTimeout(() => {
+            this.stop();
+            this.currentTime = this.nextEventTime - this.skipThreshold;
+            this.queueEvents();
+            this.play();
+            this.skipping = false;
+          }, this.skipThreshold);
         }
       }, 100);
     },
