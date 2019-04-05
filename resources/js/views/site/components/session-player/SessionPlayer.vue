@@ -15,7 +15,12 @@
     <pre>{{ skipInactivity }}</pre>
 
     <h1>Speed</h1>
-    <pre>{{ speed }}x</pre>
+    <pre>{{ playbackSpeed }}x</pre>
+
+    <button @click="changePlaybackSpeed(1)">x1</button>
+    <button @click="changePlaybackSpeed(1.25)">x1.25</button>
+    <button @click="changePlaybackSpeed(1.5)">x1.5</button>
+    <button @click="changePlaybackSpeed(2)">x2</button>
 
     <h1>Next Event</h1>
     <pre>{{ nextEventTime }}</pre>

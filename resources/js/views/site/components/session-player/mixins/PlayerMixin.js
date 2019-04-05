@@ -1,15 +1,15 @@
 export default {
   data() {
     return {
-      speed: 1,
+      skipping: false,
       isLoading: true,
-      currentTime: null,
+      playbackSpeed: 1,
       queuedEvents: {},
+      currentTime: null,
       timeInterval: null,
       timeoutUpdates: [],
-      skipInactivity: true,
-      skipping: false,
       skipThreshold: 3000,
+      skipInactivity: true,
     };
   },
   watch: {
@@ -18,6 +18,11 @@ export default {
     },
   },
   methods: {
+    changePlaybackSpeed(speed) {
+      this.stop();
+      this.playbackSpeed = speed;
+      this.play();
+    },
     initializePlayer() {
       this.isLoading = true;
       this.stop();
@@ -61,12 +66,13 @@ export default {
               this[event](change);
               this.$delete(this.queuedEvents, timing);
             });
-          }, timing - this.currentTime),
+          }, (timing - this.currentTime) * (1 / this.playbackSpeed)),
         );
       }
 
+      let playbackSpeed = 100 * this.playbackSpeed;
       this.timeInterval = this.requestAnimationInterval(() => {
-        this.currentTime = this.currentTime + 100;
+        this.currentTime = this.currentTime + playbackSpeed;
         if (this.currentTime > this.endTiming) {
           this.stop();
         }
@@ -86,7 +92,7 @@ export default {
             this.skipping = false;
           }, this.skipThreshold);
         }
-      }, 100);
+      }, playbackSpeed);
     },
     stop() {
       this.watchingLive = false;
