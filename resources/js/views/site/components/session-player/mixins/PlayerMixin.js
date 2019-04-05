@@ -1,10 +1,13 @@
 export default {
   data() {
     return {
+      speed: 1,
       isLoading: true,
+      currentTime: null,
+      queuedEvents: {},
       timeInterval: null,
       timeoutUpdates: [],
-      currentTime: null,
+      skipInactivity: true,
     };
   },
   watch: {
@@ -43,21 +46,32 @@ export default {
       }
     },
     play() {
+      this.queuedEvents = Object.assign({}, this.queuedEvents);
+
       for (let timing in this.queuedEvents) {
         let queuedEvents = this.queuedEvents[timing];
         this.timeoutUpdates.push(
           setTimeout(() => {
             queuedEvents.forEach(({ event, change }) => {
               this[event](change);
-              delete this.queuedEvents[timing];
+              this.$delete(this.queuedEvents, timing);
             });
           }, timing - this.currentTime),
         );
       }
+
       this.timeInterval = this.requestAnimationInterval(() => {
         this.currentTime = this.currentTime + 100;
         if (this.currentTime > this.endTiming) {
           this.stop();
+        }
+
+        if (
+          this.skipInactivity &&
+          !this.watchingLive &&
+          this.nextEventTime - this.currentTime > 1500
+        ) {
+          this.seek(this.nextEventTime - 1500);
         }
       }, 100);
     },
@@ -75,6 +89,10 @@ export default {
     },
   },
   computed: {
+    nextEventTime() {
+      let queuedEvents = this.queuedEvents;
+      return Object.keys(queuedEvents)[0];
+    },
     rootDom() {
       return this.session && this.session.root;
     },

@@ -10,6 +10,16 @@
       </button>
     </div>
     <pre>Current : {{ currentTime }}</pre>
+
+    <h1>Skip Inactivity</h1>
+    <pre>{{ skipInactivity }}</pre>
+
+    <h1>Speed</h1>
+    <pre>{{ speed }}x</pre>
+
+    <h1>Next Event</h1>
+    <pre>{{ nextEventTime }}</pre>
+
     <session-progress-bar
       v-if="session"
       @play="play"
