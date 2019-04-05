@@ -92,7 +92,7 @@ export default {
             this.skipping = false;
           }, this.skipThreshold);
         }
-      }, playbackSpeed);
+      }, 100);
     },
     stop() {
       this.watchingLive = false;
