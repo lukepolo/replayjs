@@ -9,6 +9,9 @@ let types = [
   playerEventTypes.NetworkRequest,
 ];
 
+// TODO - do something similar to events worker
+// this allows us to only process smaller jobs after the large call.
+// We then can modify when we need to update the canvas to be every second and let that run without doing multiple runs
 onmessage = ({ data }) => {
   let { session, startingTime } = data.data;
 
