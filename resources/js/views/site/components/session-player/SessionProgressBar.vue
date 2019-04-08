@@ -27,11 +27,18 @@
         :ending-time="endingTime"
       >
         <session-progress-bar-activity
+          style="z-index:1"
           :activity="activity"
           :starting-time="startingTime"
           :ending-time="endingTime"
         ></session-progress-bar-activity>
+      </session-progress-bar-canvas>
+      <session-progress-bar-canvas
+        :starting-time="startingTime"
+        :ending-time="endingTime"
+      >
         <session-progress-bar-tick
+          style="z-index:2"
           :events="events"
           :starting-time="startingTime"
           :ending-time="endingTime"

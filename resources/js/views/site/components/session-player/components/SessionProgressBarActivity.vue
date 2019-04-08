@@ -41,7 +41,7 @@ export default {
 
         ctx.beginPath();
         ctx.lineWidth = 1;
-        ctx.fillStyle = "rgba(244,235,66,.3)";
+        ctx.fillStyle = "rgba(244,235,66,.8)";
         ctx.moveTo(start, 0);
 
         ctx.fillRect(start, 0, end - start, 100);
