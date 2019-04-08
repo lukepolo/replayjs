@@ -1,22 +1,16 @@
 <script>
-import playerTimingConverter from "@app/helpers/playerTimingConverter";
+import CanvasHelpers from "./mixins/CanvasHelpers";
+import CalculateCanvasPlayerPosition from "./mixins/CalculateCanvasPlayerPosition";
 
 export default {
-  inject: ["provider"],
+  mixins: [CanvasHelpers, CalculateCanvasPlayerPosition],
   props: {
     events: {
       required: true,
     },
-    startingTime: {
-      required: true,
-    },
-    endingTime: {
-      required: true,
-    },
   },
   watch: {
-    endingTime: {
-      immediate: true,
+    canvasWidth: {
       handler() {
         this.draw();
       },
@@ -26,21 +20,15 @@ export default {
     draw() {
       for (let index in this.events) {
         let event = this.events[index];
-        let x = event.timing;
-        const ctx = this.provider.context;
 
-        // TODO - this needs to be in the worker
-        x =
-          (x /
-            playerTimingConverter(this.startingTime, this.endingTime, false)) *
-          this.provider.canvas.width;
+        let x = this.calculatePosition(event.timing);
 
-        ctx.beginPath();
-        ctx.strokeStyle = event.color;
-        ctx.lineWidth = 1;
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x, 20);
-        ctx.stroke();
+        this.context.beginPath();
+        this.context.strokeStyle = event.color;
+        this.context.lineWidth = 1;
+        this.context.moveTo(x, 0);
+        this.context.lineTo(x, 20);
+        this.context.stroke();
       }
     },
   },

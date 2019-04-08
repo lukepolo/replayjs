@@ -31,7 +31,8 @@ onmessage = ({ data }) => {
       continue;
     }
 
-    if (lastTiming === null || timing - lastTiming < 1500) {
+    // TODO - this should match whatever is in the config?
+    if (lastTiming === null || timing - lastTiming < 1000) {
       lastTiming = timing;
       continue;
     }

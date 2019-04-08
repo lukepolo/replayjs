@@ -32,6 +32,7 @@ export default {
   data() {
     return {
       provider: {
+        canvas: null,
         context: null,
       },
     };

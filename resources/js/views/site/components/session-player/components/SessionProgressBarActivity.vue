@@ -1,22 +1,16 @@
 <script>
-import playerTimingConverter from "@app/helpers/playerTimingConverter";
+import CanvasHelpers from "./mixins/CanvasHelpers";
+import CalculateCanvasPlayerPosition from "./mixins/CalculateCanvasPlayerPosition";
 
 export default {
-  inject: ["provider"],
+  mixins: [CanvasHelpers, CalculateCanvasPlayerPosition],
   props: {
     activity: {
       required: true,
     },
-    startingTime: {
-      required: true,
-    },
-    endingTime: {
-      required: true,
-    },
   },
   watch: {
-    endingTime: {
-      immediate: true,
+    canvasWidth: {
       handler() {
         this.draw();
       },
@@ -27,25 +21,15 @@ export default {
       for (let index in this.activity) {
         let activity = this.activity[index];
 
-        // TODO - this needs to be in the worker
-        let start =
-          (activity.start /
-            playerTimingConverter(this.startingTime, this.endingTime, false)) *
-          this.provider.canvas.width;
-        let end =
-          (activity.end /
-            playerTimingConverter(this.startingTime, this.endingTime, false)) *
-          this.provider.canvas.width;
+        let start = this.calculatePosition(activity.start);
+        let end = this.calculatePosition(activity.end);
 
-        const ctx = this.provider.context;
-
-        ctx.beginPath();
-        ctx.lineWidth = 1;
-        ctx.fillStyle = "rgba(244,235,66,.8)";
-        ctx.moveTo(start, 0);
-
-        ctx.fillRect(start, 0, end - start, 100);
-        ctx.stroke();
+        this.context.beginPath();
+        this.context.lineWidth = 1;
+        this.context.fillStyle = "rgba(244,235,66,.8)";
+        this.context.moveTo(start, 0);
+        this.context.fillRect(start, 0, end - start, 100);
+        this.context.stroke();
       }
     },
   },
