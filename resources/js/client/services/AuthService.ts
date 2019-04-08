@@ -17,7 +17,6 @@ export default class AuthService {
         api_key: this.getApiKey(),
       },
     );
-    // TODO - session refresh needed?
   }
 
   public getApiKey() {
