@@ -23,6 +23,7 @@ export default {
   mounted() {
     this.provider.canvas = this.canvas;
     this.provider.context = this.canvas.getContext("2d");
+
     // This is dictated by the sass
     this.canvas.height = 20;
     this.canvas.style.width = "100%";
@@ -46,6 +47,7 @@ export default {
   },
   methods: {
     setCanvasWidth() {
+      // TODO - on resize
       if (this.canvas) {
         let width = Math.ceil(
           (parseInt(this.endingTime) - parseInt(this.startingTime)) / 1000,

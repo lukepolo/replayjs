@@ -105,6 +105,7 @@ export default {
             },
           });
 
+          // TODO - this needs to be updated when we have new events (worried about performance on mouse movements)
           this.sessionPlayerActivityWorker.postMessage({
             data: {
               session,

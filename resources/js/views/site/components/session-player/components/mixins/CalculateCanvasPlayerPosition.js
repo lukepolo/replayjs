@@ -11,6 +11,7 @@ export default {
   },
   methods: {
     calculatePosition(position) {
+      // TODO - move startingTime / endingTime into workers
       return (
         (position /
           playerTimingConverter(this.startingTime, this.endingTime, false)) *
