@@ -8,7 +8,7 @@ export default {
       currentTime: null,
       timeInterval: null,
       timeoutUpdates: [],
-      skipInactivity: false,
+      skipInactivity: true,
       skipThreshold: $config.get("player.skipThreshold", 1000),
     };
   },
@@ -86,7 +86,10 @@ export default {
           this.skipping = true;
           setTimeout(() => {
             this.stop();
-            this.currentTime = this.nextEventTime - this.skipThreshold;
+            let newTiming = this.nextEventTime - this.skipThreshold;
+            if (this.currentTime < newTiming) {
+              this.currentTime = newTiming;
+            }
             this.queueEvents();
             this.play();
             this.skipping = false;

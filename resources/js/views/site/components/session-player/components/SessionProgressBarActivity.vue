@@ -44,7 +44,6 @@ export default {
         ctx.moveTo(start, 0);
 
         ctx.fillRect(start, 0, end - start, 100);
-        // ctx.globalAlpha = 1;
         ctx.stroke();
         console.info("Activity", start, end);
       }
