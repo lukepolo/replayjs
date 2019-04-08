@@ -24,8 +24,14 @@
         :starting-time="startingTime"
         :ending-time="endingTime"
       >
+        <session-progress-bar-activity
+          :activity="activity"
+          :starting-time="startingTime"
+          :ending-time="endingTime"
+        ></session-progress-bar-activity>
         <session-progress-bar-tick
           :events="events"
+          :starting-time="startingTime"
           :ending-time="endingTime"
         ></session-progress-bar-tick>
       </session-progress-bar-canvas>
@@ -36,10 +42,12 @@
 <script>
 import SessionProgressBarTick from "./components/SessionProgressBarTick";
 import SessionProgressBarCanvas from "./components/SessionProgressBarCanvas";
+import SessionProgressBarActivity from "./components/SessionProgressBarActivity";
 
 export default {
-  inject: ["sessionPlayerWorker"],
+  inject: ["sessionPlayerEventsWorker", "sessionPlayerActivityWorker"],
   components: {
+    SessionProgressBarActivity,
     SessionProgressBarTick,
     SessionProgressBarCanvas,
   },
@@ -64,14 +72,19 @@ export default {
   data() {
     return {
       events: [],
+      activity: {},
     };
   },
   mounted() {
-    this.sessionPlayerWorker.onmessage = ({ data }) => {
+    this.sessionPlayerEventsWorker.onmessage = ({ data }) => {
       if (Array.isArray(data)) {
         return (this.events = data);
       }
       this.events.push(data);
+    };
+
+    this.sessionPlayerActivityWorker.onmessage = ({ data }) => {
+      this.activity = data.activity;
     };
   },
   methods: {
@@ -98,7 +111,7 @@ export default {
       let minutes = parseInt(seconds / 60);
       seconds = seconds % 60;
 
-      let timeString = `${minutes}:${parseInt(seconds)
+      let timeString = `${minutes.toString().lpad("0", 2)}:${parseInt(seconds)
         .toString()
         .lpad("0", 2)}`;
       if (hours > 0) {

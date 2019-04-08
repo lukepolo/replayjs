@@ -4,7 +4,7 @@ import playerTimingConverter from "@app/helpers/playerTimingConverter";
 export default {
   inject: ["provider"],
   props: {
-    events: {
+    activity: {
       required: true,
     },
     startingTime: {
@@ -24,23 +24,29 @@ export default {
   },
   methods: {
     draw() {
-      for (let index in this.events) {
-        let event = this.events[index];
-        let x = event.timing;
-        const ctx = this.provider.context;
+      for (let index in this.activity) {
+        let activity = this.activity[index];
 
-        x =
-          (x /
+        let start =
+          (activity.start /
+            playerTimingConverter(this.startingTime, this.endingTime, false)) *
+          this.provider.canvas.width;
+        let end =
+          (activity.end /
             playerTimingConverter(this.startingTime, this.endingTime, false)) *
           this.provider.canvas.width;
 
+        const ctx = this.provider.context;
+
         ctx.beginPath();
-        ctx.strokeStyle = event.color;
         ctx.lineWidth = 1;
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x, 20);
-        console.info(`TICK`, x);
+        ctx.fillStyle = "rgba(244,235,66,.1)";
+        ctx.moveTo(start, 0);
+
+        ctx.fillRect(start, 0, end - start, 100);
+        // ctx.globalAlpha = 1;
         ctx.stroke();
+        console.info("Activity", start, end);
       }
     },
   },

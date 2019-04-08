@@ -21,6 +21,7 @@ export default {
     },
   },
   mounted() {
+    this.provider.canvas = this.canvas;
     this.provider.context = this.canvas.getContext("2d");
     // This is dictated by the sass
     this.canvas.height = 20;
@@ -50,6 +51,7 @@ export default {
         );
         this.canvas.width =
           width < window.innerWidth ? window.innerWidth : width;
+        console.info(`WIDTH`, this.canvas.width);
       }
     },
   },
@@ -66,6 +68,7 @@ export default {
   &__container {
     position: absolute;
     pointer-events: none;
+    width: 100%;
   }
 }
 </style>

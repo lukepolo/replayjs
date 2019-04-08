@@ -8,8 +8,8 @@ export default {
       currentTime: null,
       timeInterval: null,
       timeoutUpdates: [],
-      skipThreshold: 3000,
-      skipInactivity: true,
+      skipInactivity: false,
+      skipThreshold: $config.get("player.skipThreshold", 1000),
     };
   },
   watch: {

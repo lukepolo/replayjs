@@ -1,19 +1,22 @@
+import { playerEventTypes } from "@app/constants/playerEventTypes";
+import playerTimingConverter from "@app/helpers/playerTimingConverter";
+
 const types = {
-  dom_changes: {
-    color: "gray",
-  },
-  mouse_clicks: {
-    color: "orange",
-  },
-  network_requests: {
-    color: "green",
-  },
-  console_messages: {
+  [playerEventTypes.DomChange]: {
     color: "red",
   },
-  tab_visibility: {
-    color: "black",
-  },
+  // [playerEventTypes.MouseClick]: {
+  //   color: "orange",
+  // },
+  // [playerEventTypes.NetworkRequest]: {
+  //   color: "green",
+  // },
+  // [playerEventTypes.ConsoleMessage]: {
+  //   color: "red",
+  // },
+  // [playerEventTypes.TabVisibility]: {
+  //   color: "black",
+  // },
 };
 
 function addEvents(events) {
@@ -21,14 +24,10 @@ function addEvents(events) {
 }
 
 function mapData(eventData, startingTime) {
-  let timing = Math.floor(
-    (parseInt(eventData.timing) - parseInt(startingTime)) / 1000,
-  );
-
   return {
-    timing,
     type: eventData.type,
     color: types[eventData.type].color,
+    timing: playerTimingConverter(startingTime, eventData.timing),
   };
 }
 

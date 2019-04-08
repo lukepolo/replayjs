@@ -32,7 +32,7 @@ export default {
         );
       }
 
-      this.sessionPlayerWorker.postMessage({
+      this.sessionPlayerEventsWorker.postMessage({
         event: "addEvent",
         data: {
           type,
