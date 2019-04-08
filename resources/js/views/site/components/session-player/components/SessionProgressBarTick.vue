@@ -29,6 +29,7 @@ export default {
         let x = event.timing;
         const ctx = this.provider.context;
 
+        // TODO - this needs to be in the worker
         x =
           (x /
             playerTimingConverter(this.startingTime, this.endingTime, false)) *
@@ -39,7 +40,6 @@ export default {
         ctx.lineWidth = 1;
         ctx.moveTo(x, 0);
         ctx.lineTo(x, 20);
-        console.info(`TICK`, x);
         ctx.stroke();
       }
     },

@@ -3,20 +3,20 @@ import playerTimingConverter from "@app/helpers/playerTimingConverter";
 
 const types = {
   [playerEventTypes.DomChange]: {
+    color: "orange",
+  },
+  [playerEventTypes.MouseClick]: {
+    color: "orange",
+  },
+  [playerEventTypes.NetworkRequest]: {
+    color: "green",
+  },
+  [playerEventTypes.ConsoleMessage]: {
     color: "red",
   },
-  // [playerEventTypes.MouseClick]: {
-  //   color: "orange",
-  // },
-  // [playerEventTypes.NetworkRequest]: {
-  //   color: "green",
-  // },
-  // [playerEventTypes.ConsoleMessage]: {
-  //   color: "red",
-  // },
-  // [playerEventTypes.TabVisibility]: {
-  //   color: "black",
-  // },
+  [playerEventTypes.TabVisibility]: {
+    color: "black",
+  },
 };
 
 function addEvents(events) {

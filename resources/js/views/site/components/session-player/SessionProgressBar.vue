@@ -20,6 +20,8 @@
           width: currentTimePercentage,
         }"
       ></div>
+      <!--        TODO - need multiple canvas -->
+      <!--        https://stackoverflow.com/questions/3008635/html5-canvas-element-multiple-layers-->
       <session-progress-bar-canvas
         :starting-time="startingTime"
         :ending-time="endingTime"

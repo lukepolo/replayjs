@@ -27,6 +27,7 @@ export default {
       for (let index in this.activity) {
         let activity = this.activity[index];
 
+        // TODO - this needs to be in the worker
         let start =
           (activity.start /
             playerTimingConverter(this.startingTime, this.endingTime, false)) *
@@ -40,12 +41,11 @@ export default {
 
         ctx.beginPath();
         ctx.lineWidth = 1;
-        ctx.fillStyle = "rgba(244,235,66,.1)";
+        ctx.fillStyle = "rgba(244,235,66,.3)";
         ctx.moveTo(start, 0);
 
         ctx.fillRect(start, 0, end - start, 100);
         ctx.stroke();
-        console.info("Activity", start, end);
       }
     },
   },

@@ -51,7 +51,6 @@ export default {
         );
         this.canvas.width =
           width < window.innerWidth ? window.innerWidth : width;
-        console.info(`WIDTH`, this.canvas.width);
       }
     },
   },
