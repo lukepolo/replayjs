@@ -14,6 +14,7 @@ ReplayJS is an Open Source Project to help support your clients with full sessio
   - Network Traffic
   - Console Messages
   - Window Size Changes
+  - Tab Visibility
   - Session / User Details
   - Filter Private Data - TODO
 - Live Session Playback
