@@ -5,7 +5,7 @@ import CalculateCanvasPlayerPosition from "./mixins/CalculateCanvasPlayerPositio
 export default {
   mixins: [CanvasHelpers, CalculateCanvasPlayerPosition],
   props: {
-    activity: {
+    activityRanges: {
       required: true,
     },
   },
@@ -18,11 +18,11 @@ export default {
   },
   methods: {
     draw() {
-      for (let index in this.activity) {
-        let activity = this.activity[index];
+      for (let index in this.activityRanges) {
+        let activityRange = this.activityRanges[index];
 
-        let start = this.calculatePosition(activity.start);
-        let end = this.calculatePosition(activity.end);
+        let start = this.calculatePosition(activityRange.start);
+        let end = this.calculatePosition(activityRange.end || this.maxTiming);
 
         this.context.beginPath();
         this.context.lineWidth = 1;

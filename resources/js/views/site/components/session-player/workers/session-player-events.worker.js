@@ -19,6 +19,7 @@ const types = {
   },
 };
 
+let events = [];
 let startingTime;
 
 function mapData(type, timing) {
@@ -30,18 +31,16 @@ function mapData(type, timing) {
 }
 
 onmessage = ({ data }) => {
-  let events = [];
   let eventData = data.data;
 
   switch (data.event) {
     case "addEvent":
       if (types[eventData.type]) {
-        events = mapData(eventData.type, eventData.timing);
+        events.push(mapData(eventData.type, eventData.timing));
       }
       break;
     case "addEvents":
       startingTime = eventData.startingTime;
-
       Object.keys(types).forEach((type) => {
         for (let timing in eventData.session[type]) {
           events.push(mapData(type, timing));
@@ -49,6 +48,5 @@ onmessage = ({ data }) => {
       });
       break;
   }
-
   postMessage(events);
 };

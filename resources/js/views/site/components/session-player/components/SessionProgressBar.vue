@@ -26,9 +26,9 @@
       >
         <session-progress-bar-activity
           style="z-index:1"
-          :activity="activity"
           :starting-time="startingTime"
           :ending-time="endingTime"
+          :activity-ranges="activityRanges"
         ></session-progress-bar-activity>
       </session-progress-bar-canvas>
       <session-progress-bar-canvas
@@ -47,9 +47,9 @@
 </template>
 
 <script>
-import SessionProgressBarTick from "./components/SessionProgressBarTick";
-import SessionProgressBarCanvas from "./components/SessionProgressBarCanvas";
-import SessionProgressBarActivity from "./components/SessionProgressBarActivity";
+import SessionProgressBarTick from "./progress-bar-components/SessionProgressBarTick";
+import SessionProgressBarCanvas from "./progress-bar-components/SessionProgressBarCanvas";
+import SessionProgressBarActivity from "./progress-bar-components/SessionProgressBarActivity";
 
 export default {
   inject: ["sessionPlayerEventsWorker", "sessionPlayerActivityWorker"],
@@ -79,19 +79,15 @@ export default {
   data() {
     return {
       events: [],
-      activity: {},
+      activityRanges: [],
     };
   },
   mounted() {
     this.sessionPlayerEventsWorker.onmessage = ({ data }) => {
-      if (Array.isArray(data)) {
-        return (this.events = data);
-      }
-      this.events.push(data);
+      this.events = data;
     };
-
     this.sessionPlayerActivityWorker.onmessage = ({ data }) => {
-      this.activity = data.activity;
+      this.activityRanges = data;
     };
   },
   methods: {

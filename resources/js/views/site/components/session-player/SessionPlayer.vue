@@ -57,8 +57,8 @@
 import MirrorMixin from "./mixins/MirrorMixin";
 import PlayerMixin from "./mixins/PlayerMixin";
 import StreamMixin from "./mixins/StreamMixin";
-import SessionProgressBar from "./SessionProgressBar";
 import MirrorEventsMixin from "./mixins/MirrorEventsMixin";
+import SessionProgressBar from "./components/SessionProgressBar";
 import SessionPlayerEventsWorker from "./workers/session-player-events.worker";
 import SessionPlayerActivityWorker from "./workers/session-player-activity.worker";
 
@@ -110,6 +110,7 @@ export default {
             data: {
               session,
               startingTime: this.startingTime,
+              skipThreshold: this.skipThreshold,
             },
           });
         }

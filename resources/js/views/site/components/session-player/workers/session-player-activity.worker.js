@@ -3,6 +3,9 @@ import playerTimingConverter from "@app/helpers/playerTimingConverter";
 
 let timings = [];
 let startingTime;
+let skipThreshold;
+let activityRanges = [];
+
 let types = [
   playerEventTypes.Scroll,
   playerEventTypes.MouseClick,
@@ -12,41 +15,47 @@ let types = [
 ];
 
 function getActivityRanges() {
-  let activity = [];
   let lastTiming = null;
+  let startActivityTimingIndex;
   let startActivityTiming = null;
 
-  for (let timingIndex in timings) {
+  for (let timingIndex in timings.sort()) {
     let timing = timings[timingIndex];
 
     if (startActivityTiming === null) {
       startActivityTiming = timing;
+      startActivityTimingIndex = timingIndex;
       continue;
     }
 
-    // TODO - this should match whatever is in the config?
-    if (lastTiming === null || timing - lastTiming < 1000) {
+    if (lastTiming === null || timing - lastTiming < skipThreshold) {
       lastTiming = timing;
       continue;
     }
 
-    activity.push({
+    activityRanges.push({
       start: playerTimingConverter(startingTime, startActivityTiming),
       end: playerTimingConverter(startingTime, lastTiming),
     });
 
     lastTiming = null;
     startActivityTiming = null;
+    startActivityTimingIndex = null;
   }
 
-  if (startActivityTiming && lastTiming) {
-    activity.push({
-      start: playerTimingConverter(startingTime, startActivityTiming),
-      end: playerTimingConverter(startingTime, lastTiming),
-    });
+  if (startActivityTimingIndex >= 0) {
+    timings = timings.splice(startActivityTimingIndex);
+    return activityRanges.concat([
+      {
+        start: startActivityTiming
+          ? playerTimingConverter(startingTime, startActivityTiming)
+          : null,
+      },
+    ]);
   }
 
-  return activity;
+  timings = [];
+  return activityRanges;
 }
 
 onmessage = ({ data }) => {
@@ -57,6 +66,7 @@ onmessage = ({ data }) => {
       break;
     case "addAllActivity":
       startingTime = eventData.startingTime;
+      skipThreshold = eventData.skipThreshold;
 
       for (let type in types) {
         timings = Object.values(
@@ -66,7 +76,5 @@ onmessage = ({ data }) => {
       break;
   }
 
-  postMessage({
-    activity: getActivityRanges(timings.sort()),
-  });
+  postMessage(getActivityRanges());
 };

@@ -11,11 +11,12 @@ export default {
   },
   methods: {
     calculatePosition(position) {
-      return (
-        (position /
-          playerTimingConverter(this.startingTime, this.endingTime, false)) *
-        this.canvasWidth
-      );
+      return (position / this.maxTiming) * this.canvasWidth;
+    },
+  },
+  computed: {
+    maxTiming() {
+      return playerTimingConverter(this.startingTime, this.endingTime, false);
     },
   },
 };
