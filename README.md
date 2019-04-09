@@ -44,7 +44,7 @@ ReplayJS is an Open Source Project to help support your clients with full sessio
    - [Installing NVM](https://github.com/creationix/nvm)
    - Set your default node version
    - `bash nvm alias default 10.15.3`
-6. Installing Node Modules
+6. Ins``talling Node Modules
    - `bash nvm use`
    - `bash npm ci`
 7. Building UI
