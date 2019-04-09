@@ -28,6 +28,9 @@ export default {
     this.canvas.height = 20;
     this.canvas.style.width = "100%";
     this.canvas.style.height = "20px";
+
+    window.addEventListener("resize", this.setCanvasWidth);
+
     this.setCanvasWidth();
   },
   data() {
@@ -35,6 +38,7 @@ export default {
       provider: {
         canvas: null,
         context: null,
+        canvasWidth: null,
       },
     };
   },
@@ -47,13 +51,13 @@ export default {
   },
   methods: {
     setCanvasWidth() {
-      // TODO - on resize
       if (this.canvas) {
         let width = Math.ceil(
           (parseInt(this.endingTime) - parseInt(this.startingTime)) / 1000,
         );
         this.canvas.width =
           width < window.innerWidth ? window.innerWidth : width;
+        this.provider.canvasWidth = this.canvas.width;
       }
     },
   },
@@ -61,6 +65,9 @@ export default {
     canvas() {
       return this.$refs.canvas;
     },
+  },
+  beforeDestroy() {
+    window.removeEventListener("resize", this.setCanvasWidth);
   },
 };
 </script>

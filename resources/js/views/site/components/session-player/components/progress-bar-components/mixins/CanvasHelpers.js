@@ -8,7 +8,7 @@ export default {
       return this.provider && this.provider.canvas;
     },
     canvasWidth() {
-      return this.canvas && this.canvas.width;
+      return this.provider && this.provider.canvasWidth;
     },
   },
 };
