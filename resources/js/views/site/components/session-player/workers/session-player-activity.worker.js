@@ -1,6 +1,8 @@
 import { playerEventTypes } from "@app/constants/playerEventTypes";
 import playerTimingConverter from "@app/helpers/playerTimingConverter";
 
+let timings = [];
+let startingTime;
 let types = [
   playerEventTypes.Scroll,
   playerEventTypes.MouseClick,
@@ -9,19 +11,7 @@ let types = [
   playerEventTypes.NetworkRequest,
 ];
 
-// TODO - do something similar to events worker
-// this allows us to only process smaller jobs after the large call.
-// We then can modify when we need to update the canvas to be every second and let that run without doing multiple runs
-onmessage = ({ data }) => {
-  let { session, startingTime } = data.data;
-
-  let timings = {};
-  for (let type in types) {
-    timings = Object.values(
-      Object.assign(timings, Object.keys(session[types[type]])),
-    ).sort();
-  }
-
+function getActivityRanges() {
   let activity = [];
   let lastTiming = null;
   let startActivityTiming = null;
@@ -56,7 +46,27 @@ onmessage = ({ data }) => {
     });
   }
 
+  return activity;
+}
+
+onmessage = ({ data }) => {
+  let eventData = data.data;
+  switch (data.event) {
+    case "addActivity":
+      timings.push(eventData.timing);
+      break;
+    case "addAllActivity":
+      startingTime = eventData.startingTime;
+
+      for (let type in types) {
+        timings = Object.values(
+          Object.assign(timings, Object.keys(eventData.session[types[type]])),
+        );
+      }
+      break;
+  }
+
   postMessage({
-    activity,
+    activity: getActivityRanges(timings.sort()),
   });
 };

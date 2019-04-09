@@ -105,8 +105,8 @@ export default {
             },
           });
 
-          // TODO - this needs to be updated when we have new events (worried about performance on mouse movements)
           this.sessionPlayerActivityWorker.postMessage({
+            event: "addAllActivity",
             data: {
               session,
               startingTime: this.startingTime,

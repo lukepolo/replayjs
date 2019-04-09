@@ -19,42 +19,36 @@ const types = {
   },
 };
 
-function addEvents(events) {
-  postMessage(events);
-}
+let startingTime;
 
-function mapData(eventData, startingTime) {
+function mapData(type, timing) {
   return {
-    type: eventData.type,
-    color: types[eventData.type].color,
-    timing: playerTimingConverter(startingTime, eventData.timing),
+    type,
+    color: types[type].color,
+    timing: playerTimingConverter(startingTime, timing),
   };
 }
 
 onmessage = ({ data }) => {
+  let events = [];
   let eventData = data.data;
+
   switch (data.event) {
     case "addEvent":
       if (types[eventData.type]) {
-        addEvents(mapData(eventData, eventData.startingTime));
+        events = mapData(eventData.type, eventData.timing);
       }
       break;
     case "addEvents":
-      let events = [];
+      startingTime = eventData.startingTime;
+
       Object.keys(types).forEach((type) => {
         for (let timing in eventData.session[type]) {
-          events.push(
-            mapData(
-              {
-                type,
-                timing,
-              },
-              eventData.startingTime,
-            ),
-          );
+          events.push(mapData(type, timing));
         }
       });
-      addEvents(events);
       break;
   }
+
+  postMessage(events);
 };

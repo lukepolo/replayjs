@@ -35,9 +35,15 @@ export default {
       this.sessionPlayerEventsWorker.postMessage({
         event: "addEvent",
         data: {
-          type,
+          type: event,
           timing: changes.timing,
-          startingTime: this.startingTime,
+        },
+      });
+
+      this.sessionPlayerActivityWorker.postMessage({
+        event: "addActivity",
+        data: {
+          timing: changes.timing,
         },
       });
     },
