@@ -32,27 +32,27 @@ ReplayJS is an Open Source Project to help support your clients with full sessio
 ## Installation
 
 1. Copy .env_example
-   - `bash cp .env_example .env`
+   - `cp .env_example .env`
 2. Composer install
-   - `bash composer install`
+   - `composer install`
 3. Update .env
-   - `bash php artisan key:generate`
+   - `php artisan key:generate`
 4. Migrate
-   - `bash php artisan migrate -- seed`
+   - `php artisan migrate -- seed`
 5. NVM
    This allows you to change node / npm versions on the fly :
    - [Installing NVM](https://github.com/creationix/nvm)
    - Set your default node version
-   - `bash nvm alias default 10.15.3`
+   - `nvm alias default 10.15.3`
 6. Ins``talling Node Modules
-   - `bash nvm use`
-   - `bash npm ci`
+   - `nvm use`
+   - `npm ci`
 7. Building UI
-   - `bash npm run dev`
+   - `npm run dev`
 8. Run Web Socket Server
-   - `bash npm run websocket-server`
+   - `npm run websocket-server`
 9. Start Workers
-   - `bash php artisan horizon`
+   - `php artisan horizon`
 
 ## Fonts and CORS
 
@@ -112,7 +112,7 @@ To allow PHP to know how to get assets from other local sites you need to add th
 When you refresh your database you will may leave left over recordings in redis.
 You should clear your cache whenever you refresh your database.
 
-`bash php artisan cache:clear`
+`php artisan cache:clear`
 
 ## Built With
 
