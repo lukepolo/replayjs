@@ -7,12 +7,14 @@ use App\Jobs\RecordScroll;
 use Illuminate\Support\Str;
 use App\Jobs\RecordDomChanges;
 use App\Jobs\RecordWindowSize;
+use App\Jobs\RecordChatMessage;
 use Ratchet\ConnectionInterface;
 use App\Jobs\RecordMouseMovement;
 use App\Jobs\RecordConsoleMessage;
 use App\Jobs\RecordNetworkRequest;
 use App\Jobs\RecordSessionDetails;
 use Vinkla\Hashids\Facades\Hashids;
+use App\Jobs\MarkChatMessageAsRead;
 use App\Jobs\CacheWebRecorderAssets;
 use App\Jobs\RecordTabVisibilityChange;
 use Ratchet\RFC6455\Messaging\MessageInterface;
@@ -57,6 +59,12 @@ class WebRecorderHandler extends WebSocketHandler
                 break;
             case 'session-details':
                 dispatch(new RecordSessionDetails($this->getStreamSession($messagePayload), $messagePayload->data));
+                break;
+            case 'chat-message':
+                dispatch(new RecordChatMessage($this->getStreamSession($messagePayload), $messagePayload->data));
+                break;
+            case 'mark-chat-message-as-read':
+                dispatch(new MarkChatMessageAsRead($this->getStreamSession($messagePayload), $messagePayload->data));
                 break;
             default:
                 dump($messagePayload->event);

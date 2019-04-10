@@ -9,11 +9,8 @@ import CaptureSessionDetails from "../events/CaptureSessionDetails";
 import CaptureMouseMovements from "../events/CaptureMouseMovements";
 import CaptureConsoleMessages from "../events/CaptureConsoleMessages";
 import CaptureNetworkRequests from "../events/CaptureNetworkRequests";
+import StreamOptionsInterface from "../interfaces/StreamOptionsInterface";
 import CaptureTabVisibilityEvents from "../events/CaptureTabVisibilityEvents";
-
-interface OptionsInterface {
-  baseHref?: string;
-}
 
 export default class StreamService {
   protected authService: AuthService;
@@ -34,26 +31,23 @@ export default class StreamService {
     this.webSocketService = webSocketService;
   }
 
-  public connect(options: OptionsInterface = {}) {
-    if (this.authService.isAuthed()) {
-      this.boot(options);
-      return this.webSocketService.connect().then((channel) => {
-        this.channel = channel
-          .join(`stream.${this.authService.getSession()}`)
-          .here(() => {
-            this.mirrorClient.connect(this.channel);
-            this.captureClicks.setup(this.channel);
-            this.captureScrollEvents.setup(this.channel);
-            this.captureWindowResize.setup(this.channel);
-            this.captureMouseMovements.setup(this.channel);
-            this.captureConsoleMessages.setup(this.channel);
-            this.captureNetworkRequests.setup(this.channel);
-            this.captureTabVisibilityEvents.setup(this.channel);
-            this.captureSessionDetails.sendDetails(this.channel);
-          });
-      });
-    }
-    throw Error("There was an error connecting you to the client.");
+  public connect(options: StreamOptionsInterface = {}) {
+    this.boot(options);
+    this.webSocketService.connect().then((channel) => {
+      this.channel = channel
+        .join(`stream.${this.authService.getSession()}`)
+        .here(() => {
+          this.mirrorClient.connect(this.channel);
+          this.captureClicks.setup(this.channel);
+          this.captureScrollEvents.setup(this.channel);
+          this.captureWindowResize.setup(this.channel);
+          this.captureMouseMovements.setup(this.channel);
+          this.captureConsoleMessages.setup(this.channel);
+          this.captureNetworkRequests.setup(this.channel);
+          this.captureTabVisibilityEvents.setup(this.channel);
+          this.captureSessionDetails.sendDetails(this.channel);
+        });
+    });
   }
 
   protected disconnect() {
@@ -66,7 +60,7 @@ export default class StreamService {
     this.captureNetworkRequests.teardown();
   }
 
-  protected boot(options: OptionsInterface = {}) {
+  protected boot(options: StreamOptionsInterface = {}) {
     this.captureSessionDetails = new CaptureSessionDetails();
     this.mirrorClient = new MirrorClient(
       options.baseHref || window.location.origin,

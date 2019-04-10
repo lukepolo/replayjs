@@ -21,6 +21,11 @@ class Guest extends Authenticatable implements JWTSubject
         return $this->hasMany(GuestSession::class);
     }
 
+    public function chat()
+    {
+        return $this->hasOne(GuestChat::class);
+    }
+
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.
      *

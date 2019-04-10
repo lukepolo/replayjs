@@ -75,7 +75,6 @@ module.exports = function(env) {
       config.module.rules.delete("fonts");
       config.module.rules.delete("images");
 
-      config.plugins.delete("vue");
       config.plugins.delete("html");
       config.plugins.delete("clean");
       config.plugins.delete("multi-build");

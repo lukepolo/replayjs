@@ -17,6 +17,7 @@
 
 <script>
 export default {
+  $inject: ["BroadcastService"],
   created() {
     this.$store.dispatch("site/guest/show", {
       siteId: this.$route.params.site,
@@ -26,6 +27,15 @@ export default {
       siteId: this.$route.params.site,
       guestId: this.$route.params.guest,
     });
+
+    this.channel = this.broadcastService
+      .join(`chat.E529yqvVrNZ0k3JPE9PQBKgxbWdXOjw4`)
+      .here(() => {
+        console.info("joined!");
+      })
+      .listenForWhisper("chat-message", (data) => {
+        console.info(data);
+      });
   },
   computed: {
     guest() {

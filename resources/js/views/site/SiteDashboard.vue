@@ -23,6 +23,10 @@
 <script>
 import Vue from "vue";
 
+// TODO - implement
+// chat-message
+// mark-chat-message-as-read
+
 export default Vue.extend({
   watch: {
     $route: {
