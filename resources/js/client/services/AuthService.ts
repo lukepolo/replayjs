@@ -2,7 +2,11 @@ import HttpService from "./../services/HttpService";
 
 export default class AuthService {
   private identity: {
-    guest: string;
+    guest: {
+      hash: string;
+      name: string;
+      email: string;
+    };
     session: string;
   };
   protected apiKey: string;
@@ -27,7 +31,7 @@ export default class AuthService {
   }
 
   public getGuest() {
-    if (this.identity.guest) {
+    if (this.identity) {
       return this.identity.guest;
     }
   }

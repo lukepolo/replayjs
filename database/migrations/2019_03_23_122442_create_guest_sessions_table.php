@@ -14,8 +14,8 @@ class CreateGuestSessionsTable extends Migration
     public function up()
     {
         Schema::create('guest_sessions', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->bigInteger('guest_id');
+            $table->bigIncrements('id')->unsigned();
+            $table->bigInteger('guest_id')->unsigned();
             $table->string('user_agent');
             $table->timestamps();
         });

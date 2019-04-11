@@ -20,7 +20,7 @@ export default class ChatService {
   public connect(options: ChatOptionsInterface = {}) {
     this.webSocketService.connect().then((channel) => {
       this.channel = channel
-        .join(`chat.${this.authService.getGuest()}`)
+        .join(`chat.${this.authService.getGuest().hash}`)
         .here(() => {
           // TODO - they should pass options for this , GET FROM API?
           this.show();
@@ -38,7 +38,7 @@ export default class ChatService {
         h(ClientChat, {
           props: {
             channel: this.channel,
-            userName: this.authService.getGuest(),
+            userData: this.authService.getGuest(),
           },
         }),
     }).$mount(this.chatElement);

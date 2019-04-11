@@ -14,12 +14,11 @@ class CreateGuestChatMessagesTable extends Migration
     public function up()
     {
         Schema::create('guest_chat_messages', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            // TODO - polymorphic relationship for user / chat
-            $table->integer('guest_chat_message_type_id')->unsigned()->nullable();
-            $table->string('guest_chat_message_type');
-            $table->timestamp('user_read')->nullable();
-            $table->timestamp('guest_read')->nullable();
+            $table->bigIncrements('id')->unsigned();
+            $table->bigInteger('user')->unsigned();
+            $table->bigInteger('guest_chat_id')->unsigned();
+            $table->string('user_type');
+            $table->string('message');
             $table->timestamps();
         });
     }

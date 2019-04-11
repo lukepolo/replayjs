@@ -19,7 +19,7 @@ export default class CaptureMouseMovements implements ListenInterface {
     this.whisper({
       x: event.pageX,
       y: event.pageY,
-      timing: new Date().getTime(),
+      timing: Date.now(),
     });
   }
 

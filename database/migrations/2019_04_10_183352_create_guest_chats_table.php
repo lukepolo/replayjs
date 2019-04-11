@@ -14,8 +14,9 @@ class CreateGuestChatsTable extends Migration
     public function up()
     {
         Schema::create('guest_chats', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->integer('guest_session_id')->unsigned()->nullable();
+            $table->bigIncrements('id')->unsigned();
+            $table->bigInteger('guest_id')->unsigned();
+            $table->boolean('resolved')->default(false);
             $table->timestamps();
         });
     }

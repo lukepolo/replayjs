@@ -5,9 +5,9 @@
 
     <div>
       <client-chat
+        :user-data="user"
         :is-agent="true"
         :channel="channel"
-        :user-name="user.name"
       ></client-chat>
     </div>
     <div v-for="session in sessions">

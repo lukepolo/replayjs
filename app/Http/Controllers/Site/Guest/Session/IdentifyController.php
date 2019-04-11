@@ -34,8 +34,12 @@ class IdentifyController extends Controller
         );
 
         return [
+            "guest" => [
+                "hash" => $session->guest->hash,
+                "name" => $session->guest->name,
+                "email" => $session->guest->email,
+            ],
             "session" => $session->encode(),
-            "guest" => $session->guest->encode(),
             "expires" => \Carbon\Carbon::now()->add('1', 'hour'),
         ];
     }

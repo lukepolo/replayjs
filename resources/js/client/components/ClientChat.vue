@@ -30,7 +30,7 @@ export default {
     channel: {
       required: true,
     },
-    userName: {
+    userData: {
       required: true,
     },
     isAgent: {
@@ -73,12 +73,12 @@ export default {
               this.messages.push(data);
             })
             .listenForWhisper("chat-typing", (data) => {
-              clearTimeout(this.peopleTyping[data.userName]);
+              clearTimeout(this.peopleTyping[data.user.hash]);
               this.$set(
                 this.peopleTyping,
-                data.userName,
+                data.user.hash,
                 setTimeout(() => {
-                  this.$delete(this.peopleTyping, data.userName);
+                  this.$delete(this.peopleTyping, data.user.hash);
                 }, 3000),
               );
             });
@@ -89,14 +89,15 @@ export default {
   methods: {
     showTyping() {
       this.channel.whisper("chat-typing", {
-        userName: this.userName,
+        user: this.userData,
       });
     },
     sendMessage() {
       let message = {
+        user: this.userData,
         message: this.message,
-        userName: this.userName,
-        createdAt: new Date().getTime(),
+        isAgent: this.isAgent,
+        createdAt: Date.now(),
       };
       this.channel.whisper("chat-message", message);
       this.messages.push(message);

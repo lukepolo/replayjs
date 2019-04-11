@@ -27,7 +27,7 @@ export default class MirrorClient {
             children,
             joiningEvent,
             baseHref: this.baseHref,
-            timing: new Date().getTime(),
+            timing: Date.now(),
           });
           this.inputEvents.setup();
         },
@@ -37,7 +37,7 @@ export default class MirrorClient {
             removed,
             attributes,
             addedOrMoved,
-            timing: new Date().getTime(),
+            timing: Date.now(),
           });
           if (addedOrMoved.length) {
             this.inputEvents.setup();
