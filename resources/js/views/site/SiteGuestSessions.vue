@@ -9,7 +9,7 @@
           params: { site: $route.params.site, session: session.hash },
         }"
       >
-        <pre>{{ session.session }}</pre>
+        <pre>{{ session.hash }}</pre>
       </router-link>
     </div>
   </div>
