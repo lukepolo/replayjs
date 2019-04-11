@@ -34,7 +34,7 @@ class GuestService
     {
         $guest = Guest::firstOrCreate([
              'ip_address' => $ipAddress,
-             'site_id' => $this->siteModel->decode($apiKeyHash)->id,
+             'site_id' => Site::findOrFail((new Site())->decode($apiKeyHash))->id,
         ]);
         $guest->isGuest = true;
         return $guest;

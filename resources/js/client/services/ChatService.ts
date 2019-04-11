@@ -33,12 +33,12 @@ export default class ChatService {
     this.chatElement = document.createElement("div");
     this.chatElement.id = "replayjs-chat";
     document.body.appendChild(this.chatElement);
-
     new Vue({
       render: (h) =>
         h(ClientChat, {
           props: {
             channel: this.channel,
+            userName: this.authService.getGuest(),
           },
         }),
     }).$mount(this.chatElement);

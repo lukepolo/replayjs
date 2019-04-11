@@ -2,6 +2,10 @@
   <div>
     <h3>Sessions</h3>
     <pre>{{ guest }}</pre>
+
+    <div>
+      <client-chat :channel="channel" :user-name="user.name"></client-chat>
+    </div>
     <div v-for="session in sessions">
       <router-link
         :to="{
@@ -16,7 +20,9 @@
 </template>
 
 <script>
+import ClientChat from "../../client/components/ClientChat";
 export default {
+  components: { ClientChat },
   $inject: ["BroadcastService"],
   created() {
     this.$store.dispatch("site/guest/show", {
@@ -28,20 +34,18 @@ export default {
       guestId: this.$route.params.guest,
     });
   },
+  data() {
+    return {
+      channel: null,
+    };
+  },
   watch: {
     guest: {
       immediate: true,
       handler(guest) {
         if (guest) {
           console.info(`chat.${guest.hash}`);
-          this.channel = this.broadcastService
-            .join(`chat.${guest.hash}`)
-            .here(() => {
-              console.info("joined!");
-            })
-            .listenForWhisper("chat-message", (data) => {
-              console.info(data);
-            });
+          this.channel = this.broadcastService.join(`chat.${guest.hash}`);
         }
       },
     },

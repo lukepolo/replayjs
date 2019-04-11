@@ -1,7 +1,11 @@
 <template>
-  <div>
-    <button @click="sendMessage">Send</button>
-  </div>
+  <form @submit.prevent="sendMessage">
+    <input type="text" v-model="message" />
+    <template v-for="message in messages">
+      <pre>{{ message.userName }}: {{ message.message }}</pre>
+    </template>
+    <button type="submit">Send</button>
+  </form>
 </template>
 
 <script>
@@ -10,18 +14,43 @@ export default {
     channel: {
       required: true,
     },
+    userName: {
+      required: true,
+    },
   },
-  mounted() {
-    this.channel.listenForWhisper("chat-message", (changes) => {
-      console.info("we got a message");
-    });
+  data() {
+    return {
+      message: null,
+      messages: [],
+    };
+  },
+  watch: {
+    channel: {
+      immediate: true,
+      handler() {
+        console.info(this.userName);
+        if (this.channel) {
+          console.info("REGISTER");
+          this.channel
+            .here(() => {
+              console.info("joined!");
+            })
+            .listenForWhisper("chat-message", (data) => {
+              this.messages.push(data);
+            });
+        }
+      },
+    },
   },
   methods: {
     sendMessage() {
-      console.info("sending message");
-      this.channel.whisper("chat-message", {
-        message: "test",
-      });
+      let message = {
+        message: this.message,
+        userName: this.userName,
+      };
+      this.channel.whisper("chat-message", message);
+      this.messages.push(message);
+      this.message = null;
     },
   },
 };
