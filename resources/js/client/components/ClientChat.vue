@@ -6,6 +6,12 @@
     {{ guests }}
 
     <input type="text" v-model="message" @keyup="showTyping" />
+    <template v-for="message in previousMessages">
+      <chat-message
+        :message="message"
+        :current-time="currentTime"
+      ></chat-message>
+    </template>
     <template v-for="message in messages">
       <chat-message
         :message="message"
@@ -35,6 +41,9 @@ export default {
     },
     isAgent: {
       default: false,
+    },
+    previousMessages: {
+      required: true,
     },
   },
   data() {

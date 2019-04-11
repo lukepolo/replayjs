@@ -10,8 +10,13 @@ class GuestChat extends Model
     protected $guarded = ['id'];
 
     protected $hidden = [
-        'id'
+        'id',
+        // 'guest_id',
     ];
+
+    //protected $appends = [
+     //   'guest'
+    //];
 
     public function guest()
     {
@@ -26,5 +31,9 @@ class GuestChat extends Model
     public function messages()
     {
       return $this->hasMany(GuestChatMessage::class);
+    }
+
+    public function getGuestAttribute() {
+        // TODO
     }
 }

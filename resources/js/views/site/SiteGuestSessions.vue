@@ -1,15 +1,19 @@
 <template>
   <div>
-    <h3>Sessions</h3>
+    <h3>Guest</h3>
     <pre>{{ guest }}</pre>
 
+    <h3>Chat</h3>
     <div>
       <client-chat
         :user-data="user"
         :is-agent="true"
         :channel="channel"
+        :previous-messages="previousMessages"
       ></client-chat>
     </div>
+
+    <h3>Sessions</h3>
     <div v-for="session in sessions">
       <router-link
         :to="{
@@ -37,10 +41,20 @@ export default {
       siteId: this.$route.params.site,
       guestId: this.$route.params.guest,
     });
+
+    this.$store
+      .dispatch("site/guest/chat/get", {
+        siteId: this.$route.params.site,
+        guestId: this.$route.params.guest,
+      })
+      .then((data) => {
+        this.previousMessages = data.messages;
+      });
   },
   data() {
     return {
       channel: null,
+      previousMessages: null,
     };
   },
   watch: {

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <pre>{{ message.userName }}: {{ message.message }}</pre>
+    <pre>{{ message.user }}: {{ message.message }}</pre>
     <pre>{{ dateDisplay }}</pre>
   </div>
 </template>

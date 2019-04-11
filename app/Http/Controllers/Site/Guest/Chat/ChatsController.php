@@ -1,12 +1,14 @@
 <?php
 
-namespace App\Http\Controllers\Site\Guest\Session;
+namespace App\Http\Controllers\Site\Guest\Chat;
 
 use Illuminate\Http\Request;
 use App\Services\GuestService;
 use App\Http\Controllers\Controller;
+use App\Models\Site\Guest\Chat\GuestChat;
+use App\Models\Site\Guest\Guest;
 
-class ChatController extends Controller
+class ChatsController extends Controller
 {
     private $guestService;
 
@@ -25,15 +27,8 @@ class ChatController extends Controller
      * @param Request $request
      * @return array
      */
-    public function index(Request $request)
+    public function index(Request $request, $siteId, $guestHash)
     {
-        $session = $this->guestService->getSession(
-            $request->get('api_key'),
-            $request->ip(),
-            $request->userAgent()
-        );
-
-        // TODO - return old chat
-        return [];
+        return GuestChat::with('messages')->findOrFail((new Guest())->decode($guestHash));
     }
 }

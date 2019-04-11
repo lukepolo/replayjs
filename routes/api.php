@@ -30,6 +30,8 @@ Route::group(['middleware' => [
     Route::apiResource('sites', "\\".\App\Http\Controllers\Site\SitesController::class);
     Route::apiResource('sites.guests', "\\".\App\Http\Controllers\Site\Guest\GuestsController::class);
     Route::apiResource('sites.guests.sessions', "\\".\App\Http\Controllers\Site\Guest\Session\SessionsController::class);
+
+    Route::get('sites/{site}/guests/{guest}/chat', [\App\Http\Controllers\Site\Guest\Chat\ChatsController::class, 'index']);
 });
 
 Route::group(['middleware' => [
