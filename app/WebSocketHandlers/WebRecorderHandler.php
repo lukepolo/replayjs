@@ -74,6 +74,7 @@ class WebRecorderHandler extends WebSocketHandler
 
     private function getStreamSession($messagePayload)
     {
+        // TODO - use model cause we may change how the connection
         return Hashids::decode(Str::after($messagePayload->channel, '.'))[0];
     }
 }

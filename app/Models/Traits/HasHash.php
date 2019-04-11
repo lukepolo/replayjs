@@ -4,6 +4,7 @@ namespace App\Models\Traits;
 
 use Vinkla\Hashids\Facades\Hashids;
 
+// TODO - rename file
 trait Hashable
 {
     public function encode()
@@ -13,6 +14,6 @@ trait Hashable
 
     public function decode($hash)
     {
-        return $this->findOrFail(Hashids::connection($this->hashConnection ?: config('hashids.default'))->decode($hash)[0]);
+        return Hashids::connection($this->hashConnection ?: config('hashids.default'))->decode($hash)[0];
     }
 }

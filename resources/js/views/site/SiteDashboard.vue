@@ -9,7 +9,7 @@
     </template>
     <template v-else>
       <template v-for="guest in guests">
-        <router-link :to="{ name: 'site.guest', params: { guest: guest.id } }"
+        <router-link :to="{ name: 'site.guest', params: { guest: guest.hash } }"
           >{{ guest.name }} {{ guest.ip_address }}</router-link
         >
       </template>

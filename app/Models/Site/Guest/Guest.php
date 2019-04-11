@@ -18,6 +18,10 @@ class Guest extends Authenticatable implements JWTSubject
         'hash',
     ];
 
+    protected $hidden = [
+        'id'
+    ];
+
     public function site()
     {
         return $this->belongsTo(Site::class);
