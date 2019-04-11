@@ -2,14 +2,21 @@
   <form @submit.prevent="sendMessage">
     <input type="text" v-model="message" />
     <template v-for="message in messages">
-      <pre>{{ message.userName }}: {{ message.message }}</pre>
+      <chat-message
+        :message="message"
+        :current-time="currentTime"
+      ></chat-message>
     </template>
     <button type="submit">Send</button>
   </form>
 </template>
 
 <script>
+import ChatMessage from "./chat-components/ChatMessage";
 export default {
+  components: {
+    ChatMessage,
+  },
   props: {
     channel: {
       required: true,
@@ -20,9 +27,15 @@ export default {
   },
   data() {
     return {
-      message: null,
       messages: [],
+      message: null,
+      currentTime: null,
     };
+  },
+  created() {
+    setInterval(() => {
+      this.currentTime = new Date();
+    }, 1000);
   },
   watch: {
     channel: {
@@ -47,6 +60,7 @@ export default {
       let message = {
         message: this.message,
         userName: this.userName,
+        createdAt: new Date().getTime(),
       };
       this.channel.whisper("chat-message", message);
       this.messages.push(message);
