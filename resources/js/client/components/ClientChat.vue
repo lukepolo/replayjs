@@ -1,5 +1,10 @@
 <template>
   <form @submit.prevent="sendMessage">
+    <h3>Agents Here</h3>
+    {{ agents }}
+    <h3>Guests</h3>
+    {{ guests }}
+
     <input type="text" v-model="message" @keyup="showTyping" />
     <template v-for="message in messages">
       <chat-message
@@ -34,6 +39,7 @@ export default {
   },
   data() {
     return {
+      users: [],
       messages: [],
       message: null,
       currentTime: null,
@@ -52,11 +58,15 @@ export default {
         if (this.channel) {
           this.channel
             .here((users) => {
-              console.info(users);
+              this.users = users;
             })
             .joining((user) => {
-              if (!user.guest) {
-                console.info(`Agent ${user.name} connected.`);
+              this.users.push(user);
+            })
+            .leaving((user) => {
+              let userIndex = this.users.indexOf(user);
+              if (userIndex !== -1) {
+                this.$delete(this.users, userIndex);
               }
             })
             .listenForWhisper("chat-message", (data) => {
@@ -94,6 +104,16 @@ export default {
     },
   },
   computed: {
+    agents() {
+      return this.users.filter((user) => {
+        return !user.guest;
+      });
+    },
+    guests() {
+      return this.users.filter((user) => {
+        return user.guest;
+      });
+    },
     peopleAreTyping() {
       return Object.keys(this.peopleTyping).length;
     },
