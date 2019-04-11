@@ -6,7 +6,7 @@
       <router-link
         :to="{
           name: 'site.guest.session.components',
-          params: { site: $route.params.site, session: session.session },
+          params: { site: $route.params.site, session: session.hash },
         }"
       >
         <pre>{{ session.session }}</pre>
@@ -27,15 +27,24 @@ export default {
       siteId: this.$route.params.site,
       guestId: this.$route.params.guest,
     });
-
-    this.channel = this.broadcastService
-      .join(`chat.E529yqvVrNZ0k3JPE9PQBKgxbWdXOjw4`)
-      .here(() => {
-        console.info("joined!");
-      })
-      .listenForWhisper("chat-message", (data) => {
-        console.info(data);
-      });
+  },
+  watch: {
+    guest: {
+      immediate: true,
+      handler(guest) {
+        if (guest) {
+          console.info(`chat.${guest.hash}`);
+          this.channel = this.broadcastService
+            .join(`chat.${guest.hash}`)
+            .here(() => {
+              console.info("joined!");
+            })
+            .listenForWhisper("chat-message", (data) => {
+              console.info(data);
+            });
+        }
+      },
+    },
   },
   computed: {
     guest() {

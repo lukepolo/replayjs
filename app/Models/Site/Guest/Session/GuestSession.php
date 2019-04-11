@@ -18,20 +18,20 @@ class GuestSession extends Model
     ];
 
     protected $appends = [
-        'session',
+        'hash',
     ];
 
     public function guest()
     {
-        return $this->guest(Guest::class);
+        return $this->belongsTo(Guest::class);
     }
 
     public function chat() {
-       return $this->guest(GuestChat::class);
+       return $this->hasOne(GuestChat::class);
     }
 
-    public function getSessionAttribute()
-    {
-        return $this->encode($this->id);
-    }
+    public function getHashAttribute()
+        {
+            return $this->encode($this->id);
+        }
 }

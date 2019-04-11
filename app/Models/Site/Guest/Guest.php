@@ -3,13 +3,20 @@
 namespace App\Models\Site\Guest;
 
 use App\Models\Site\Site;
+use App\Models\Traits\Hashable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use App\Models\Site\Guest\Session\GuestSession;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class Guest extends Authenticatable implements JWTSubject
 {
+    use Hashable;
+
     protected $guarded = [];
+
+    protected $appends = [
+        'hash',
+    ];
 
     public function site()
     {
@@ -44,5 +51,10 @@ class Guest extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    public function getHashAttribute()
+    {
+        return $this->encode($this->id);
     }
 }
