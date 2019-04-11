@@ -8,7 +8,7 @@ ReplayJS is an Open Source Project to help support your clients with full sessio
 
 - Session Recording
   - JS Errors - TODO
-  - Scrolling
+  - Scrolling - TODO
   - Mouse Clicks
   - Mouse Movements
   - Network Traffic
@@ -21,7 +21,7 @@ ReplayJS is an Open Source Project to help support your clients with full sessio
 - Co-Browsing - TODO
   - Drawling
   - Mouse Pointing
-- Chat Support - TODO
+- Chat Support - (WIP)
   - Slack / Discord / Email Notifications
 - Notifications - TODO
   - Network Errors
