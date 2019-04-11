@@ -13,8 +13,8 @@ use App\Jobs\RecordMouseMovement;
 use App\Jobs\RecordConsoleMessage;
 use App\Jobs\RecordNetworkRequest;
 use App\Jobs\RecordSessionDetails;
-use Vinkla\Hashids\Facades\Hashids;
 use App\Jobs\MarkChatMessageAsRead;
+use Vinkla\Hashids\Facades\Hashids;
 use App\Jobs\CacheWebRecorderAssets;
 use App\Jobs\RecordTabVisibilityChange;
 use Ratchet\RFC6455\Messaging\MessageInterface;
@@ -72,6 +72,7 @@ class WebRecorderHandler extends WebSocketHandler
         parent::onMessage($connection, $message);
     }
 
+    // TODO - this could be a stream session / chat session as well
     private function getStreamSession($messagePayload)
     {
         // TODO - use model cause we may change how the connection
