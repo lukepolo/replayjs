@@ -13,6 +13,9 @@
 
 <script>
 import ChatMessage from "./chat-components/ChatMessage";
+
+const ONE_MIN = 60 * 1000;
+
 export default {
   components: {
     ChatMessage,
@@ -35,7 +38,7 @@ export default {
   created() {
     setInterval(() => {
       this.currentTime = new Date();
-    }, 1000);
+    }, ONE_MIN);
   },
   watch: {
     channel: {
