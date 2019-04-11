@@ -14,18 +14,18 @@ class RecordChatMessage implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     private $data;
-    private $session;
+    private $userId;
 
     /**
      * Create a new job instance.
      *
-     * @param $session
+     * @param $sessionId
      * @param $data
      */
-    public function __construct($session, $data)
+    public function __construct($userId, $data)
     {
         $this->data = $data;
-        $this->session = $session;
+        $this->userId = $userId;
     }
 
     /**

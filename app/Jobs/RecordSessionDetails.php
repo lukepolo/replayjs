@@ -14,19 +14,18 @@ class RecordSessionDetails implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     private $data;
-    private $apiKey;
-    private $session;
+    private $sessionId;
 
     /**
      * Create a new job instance.
      *
-     * @param $session
+     * @param $sessionId
      * @param $data
      */
-    public function __construct($session, $data)
+    public function __construct($sessionId, $data)
     {
         $this->data = $data;
-        $this->session = $session;
+        $this->sessionId = $sessionId;
     }
 
     /**
@@ -39,7 +38,7 @@ class RecordSessionDetails implements ShouldQueue
         if (!empty($site)) {
             $recording = GuestSessionRecording::firstOrNew([
                 'site_id' => $site->id,
-                'guest_session_id' => $this->session,
+                'guest_sessionId_id' => $this->sessionId,
             ]);
 
 //            $recording->fill([

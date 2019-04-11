@@ -30,41 +30,41 @@ class WebRecorderHandler extends WebSocketHandler
              case 'initialize':
                dispatch(new CacheWebRecorderAssets($messagePayload->data));
                if (!$messagePayload->data->joiningEvent) {
-                   dispatch(new RecordDomChanges($this->getStreamSession($messagePayload), $messagePayload->data));
+                   dispatch(new RecordDomChanges($this->getId($messagePayload), $messagePayload->data));
                }
                break;
             case 'changes':
-                dispatch(new RecordDomChanges($this->getStreamSession($messagePayload), $messagePayload->data));
+                dispatch(new RecordDomChanges($this->getId($messagePayload), $messagePayload->data));
             break;
             case 'click':
-                dispatch(new RecordClick($this->getStreamSession($messagePayload), $messagePayload->data));
+                dispatch(new RecordClick($this->getId($messagePayload), $messagePayload->data));
                 break;
             case 'scroll':
-                dispatch(new RecordScroll($this->getStreamSession($messagePayload), $messagePayload->data));
+                dispatch(new RecordScroll($this->getId($messagePayload), $messagePayload->data));
                 break;
             case 'window-size':
-                dispatch(new RecordWindowSize($this->getStreamSession($messagePayload), $messagePayload->data));
+                dispatch(new RecordWindowSize($this->getId($messagePayload), $messagePayload->data));
                 break;
             case 'mouse-movement':
-                dispatch(new RecordMouseMovement($this->getStreamSession($messagePayload), $messagePayload->data));
+                dispatch(new RecordMouseMovement($this->getId($messagePayload), $messagePayload->data));
                 break;
             case 'tab-visibility':
-                dispatch(new RecordTabVisibilityChange($this->getStreamSession($messagePayload), $messagePayload->data));
+                dispatch(new RecordTabVisibilityChange($this->getId($messagePayload), $messagePayload->data));
                 break;
             case 'network-request':
-                dispatch(new RecordNetworkRequest($this->getStreamSession($messagePayload), $messagePayload->data));
+                dispatch(new RecordNetworkRequest($this->getId($messagePayload), $messagePayload->data));
                 break;
             case 'console-message':
-                    dispatch(new RecordConsoleMessage($this->getStreamSession($messagePayload), $messagePayload->data));
+                    dispatch(new RecordConsoleMessage($this->getId($messagePayload), $messagePayload->data));
                 break;
             case 'session-details':
-                dispatch(new RecordSessionDetails($this->getStreamSession($messagePayload), $messagePayload->data));
+                dispatch(new RecordSessionDetails($this->getId($messagePayload), $messagePayload->data));
                 break;
             case 'chat-message':
-                dispatch(new RecordChatMessage($this->getStreamSession($messagePayload), $messagePayload->data));
+                dispatch(new RecordChatMessage($this->getId($messagePayload), $messagePayload->data));
                 break;
             case 'mark-chat-message-as-read':
-                dispatch(new MarkChatMessageAsRead($this->getStreamSession($messagePayload), $messagePayload->data));
+                dispatch(new MarkChatMessageAsRead($this->getId($messagePayload), $messagePayload->data));
                 break;
             default:
                 dump($messagePayload->event);
@@ -72,10 +72,8 @@ class WebRecorderHandler extends WebSocketHandler
         parent::onMessage($connection, $message);
     }
 
-    // TODO - this could be a stream session / chat session as well
-    private function getStreamSession($messagePayload)
+    private function getId($messagePayload)
     {
-        // TODO - use model cause we may change how the connection
         return Hashids::decode(Str::after($messagePayload->channel, '.'))[0];
     }
 }

@@ -22,7 +22,7 @@ export default class ChatService {
       this.channel = channel
         .join(`chat.${this.authService.getGuest()}`)
         .here(() => {
-          // TODO - they should pass options for this
+          // TODO - they should pass options for this , GET FROM API?
           this.show();
         })
         .joining(() => {});
@@ -42,6 +42,10 @@ export default class ChatService {
           },
         }),
     }).$mount(this.chatElement);
+  }
+
+  public hide() {
+    // TODO - hide element
   }
 
   protected disconnect() {
