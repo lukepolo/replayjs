@@ -19,13 +19,13 @@ export default class ChatService {
 
   public connect(options: ChatOptionsInterface = {}) {
     this.webSocketService.connect().then((channel) => {
-      console.info(`chat.${this.authService.getGuest()}`);
       this.channel = channel
         .join(`chat.${this.authService.getGuest()}`)
         .here(() => {
           // TODO - they should pass options for this
           this.show();
-        });
+        })
+        .joining(() => {});
     });
   }
 

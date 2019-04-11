@@ -4,7 +4,11 @@
     <pre>{{ guest }}</pre>
 
     <div>
-      <client-chat :channel="channel" :user-name="user.name"></client-chat>
+      <client-chat
+        :is-agent="true"
+        :channel="channel"
+        :user-name="user.name"
+      ></client-chat>
     </div>
     <div v-for="session in sessions">
       <router-link
