@@ -23,7 +23,7 @@ use BeyondCode\LaravelWebSockets\QueryParameters;
 use BeyondCode\LaravelWebSockets\WebSockets\WebSocketHandler;
 use BeyondCode\LaravelWebSockets\WebSockets\Channels\ChannelManager;
 
-class WebRecorderHandler extends WebSocketHandler
+class ClientSocketHandler extends WebSocketHandler
 {
     private $guestService;
 

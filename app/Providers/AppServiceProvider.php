@@ -4,7 +4,6 @@ namespace App\Providers;
 
 use App\Services\AssetService;
 use App\Services\GuestService;
-use App\WebSocketHandlers\Router;
 use Illuminate\Support\ServiceProvider;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use BeyondCode\LaravelWebSockets\Facades\WebSocketsRouter;
@@ -21,10 +20,6 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->bind(AssetService::class, AssetService::class);
         $this->app->bind(GuestService::class, GuestService::class);
-
-        $this->app->singleton('websockets.router', function () {
-            return new Router();
-        });
 
         // TODO - NOT SURE WHY THIS WORKS
         // https://github.com/beyondcode/laravel-websockets/issues/21
@@ -44,6 +39,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        WebSocketsRouter::webSocket('/app/{apiKey}/{appKey}', \App\WebSocketHandlers\WebRecorderHandler::class);
+        WebSocketsRouter::webSocket('/app/{apiKey}/{appKey}', \App\WebSocketHandlers\ClientSocketHandler::class);
     }
 }

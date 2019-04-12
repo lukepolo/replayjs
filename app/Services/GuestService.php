@@ -42,7 +42,6 @@ class GuestService
 
     public function getSession($apiKey, $ipAddress, $userAgent)
     {
-        dump($apiKey, $ipAddress, $userAgent);
         $guest = $this->getGuest($apiKey, $ipAddress);
         $session = GuestSession::where('updated_at', '>', Carbon::now()->sub('1', 'hour'))
             ->firstOrNew([
