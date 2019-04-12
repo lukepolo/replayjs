@@ -34,7 +34,7 @@ ReplayJS is an Open Source Project to help support your clients with full sessio
 There are some issues that need to be solved. Issues when you have two
 sessions opened at the same time.
 
-Currently how it works is we take their IP address, and their HOST address and get
+Currently how it works is we take their IP address, and their host string and get
 there session based on the last activity. A new session is generated if there is
 not another session active within the last hour.
 
