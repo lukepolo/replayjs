@@ -18,9 +18,7 @@ export default class Client {
 
   constructor() {
     this.websocketService = new WebSocketService();
-
     this.chatService = new ChatService(this.websocketService);
-
     this.streamService = new StreamService(this.websocketService);
 
     this.runQueued().then(() => {

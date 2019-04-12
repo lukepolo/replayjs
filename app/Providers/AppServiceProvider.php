@@ -39,6 +39,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        WebSocketsRouter::webSocket('/app/{apiKey}/{appKey}', \App\WebSocketHandlers\ClientSocketHandler::class);
+        WebSocketsRouter::webSocket('/app/{appKey}/{apiKey}', \App\WebSocketHandlers\ClientSocketHandler::class);
     }
 }
