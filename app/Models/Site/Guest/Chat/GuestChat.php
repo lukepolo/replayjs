@@ -5,6 +5,7 @@ namespace App\Models\Site\Guest\Chat;
 use App\Models\Site\Guest;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Site\Guest\Session\GuestSession;
+
 class GuestChat extends Model
 {
     protected $guarded = ['id'];
@@ -15,7 +16,7 @@ class GuestChat extends Model
     ];
 
     //protected $appends = [
-     //   'guest'
+    //   'guest'
     //];
 
     public function guest()
@@ -30,10 +31,11 @@ class GuestChat extends Model
 
     public function messages()
     {
-      return $this->hasMany(GuestChatMessage::class);
+        return $this->hasMany(GuestChatMessage::class);
     }
 
-    public function getGuestAttribute() {
+    public function getGuestAttribute()
+    {
         // TODO
     }
 }

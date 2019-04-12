@@ -9,7 +9,6 @@ use App\Http\Controllers\Controller;
 
 use App\Models\Site\Guest\Session\GuestSession;
 
-
 class SessionsController extends Controller
 {
     private $guestService;

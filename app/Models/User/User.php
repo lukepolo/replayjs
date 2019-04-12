@@ -72,9 +72,8 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Site::class);
     }
 
-     public function getHashAttribute()
-        {
-            return $this->encode($this->id);
-        }
-
+    public function getHashAttribute()
+    {
+        return $this->encode($this->id);
+    }
 }

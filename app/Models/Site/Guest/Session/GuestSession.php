@@ -26,12 +26,13 @@ class GuestSession extends Model
         return $this->belongsTo(Guest::class);
     }
 
-    public function chat() {
-       return $this->hasOne(GuestChat::class);
+    public function chat()
+    {
+        return $this->hasOne(GuestChat::class);
     }
 
     public function getHashAttribute()
-        {
-            return $this->encode($this->id);
-        }
+    {
+        return $this->encode($this->id);
+    }
 }

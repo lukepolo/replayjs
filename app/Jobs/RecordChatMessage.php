@@ -2,17 +2,14 @@
 
 namespace App\Jobs;
 
-use Carbon\Carbon;
 use App\Models\User\User;
 use Illuminate\Bus\Queueable;
 use App\Models\Site\Guest\Guest;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use App\Models\Site\Guest\Chat\GuestChat;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use App\Models\Site\Guest\Chat\GuestChatMessage;
 
 class RecordChatMessage implements ShouldQueue
 {
@@ -45,7 +42,7 @@ class RecordChatMessage implements ShouldQueue
             "guest_id" => $this->userId,
         ]);
 
-       $guestChat->messages()->create([
+        $guestChat->messages()->create([
             'message' => $this->data->message,
             'created_at' => $this->data->createdAt,
             'user_type' => $this->data->isAgent ? User::class : Guest::class,

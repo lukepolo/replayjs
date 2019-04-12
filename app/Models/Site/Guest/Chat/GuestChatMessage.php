@@ -19,8 +19,8 @@ class GuestChatMessage extends Model
         return $this->belongsTo(GuestChat::class);
     }
 
-    public function user() {
+    public function user()
+    {
         return $this->morphTo();
     }
-
 }
