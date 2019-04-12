@@ -21,13 +21,29 @@ ReplayJS is an Open Source Project to help support your clients with full sessio
 - Co-Browsing - TODO
   - Drawling
   - Mouse Pointing
-- Chat Support - (WIP)
-  - Slack / Discord / Email Notifications
+- Chat Support
+  - Slack / Discord / Email Notifications - TODO
 - Notifications - TODO
   - Network Errors
   - Console Errors
 - Session Analytics - TODO
 - Integrations - TODO
+
+## Issues
+
+There are some issues that need to be solved. Issues when you have two
+sessions opened at the same time.
+
+Currently how it works is we take their IP address, and their HOST address and get
+there session based on the last activity. A new session is generated if there is
+not another session active within the last hour.
+
+This causes problems as they could open two windows at the same site.
+We may need to generate another token , or store that information somewhere in the
+browser (which a person could change, so we have to be careful).
+
+There is no 100% way to guarantee chat will be safe! We dont really know if that user
+is the same user as before.
 
 ## Installation
 
