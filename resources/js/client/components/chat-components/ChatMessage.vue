@@ -1,6 +1,6 @@
 <template>
   <div>
-    <pre>{{ message.user }}: {{ message.message }}</pre>
+    <pre>{{ message.user.name }}: {{ message.message }}</pre>
     <pre>{{ dateDisplay }}</pre>
   </div>
 </template>
@@ -21,12 +21,11 @@ export default {
   },
   computed: {
     dateDisplay() {
-      let date = new Date(this.message.createdAt);
+      // TODO - a bit ugly
+      let date = new Date(this.message.createdAt || this.message.created_at);
 
       if (this.currentTime - date < ONE_DAY) {
-        {
-          return format(date);
-        }
+        return format(date);
       }
 
       return `${date.toLocaleTimeString(navigator.language, {

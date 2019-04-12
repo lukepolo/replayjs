@@ -15,11 +15,11 @@ class CreateGuestChatMessagesTable extends Migration
     {
         Schema::create('guest_chat_messages', function (Blueprint $table) {
             $table->bigIncrements('id')->unsigned();
-            $table->bigInteger('user')->unsigned();
+            $table->bigInteger('user_id')->unsigned();
             $table->bigInteger('guest_chat_id')->unsigned();
             $table->string('user_type');
             $table->string('message');
-            $table->timestamps();
+            $table->bigInteger('created_at')->unsigned();
         });
     }
 

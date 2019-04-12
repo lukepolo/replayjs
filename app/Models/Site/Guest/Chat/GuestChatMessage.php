@@ -8,6 +8,8 @@ class GuestChatMessage extends Model
 {
     protected $guarded = ['id'];
 
+    public $timestamps = false;
+
     protected $hidden = [
         'id'
     ];
@@ -16,4 +18,9 @@ class GuestChatMessage extends Model
     {
         return $this->belongsTo(GuestChat::class);
     }
+
+    public function user() {
+        return $this->morphTo();
+    }
+
 }

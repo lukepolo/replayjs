@@ -29,6 +29,6 @@ class ChatsController extends Controller
      */
     public function index(Request $request, $siteId, $guestHash)
     {
-        return GuestChat::with('messages')->findOrFail((new Guest())->decode($guestHash));
+        return GuestChat::with('messages.user')->findOrFail((new Guest())->decode($guestHash));
     }
 }

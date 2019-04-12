@@ -47,8 +47,8 @@ class RecordChatMessage implements ShouldQueue
 
        $guestChat->messages()->create([
             'message' => $this->data->message,
+            'created_at' => $this->data->createdAt,
             'user_type' => $this->data->isAgent ? User::class : Guest::class,
-            'created_at' => Carbon::createFromTimestamp($this->data->createdAt / 1000),
             'user' => $this->data->isAgent ? (new User())->decode($this->data->user->hash) : (new Guest())->decode($this->data->user->hash)
        ]);
     }

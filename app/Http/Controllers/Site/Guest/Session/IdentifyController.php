@@ -33,12 +33,15 @@ class IdentifyController extends Controller
             $request->userAgent()
         );
 
+        // TODO - not performant
+        $session->load('guest.chat.messages.user');
+
         return [
             "guest" => [
                 "hash" => $session->guest->hash,
                 "name" => $session->guest->name,
                 "email" => $session->guest->email,
-                "chat-messages" => $session->guest->chat->messages,
+                "chat-messages" => isset($session->guest->chat) ? $session->guest->chat->messages : [],
             ],
             "session" => $session->encode(),
             "expires" => \Carbon\Carbon::now()->add('1', 'hour'),
