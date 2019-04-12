@@ -19,9 +19,6 @@ export default class WebSocketService {
 
   public async connect() {
     if (!this.channel) {
-      console.info("try to connect", {
-        key: `${this.apiKey}/${__ENV_VARIABLES__.services.PUSHER_APP_KEY}`,
-      });
       this.channel = new Echo({
         broadcaster: "pusher",
         enabledTransports: ["ws", "wss"],
@@ -38,6 +35,7 @@ export default class WebSocketService {
       });
 
       this.channel.connector.pusher.bind("auth", (data) => {
+        console.info("AUTHED");
         console.info(data);
       });
     }

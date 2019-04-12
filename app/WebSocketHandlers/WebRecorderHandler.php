@@ -4,7 +4,6 @@ namespace App\WebSocketHandlers;
 
 use App\Jobs\RecordClick;
 use App\Jobs\RecordScroll;
-use BeyondCode\LaravelWebSockets\QueryParameters;
 use Illuminate\Support\Str;
 use App\Jobs\RecordDomChanges;
 use App\Jobs\RecordWindowSize;
@@ -20,6 +19,7 @@ use Vinkla\Hashids\Facades\Hashids;
 use App\Jobs\CacheWebRecorderAssets;
 use App\Jobs\RecordTabVisibilityChange;
 use Ratchet\RFC6455\Messaging\MessageInterface;
+use BeyondCode\LaravelWebSockets\QueryParameters;
 use BeyondCode\LaravelWebSockets\WebSockets\WebSocketHandler;
 use BeyondCode\LaravelWebSockets\WebSockets\Channels\ChannelManager;
 
@@ -37,7 +37,6 @@ class WebRecorderHandler extends WebSocketHandler
 
     public function onOpen(ConnectionInterface $connection)
     {
-
         $this
             ->verifyAppKey($connection)
             ->generateSocketId($connection)
@@ -46,14 +45,12 @@ class WebRecorderHandler extends WebSocketHandler
         $apiKey = QueryParameters::create($connection->httpRequest)->get('apiKey');
 
         $ipAddress = $connection->remoteAddress;
-        $userAgent = $connection->httpRequest->getHeader('User-Agent');
+        $userAgent = $connection->httpRequest->getHeader('User-Agent')[0];
 
         $connection->send(json_encode([
             'event' => 'auth',
             'data' => json_encode([
-                'apiKey' => $apiKey,
-                '$ipAddress' => $ipAddress,
-                '$userAgent' => $userAgent,
+                'session' => $this->guestService->getSession($apiKey, $ipAddress, $userAgent)->hash,
             ]),
         ]));
     }
