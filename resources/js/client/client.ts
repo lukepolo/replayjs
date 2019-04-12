@@ -58,7 +58,7 @@ export default class Client {
 
   protected async auth(apiKey: string) {
     this.websocketService.setApiKey(apiKey);
-    await this.authService.identify(apiKey);
+    // await this.authService.identify(apiKey);
   }
 
   protected stream(options: StreamOptionsInterface = {}) {
@@ -74,10 +74,10 @@ export default class Client {
   }
 
   private checkAuthed(callback: () => void) {
-    if (this.authService.isAuthed()) {
-      return callback();
-    }
-    throw Error("There was an error connecting you to the client.");
+    // if (this.authService.isAuthed()) {
+    return callback();
+    // }
+    // throw Error("There was an error connecting you to the client.");
   }
 }
 new Client();

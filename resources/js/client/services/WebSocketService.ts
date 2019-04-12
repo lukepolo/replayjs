@@ -18,10 +18,11 @@ export default class WebSocketService {
   }
 
   public async connect() {
-    if (!this.apiKey) {
-      throw Error("You need to set your API Key.");
-    }
+    // if (!this.apiKey) {
+    //   throw Error("You need to set your API Key.");
+    // }
     if (!this.channel) {
+      console.info("try to connect");
       this.channel = new Echo({
         broadcaster: "pusher",
         enabledTransports: ["ws", "wss"],
@@ -35,6 +36,10 @@ export default class WebSocketService {
             Authorization: "Bearer " + this.apiKey,
           },
         },
+      });
+
+      this.channel.connector.pusher.bind("auth", (data) => {
+        console.info(data);
       });
     }
     return this.channel;
