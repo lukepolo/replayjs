@@ -38,6 +38,7 @@ class IdentifyController extends Controller
                 "hash" => $session->guest->hash,
                 "name" => $session->guest->name,
                 "email" => $session->guest->email,
+                "chat-messages" => $session->guest->chat->messages,
             ],
             "session" => $session->encode(),
             "expires" => \Carbon\Carbon::now()->add('1', 'hour'),

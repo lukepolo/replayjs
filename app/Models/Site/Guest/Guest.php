@@ -5,6 +5,7 @@ namespace App\Models\Site\Guest;
 use App\Models\Site\Site;
 use App\Models\Traits\Hashable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use App\Models\Site\Guest\Chat\GuestChat;
 use App\Models\Site\Guest\Session\GuestSession;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -32,9 +33,14 @@ class Guest extends Authenticatable implements JWTSubject
         return $this->hasMany(GuestSession::class);
     }
 
+    public function chats()
+    {
+        return $this->hasMany(GuestChat::class);
+    }
+
     public function chat()
     {
-        return $this->hasOne(GuestChat::class);
+        return $this->hasOne(GuestChat::class)->latest();
     }
 
     /**

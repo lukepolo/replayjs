@@ -39,6 +39,7 @@ export default class ChatService {
           props: {
             channel: this.channel,
             userData: this.authService.getGuest(),
+            previousMessages: this.authService.getGuest()["chat-messages"],
           },
         }),
     }).$mount(this.chatElement);
