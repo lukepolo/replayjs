@@ -57,8 +57,7 @@ export default class Client {
   }
 
   protected async auth(apiKey: string) {
-    this.websocketService.setApiKey(apiKey);
-    // await this.authService.identify(apiKey);
+    this.websocketService.auth(apiKey);
   }
 
   protected stream(options: StreamOptionsInterface = {}) {
