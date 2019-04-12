@@ -33,10 +33,3 @@ Route::group(['middleware' => [
 
     Route::get('sites/{site}/guests/{guest}/chat', [\App\Http\Controllers\Site\Guest\Chat\ChatsController::class, 'index']);
 });
-
-Route::group(['middleware' => [
-  \Barryvdh\Cors\HandleCors::class,
-]
-], function () {
-    Route::post('identify', [\App\Http\Controllers\Site\Guest\Session\IdentifyController::class, 'index']);
-});

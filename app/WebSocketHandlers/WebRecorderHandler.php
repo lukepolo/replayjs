@@ -42,16 +42,27 @@ class WebRecorderHandler extends WebSocketHandler
             ->generateSocketId($connection)
             ->establishConnection($connection);
 
-        $apiKey = QueryParameters::create($connection->httpRequest)->get('apiKey');
 
         $ipAddress = $connection->remoteAddress;
         $userAgent = $connection->httpRequest->getHeader('User-Agent')[0];
+        $apiKey = QueryParameters::create($connection->httpRequest)->get('apiKey');
+
+        $session = $this->guestService->getSession($apiKey, $ipAddress, $userAgent);
+        // TODO - not performant
+        $session->load('guest.chat.messages.user');
 
         $connection->send(json_encode([
             'event' => 'auth',
-            'data' => json_encode([
-                'session' => $this->guestService->getSession($apiKey, $ipAddress, $userAgent)->hash,
-            ]),
+            'data' => [
+                "guest" => [
+                    "hash" => $session->guest->hash,
+                    "name" => $session->guest->name,
+                    "email" => $session->guest->email,
+                    "chat-messages" => isset($session->guest->chat) ? $session->guest->chat->messages : [],
+                ],
+                "session" => $session->encode(),
+                "expires" => \Carbon\Carbon::now()->add('1', 'hour'),
+            ],
         ]));
     }
 

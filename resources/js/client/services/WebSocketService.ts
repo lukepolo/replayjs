@@ -12,12 +12,26 @@ window.Pusher = require("pusher-js");
 export default class WebSocketService {
   public channel: Echo;
   protected apiKey: string;
+  protected session: string;
+  protected guest: {
+    hash: string;
+    name: string;
+    email: string;
+  };
 
   public auth(apiKey) {
     this.apiKey = apiKey;
   }
 
-  public async connect() {
+  public getSession() {
+    return this.session;
+  }
+
+  public getGuest() {
+    return this.guest;
+  }
+
+  public connect(callback: (Echo) => void) {
     if (!this.channel) {
       this.channel = new Echo({
         broadcaster: "pusher",
@@ -35,11 +49,13 @@ export default class WebSocketService {
       });
 
       this.channel.connector.pusher.bind("auth", (data) => {
-        console.info("AUTHED");
-        console.info(data);
+        this.session = data.session;
+        this.guest = data.guest;
+        callback(this.channel);
       });
+      return;
     }
-    return this.channel;
+    callback(this.channel);
   }
 
   public disconnect() {
