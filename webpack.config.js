@@ -71,7 +71,6 @@ module.exports = function(env) {
     .chainWebpack((config) => {
       config.module.rules.delete("html");
       config.module.rules.delete("javascript");
-      config.module.rules.delete("sass");
       config.module.rules.delete("fonts");
       config.module.rules.delete("images");
 
