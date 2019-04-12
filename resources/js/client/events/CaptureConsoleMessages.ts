@@ -39,7 +39,7 @@ export default class CaptureConsoleMessages implements ListenInterface {
       whisper({
         type,
         messages,
-        timing: new Date().getTime(),
+        timing: Date.now(),
       });
       return originalFunction.apply(this, arguments);
     };

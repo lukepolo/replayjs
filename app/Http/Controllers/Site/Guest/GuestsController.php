@@ -23,8 +23,9 @@ class GuestsController extends Controller
      * @param $guestId
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show($siteId, $guestId)
+    public function show($siteId, $guestHash)
     {
-        return Guest::where('site_id', $siteId)->findOrFail($guestId);
+        // TODO - move into guest service
+        return Guest::where('site_id', $siteId)->findOrFail((new Guest())->decode($guestHash));
     }
 }

@@ -18,6 +18,7 @@
     "mutation-summary": "^0.1.1",
     "nstall": "^0.2.0",
     "pusher-js": "^4.4.0",
+    "timeago.js": "4.0.0-beta.2",
     "varie": "^0.12.4",
     "varie-auth-plugin": "^0.1.10",
     "vue": "^2.6.2",

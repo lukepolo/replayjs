@@ -14,11 +14,11 @@ class CreateGuestsTable extends Migration
     public function up()
     {
         Schema::create('guests', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->bigIncrements('id')->unsigned();
             $table->string('name')->default('Guest');
             $table->string('email')->nullable();
             $table->string('ip_address');
-            $table->bigInteger('site_id');
+            $table->bigInteger('site_id')->unsigned();
             $table->unique(['email', 'site_id']);
             $table->json('custom_data')->nullable();
             $table->timestamps();

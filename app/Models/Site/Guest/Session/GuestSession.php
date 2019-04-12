@@ -5,6 +5,7 @@ namespace App\Models\Site\Guest\Session;
 use App\Models\Traits\Hashable;
 use App\Models\Site\Guest\Guest;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Site\Guest\Chat\GuestChat;
 
 class GuestSession extends Model
 {
@@ -17,16 +18,20 @@ class GuestSession extends Model
     ];
 
     protected $appends = [
-        'session',
+        'hash',
     ];
 
     public function guest()
     {
-        return $this->guest(Guest::class);
+        return $this->belongsTo(Guest::class);
     }
 
-    public function getSessionAttribute()
-    {
-        return $this->encode($this->id);
+    public function chat() {
+       return $this->hasOne(GuestChat::class);
     }
+
+    public function getHashAttribute()
+        {
+            return $this->encode($this->id);
+        }
 }

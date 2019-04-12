@@ -2,6 +2,7 @@ import { ServiceProvider } from "varie";
 import SiteService from "@app/services/site/SiteService";
 import GuestService from "@app/services/site/guest/SiteGuestService";
 import SiteGuestSessionService from "@app/services/site/guest/session/SiteGuestSessionService";
+import SiteGuestChatService from "@app/services/site/guest/chat/SiteGuestChatService";
 
 /*
 |--------------------------------------------------------------------------
@@ -26,6 +27,7 @@ export default class AppProviderServiceProvider extends ServiceProvider {
 
     this.app.bind("SiteService", SiteService);
     this.app.bind("SiteGuestService", GuestService);
+    this.app.bind("SiteGuestChatService", SiteGuestChatService);
     this.app.bind("SiteGuestSessionService", SiteGuestSessionService);
   }
 }

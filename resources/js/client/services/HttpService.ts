@@ -3,7 +3,7 @@ export default class HttpService {
     return this.makeRequest("get", url);
   }
 
-  public post(url, data) {
+  public post(url, data): any {
     return this.makeRequest("post", url, data);
   }
 

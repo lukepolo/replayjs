@@ -34,7 +34,7 @@ class GuestService
     {
         $guest = Guest::firstOrCreate([
              'ip_address' => $ipAddress,
-             'site_id' => $this->siteModel->decode($apiKeyHash)->id,
+             'site_id' => Site::findOrFail((new Site())->decode($apiKeyHash))->id,
         ]);
         $guest->isGuest = true;
         return $guest;
@@ -55,7 +55,7 @@ class GuestService
     public function getSessionRecording($sessionHash)
     {
         ini_set('memory_limit', '1G');
-        $session = $this->guestSessionModel->decode($sessionHash);
+        $session = GuestSession::findOrFail($this->guestSessionModel->decode($sessionHash));
 
         $domChanges = $this->getFromCache($session->id, 'dom_changes');
 

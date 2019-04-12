@@ -64,7 +64,11 @@ export default {
     _setupStream() {
       this.channel = this.broadcastService
         .join(`stream.${this.$route.params.session}`)
+        .here(() => {
+          // TODO - they may already be here
+        })
         .joining((user) => {
+          console.info(user);
           if (user.guest) {
             this.userIsLive = true;
           }

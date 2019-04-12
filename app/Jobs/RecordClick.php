@@ -14,18 +14,18 @@ class RecordClick implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     private $data;
-    private $session;
+    private $sessionId;
 
     /**
      * Create a new job instance.
      *
-     * @param $session
+     * @param $sessionId
      * @param $data
      */
-    public function __construct($session, $data)
+    public function __construct($sessionId, $data)
     {
         $this->data = $data;
-        $this->session = $session;
+        $this->sessionId = $sessionId;
     }
 
     /**
@@ -35,6 +35,6 @@ class RecordClick implements ShouldQueue
      */
     public function handle()
     {
-        Cache::tags([$this->session, 'mouse_clicks'])->put(hrtime(true), $this->data);
+        Cache::tags([$this->sessionId, 'mouse_clicks'])->put(hrtime(true), $this->data);
     }
 }

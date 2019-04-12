@@ -3,13 +3,14 @@
 namespace App\Models\User;
 
 use App\Models\Site\Site;
+use App\Models\Traits\Hashable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable implements JWTSubject
 {
-    use Notifiable;
+    use Notifiable, Hashable;
 
     /**
      * The attributes that are mass assignable.
@@ -26,7 +27,11 @@ class User extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'id',
+        'password',
+        'remember_token',
+        'email_verified_at',
+        'user_login_provider_id',
     ];
 
     /**
@@ -36,6 +41,10 @@ class User extends Authenticatable implements JWTSubject
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+    ];
+
+    protected $appends = [
+        'hash'
     ];
 
     /**
@@ -62,4 +71,10 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Site::class);
     }
+
+     public function getHashAttribute()
+        {
+            return $this->encode($this->id);
+        }
+
 }

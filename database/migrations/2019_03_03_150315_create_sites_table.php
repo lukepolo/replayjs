@@ -14,8 +14,8 @@ class CreateSitesTable extends Migration
     public function up()
     {
         Schema::create('sites', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->bigInteger('user_id');
+            $table->bigIncrements('id')->unsigned();
+            $table->bigInteger('user_id')->unsigned();
             $table->string('domain');
             $table->string('static_file_origin')->nullable();
             $table->json('recording_options')->nullable();

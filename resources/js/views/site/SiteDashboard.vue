@@ -9,7 +9,7 @@
     </template>
     <template v-else>
       <template v-for="guest in guests">
-        <router-link :to="{ name: 'site.guest', params: { guest: guest.id } }"
+        <router-link :to="{ name: 'site.guest', params: { guest: guest.hash } }"
           >{{ guest.name }} {{ guest.ip_address }}</router-link
         >
       </template>
@@ -22,6 +22,10 @@
 
 <script>
 import Vue from "vue";
+
+// TODO - implement
+// chat-message
+// mark-chat-message-as-read
 
 export default Vue.extend({
   watch: {

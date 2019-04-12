@@ -20,7 +20,7 @@ export default class CaptureClicks implements ListenInterface {
       // event : event,
       x: event.clientX,
       y: event.clientY,
-      timing: new Date().getTime(),
+      timing: Date.now(),
     });
   }
 

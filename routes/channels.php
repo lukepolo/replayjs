@@ -17,3 +17,11 @@ Broadcast::channel('stream.{session}', function ($user) {
         'name' => "{$user->name}",
     ];
 });
+
+Broadcast::channel('chat.{guest}', function ($user) {
+    return [
+        'guest' => $user->isGuest || false,
+        'name' => "{$user->name}",
+    ];
+});
+
