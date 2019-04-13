@@ -131,7 +131,6 @@ export default {
       });
     },
     peopleAreTyping() {
-      console.info(Object.keys(this.peopleTyping));
       return Object.keys(this.peopleTyping).length;
     },
   },
