@@ -7,7 +7,6 @@ use App\Models\Traits\Hashable;
 use App\Models\Traits\ConnectedToUser;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Models\Site\Guest\Session\GuestSessionRecording;
 
 class Site extends Model
 {
@@ -33,11 +32,6 @@ class Site extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function recordings()
-    {
-        return $this->hasMany(GuestSessionRecording::class);
     }
 
     public function getApiKeyAttribute()
