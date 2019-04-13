@@ -32,6 +32,7 @@ export default class WebSocketService {
   }
 
   public connect(callback: (Echo) => void) {
+    console.info("connecting");
     if (!this.channel) {
       this.channel = new Echo({
         broadcaster: "pusher",
@@ -51,10 +52,12 @@ export default class WebSocketService {
       this.channel.connector.pusher.bind("auth", (data) => {
         this.session = data.session;
         this.guest = data.guest;
+        console.info(this.getSession());
         callback(this.channel);
       });
       return;
     }
+    console.info(this.getSession());
     callback(this.channel);
   }
 

@@ -34,14 +34,9 @@ class ClientSocketHandler extends WebSocketHandler
         parent::__construct($channelManager);
     }
 
-
     public function onOpen(ConnectionInterface $connection)
     {
-        $this
-            ->verifyAppKey($connection)
-            ->generateSocketId($connection)
-            ->establishConnection($connection);
-
+        parent::onOpen($connection);
 
         $ipAddress = $connection->remoteAddress;
         $userAgent = $connection->httpRequest->getHeader('User-Agent')[0];
@@ -68,6 +63,8 @@ class ClientSocketHandler extends WebSocketHandler
 
     public function onMessage(ConnectionInterface $connection, MessageInterface $message)
     {
+        parent::onMessage($connection, $message);
+
         $messagePayload = json_decode($message->getPayload());
 
         switch (str_replace('client-', '', $messagePayload->event)) {
@@ -113,9 +110,6 @@ class ClientSocketHandler extends WebSocketHandler
             default:
                 dump($messagePayload->event);
         }
-
-
-        parent::onMessage($connection, $message);
     }
 
     private function getId($messagePayload)

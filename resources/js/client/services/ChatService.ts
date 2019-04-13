@@ -17,7 +17,7 @@ export default class ChatService {
   public connect(options: ChatOptionsInterface = {}) {
     this.webSocketService.connect((channel) => {
       this.channel = channel
-        .join(`chat.${this.webSocketService.getSession()}`)
+        .join(`chat.${this.webSocketService.getGuest().hash}`)
         .here(() => {
           // TODO - they should pass options for this , GET FROM API?
           this.show();
