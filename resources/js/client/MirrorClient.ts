@@ -24,9 +24,10 @@ export default class MirrorClient implements ListenInterface {
   }
 
   public teardown() {
+    console.info("tear down");
     this.disconnect();
     window.removeEventListener("focus", this.tabFocusActivity.bind(this));
-    window.removeEventListener("focus", this.tabFocusActivity.bind(this));
+    window.removeEventListener("blur", this.tabFocusActivity.bind(this));
   }
 
   private disconnect() {
@@ -51,7 +52,6 @@ export default class MirrorClient implements ListenInterface {
     } else {
       this.disconnect();
     }
-
     this.channel.whisper("focus-activity", {
       timing: Date.now(),
       tabHasFocus: tabHasFocus,

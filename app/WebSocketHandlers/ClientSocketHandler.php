@@ -3,6 +3,7 @@
 namespace App\WebSocketHandlers;
 
 use App\Jobs\RecordClick;
+use App\Jobs\RecordFocusChange;
 use App\Jobs\RecordScroll;
 use Illuminate\Support\Str;
 use App\Jobs\RecordDomChanges;
@@ -104,6 +105,9 @@ class ClientSocketHandler extends WebSocketHandler
                 break;
             case 'mark-chat-message-as-read':
                 dispatch(new MarkChatMessageAsRead($this->getId($messagePayload), $messagePayload->data));
+                break;
+            case 'client-focus-activity':
+                dispatch(new RecordFocusChange($this->getId($messagePayload), $messagePayload->data));
                 break;
             default:
                 dump($messagePayload->event);

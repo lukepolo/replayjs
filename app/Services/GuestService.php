@@ -69,6 +69,7 @@ class GuestService
         $session->window_size = $windowSizes->shift();
         $session->window_size_changes = $windowSizes->groupBy('timing');
         $session->scroll_events = $this->getFromCache($session->id, 'scroll_events')->groupBy('timing');
+        $session->focus_activity = $this->getFromCache($session->id, 'focus_activity')->groupBy('timing');
         $session->tab_visibility = $this->getFromCache($session->id, 'tab_visibility')->groupBy('timing');
         $session->mouse_movements = $this->getFromCache($session->id, 'mouse_movements')->groupBy('timing');
 
