@@ -54,7 +54,7 @@ class GuestService
 
     public function getSessionRecording($sessionHash)
     {
-        ini_set('memory_limit', '128MB');
+        ini_set('memory_limit', '512M');
         $session = GuestSession::findOrFail($this->guestSessionModel->decode($sessionHash));
 
         $domChanges = $this->getFromCache($session->id, 'dom_changes');
