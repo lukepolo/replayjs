@@ -127,6 +127,12 @@ export default {
                   playerEventMirrorFunctions.MouseMovement,
                 );
               })
+              .listenForWhisper("focus-activity", (changes) => {
+                this._addEvent(playerEventTypes.FocusActivity, changes);
+              })
+              .listenForWhisper("tab-visibility", (changes) => {
+                this._addEvent(playerEventTypes.TabVisibility, changes);
+              })
               .listenForWhisper("network-request", (changes) => {
                 this._addEvent(playerEventTypes.NetworkRequest, changes);
               })

@@ -1,4 +1,3 @@
-import AuthService from "./services/AuthService";
 import ChatService from "./services/ChatService";
 import StreamService from "./services/StreamService";
 import WebSocketService from "./services/WebSocketService";
@@ -13,21 +12,14 @@ declare global {
 }
 
 export default class Client {
-  protected authService: AuthService;
   protected chatService: ChatService;
   protected streamService: StreamService;
   protected websocketService: WebSocketService;
 
   constructor() {
-    this.authService = new AuthService();
     this.websocketService = new WebSocketService();
-
-    this.chatService = new ChatService(this.authService, this.websocketService);
-
-    this.streamService = new StreamService(
-      this.authService,
-      this.websocketService,
-    );
+    this.chatService = new ChatService(this.websocketService);
+    this.streamService = new StreamService(this.websocketService);
 
     this.runQueued().then(() => {
       this.setupQueue();
@@ -57,27 +49,15 @@ export default class Client {
   }
 
   protected async auth(apiKey: string) {
-    this.websocketService.setApiKey(apiKey);
-    await this.authService.identify(apiKey);
+    this.websocketService.auth(apiKey);
   }
 
   protected stream(options: StreamOptionsInterface = {}) {
-    this.checkAuthed(() => {
-      this.streamService.connect(options);
-    });
+    this.streamService.connect(options);
   }
 
   protected chat(options: ChatOptionsInterface = {}) {
-    this.checkAuthed(() => {
-      this.chatService.connect(options);
-    });
-  }
-
-  private checkAuthed(callback: () => void) {
-    if (this.authService.isAuthed()) {
-      return callback();
-    }
-    throw Error("There was an error connecting you to the client.");
+    this.chatService.connect(options);
   }
 }
 new Client();

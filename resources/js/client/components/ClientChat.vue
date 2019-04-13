@@ -79,6 +79,7 @@ export default {
               }
             })
             .listenForWhisper("chat-message", (data) => {
+              this.removePersonTyping(data.user.hash);
               this.messages.push(data);
             })
             .listenForWhisper("chat-typing", (data) => {
@@ -87,7 +88,7 @@ export default {
                 this.peopleTyping,
                 data.user.hash,
                 setTimeout(() => {
-                  this.$delete(this.peopleTyping, data.user.hash);
+                  this.removePersonTyping(data.user.hash);
                 }, 3000),
               );
             });
@@ -96,10 +97,15 @@ export default {
     },
   },
   methods: {
-    showTyping() {
-      this.channel.whisper("chat-typing", {
-        user: this.userData,
-      });
+    showTyping(event) {
+      if (event.key !== "Enter") {
+        this.channel.whisper("chat-typing", {
+          user: this.userData,
+        });
+      }
+    },
+    removePersonTyping(userHash) {
+      this.$delete(this.peopleTyping, userHash);
     },
     sendMessage() {
       let message = {

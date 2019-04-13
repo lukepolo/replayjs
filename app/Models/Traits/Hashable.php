@@ -4,7 +4,6 @@ namespace App\Models\Traits;
 
 use Vinkla\Hashids\Facades\Hashids;
 
-// TODO - rename file
 trait Hashable
 {
     public function encode()

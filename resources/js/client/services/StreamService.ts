@@ -1,4 +1,3 @@
-import AuthService from "./AuthService";
 import MirrorClient from "../MirrorClient";
 import WebSocketService from "./WebSocketService";
 import CaptureClicks from "../events/CaptureClicks";
@@ -13,7 +12,6 @@ import StreamOptionsInterface from "../interfaces/StreamOptionsInterface";
 import CaptureTabVisibilityEvents from "../events/CaptureTabVisibilityEvents";
 
 export default class StreamService {
-  protected authService: AuthService;
   protected mirrorClient: MirrorClient;
   protected captureClicks: CaptureClicks;
   protected channel: NullPresenceChannel;
@@ -26,18 +24,18 @@ export default class StreamService {
   protected captureNetworkRequests: CaptureNetworkRequests;
   protected captureTabVisibilityEvents: CaptureTabVisibilityEvents;
 
-  constructor(authService: AuthService, webSocketService: WebSocketService) {
-    this.authService = authService;
+  constructor(webSocketService: WebSocketService) {
     this.webSocketService = webSocketService;
   }
 
   public connect(options: StreamOptionsInterface = {}) {
     this.boot(options);
-    this.webSocketService.connect().then((channel) => {
+    this.webSocketService.connect((channel) => {
+      console.info(`stream.${this.webSocketService.getSession()}`);
       this.channel = channel
-        .join(`stream.${this.authService.getSession()}`)
+        .join(`stream.${this.webSocketService.getSession()}`)
         .here(() => {
-          this.mirrorClient.connect(this.channel);
+          this.mirrorClient.setup(this.channel);
           this.captureClicks.setup(this.channel);
           this.captureScrollEvents.setup(this.channel);
           this.captureWindowResize.setup(this.channel);
@@ -51,7 +49,7 @@ export default class StreamService {
   }
 
   protected disconnect() {
-    this.mirrorClient.disconnect();
+    this.mirrorClient.teardown();
     this.captureClicks.teardown();
     this.captureScrollEvents.teardown();
     this.captureWindowResize.teardown();

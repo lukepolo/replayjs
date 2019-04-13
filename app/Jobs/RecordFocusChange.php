@@ -3,17 +3,18 @@
 namespace App\Jobs;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 
-class MarkChatMessageAsRead implements ShouldQueue
+class RecordFocusChange implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     private $data;
-    private $userHash;
+    private $sessionId;
 
     /**
      * Create a new job instance.
@@ -21,10 +22,10 @@ class MarkChatMessageAsRead implements ShouldQueue
      * @param $sessionId
      * @param $data
      */
-    public function __construct($userId, $data)
+    public function __construct($sessionId, $data)
     {
         $this->data = $data;
-        $this->userId = $userId;
+        $this->sessionId = $sessionId;
     }
 
     /**
@@ -34,6 +35,6 @@ class MarkChatMessageAsRead implements ShouldQueue
      */
     public function handle()
     {
-        // TODO - save to database
+        Cache::tags([$this->sessionId, 'focus_activity'])->put(hrtime(true), $this->data);
     }
 }

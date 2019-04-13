@@ -62,7 +62,6 @@ export default {
       immediate: true,
       handler(guest) {
         if (guest) {
-          console.info(`chat.${guest.hash}`);
           this.channel = this.broadcastService.join(`chat.${guest.hash}`);
         }
       },

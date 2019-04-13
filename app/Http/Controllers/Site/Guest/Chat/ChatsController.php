@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Site\Guest\Chat;
 
 use Illuminate\Http\Request;
 use App\Services\GuestService;
+use App\Models\Site\Guest\Guest;
 use App\Http\Controllers\Controller;
 use App\Models\Site\Guest\Chat\GuestChat;
-use App\Models\Site\Guest\Guest;
 
 class ChatsController extends Controller
 {

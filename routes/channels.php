@@ -24,4 +24,3 @@ Broadcast::channel('chat.{guest}', function ($user) {
         'name' => "{$user->name}",
     ];
 });
-

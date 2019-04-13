@@ -45,7 +45,7 @@ export default class CaptureConsoleMessages implements ListenInterface {
     };
   }
 
-  public whisper(data: ConsoleDataInterface) {
+  private whisper(data: ConsoleDataInterface) {
     this.channel.whisper(this.event, data);
   }
 }
