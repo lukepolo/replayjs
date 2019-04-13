@@ -1,18 +1,13 @@
-declare global {
-  interface Window {
-    Pusher: PusherConnector;
-  }
-}
-
 import Echo from "laravel-echo";
-import { PusherConnector } from "laravel-echo/dist/connector";
 
 window.Pusher = require("pusher-js");
 
 export default class WebSocketService {
-  public channel: Echo;
+  public connection: Echo;
+
   protected apiKey: string;
   protected session: string;
+  protected queuedConnections = [];
   protected guest: {
     hash: string;
     name: string;
@@ -32,37 +27,50 @@ export default class WebSocketService {
   }
 
   public connect(callback: (Echo) => void) {
-    console.info("connecting");
-    if (!this.channel) {
-      this.channel = new Echo({
-        broadcaster: "pusher",
-        enabledTransports: ["ws", "wss"],
-        wsHost: __ENV_VARIABLES__.app.WS_HOST,
-        wsPort: __ENV_VARIABLES__.app.WS_PORT,
-        key: `${__ENV_VARIABLES__.services.PUSHER_APP_KEY}/${this.apiKey}`,
-        authEndpoint: `${__ENV_VARIABLES__.app.APP_URL}/api/broadcasting/auth`,
-        disableStats: true,
-        auth: {
-          headers: {
-            Authorization: "Bearer " + this.apiKey,
-          },
-        },
-      });
-
-      this.channel.connector.pusher.bind("auth", (data) => {
-        this.session = data.session;
-        this.guest = data.guest;
-        console.info(this.getSession());
-        callback(this.channel);
-      });
-      return;
+    if (!this.connection) {
+      this.createConnection();
     }
-    console.info(this.getSession());
-    callback(this.channel);
+
+    if (this.isAuthenticated()) {
+      console.info("no need to queue");
+      return callback(this.connection);
+    }
+
+    this.queuedConnections.push(callback);
   }
 
   public disconnect() {
-    this.channel.disconnect();
-    this.channel = null;
+    this.connection.disconnect();
+    this.queuedConnections = [];
+    this.connection = null;
+  }
+
+  private isAuthenticated() {
+    return this.getSession();
+  }
+
+  private createConnection() {
+    this.connection = new Echo({
+      broadcaster: "pusher",
+      enabledTransports: ["ws", "wss"],
+      wsHost: __ENV_VARIABLES__.app.WS_HOST,
+      wsPort: __ENV_VARIABLES__.app.WS_PORT,
+      key: `${__ENV_VARIABLES__.services.PUSHER_APP_KEY}/${this.apiKey}`,
+      authEndpoint: `${__ENV_VARIABLES__.app.APP_URL}/api/broadcasting/auth`,
+      disableStats: true,
+      auth: {
+        headers: {
+          Authorization: "Bearer " + this.apiKey,
+        },
+      },
+    });
+
+    this.connection.connector.pusher.bind("auth", ({ guest, session }) => {
+      this.guest = guest;
+      this.session = session;
+      this.queuedConnections.forEach((callback) => {
+        callback(this.connection);
+      });
+    });
   }
 }
