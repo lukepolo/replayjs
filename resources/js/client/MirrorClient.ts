@@ -1,10 +1,11 @@
 import InputEvents from "./events/InputEvents";
 import { TreeMirrorClient } from "./vendor/tree-mirror";
+import ListenInterface from "./interfaces/ListenInterface";
 import { NullPresenceChannel } from "laravel-echo/dist/channel";
 import InitializeDataInterface from "./interfaces/InitializeDataInterface";
 import DomChangesDataInterface from "./interfaces/DomChangesDataInterface";
 
-export default class MirrorClient {
+export default class MirrorClient implements ListenInterface {
   protected baseHref: string;
   protected inputEvents: InputEvents;
   protected channel: NullPresenceChannel;
@@ -15,8 +16,49 @@ export default class MirrorClient {
     this.inputEvents = new InputEvents();
   }
 
-  public connect(channel: NullPresenceChannel, joiningEvent = false) {
+  public setup(channel: NullPresenceChannel) {
     this.channel = channel;
+    this.initialize();
+    window.addEventListener("focus", this.tabFocusActivity.bind(this));
+    window.addEventListener("blur", this.tabFocusActivity.bind(this));
+  }
+
+  public teardown() {
+    this.disconnect();
+    window.removeEventListener("focus", this.tabFocusActivity.bind(this));
+    window.removeEventListener("focus", this.tabFocusActivity.bind(this));
+  }
+
+  private disconnect() {
+    if (this.treeMirrorClient) {
+      this.treeMirrorClient.disconnect();
+      this.treeMirrorClient = null;
+    }
+  }
+
+  private whisperInitialized(data: InitializeDataInterface) {
+    this.channel.whisper("initialize", data);
+  }
+
+  private whisperChanges(data: DomChangesDataInterface) {
+    this.channel.whisper("changes", data);
+  }
+
+  private tabFocusActivity() {
+    let tabHasFocus = document.hasFocus();
+    if (tabHasFocus) {
+      this.initialize();
+    } else {
+      this.disconnect();
+    }
+
+    this.channel.whisper("focus-activity", {
+      timing: Date.now(),
+      tabHasFocus: tabHasFocus,
+    });
+  }
+
+  private initialize() {
     this.disconnect();
     this.treeMirrorClient = new TreeMirrorClient(
       document,
@@ -25,9 +67,8 @@ export default class MirrorClient {
           this.whisperInitialized({
             rootId,
             children,
-            joiningEvent,
-            baseHref: this.baseHref,
             timing: Date.now(),
+            baseHref: this.baseHref,
           });
           this.inputEvents.setup();
         },
@@ -46,20 +87,5 @@ export default class MirrorClient {
       },
       [{ all: true }],
     );
-  }
-
-  public disconnect() {
-    if (this.treeMirrorClient) {
-      this.treeMirrorClient.disconnect();
-      this.treeMirrorClient = null;
-    }
-  }
-
-  public whisperInitialized(data: InitializeDataInterface) {
-    this.channel.whisper("initialize", data);
-  }
-
-  public whisperChanges(data: DomChangesDataInterface) {
-    this.channel.whisper("changes", data);
   }
 }

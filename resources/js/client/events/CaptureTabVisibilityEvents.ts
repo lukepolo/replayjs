@@ -10,18 +10,18 @@ export default class CaptureTabVisibilityEvents implements ListenInterface {
     this.channel = channel;
     window.addEventListener(
       "visibilitychange",
-      this.visiblityChanged.bind(this),
+      this.visibilityChanged.bind(this),
     );
   }
 
   public teardown() {
     window.removeEventListener(
       "visibilitychange",
-      this.visiblityChanged.bind(this),
+      this.visibilityChanged.bind(this),
     );
   }
 
-  private visiblityChanged() {
+  private visibilityChanged() {
     this.whisper({
       visible: document.hidden,
       timing: Date.now(),

@@ -70,9 +70,7 @@ class ClientSocketHandler extends WebSocketHandler
         switch (str_replace('client-', '', $messagePayload->event)) {
             case 'initialize':
                 dispatch(new CacheWebRecorderAssets($messagePayload->data));
-                if (!$messagePayload->data->joiningEvent) {
-                    dispatch(new RecordDomChanges($this->getId($messagePayload), $messagePayload->data));
-                }
+                dispatch(new RecordDomChanges($this->getId($messagePayload), $messagePayload->data));
                 break;
             case 'changes':
                 dispatch(new RecordDomChanges($this->getId($messagePayload), $messagePayload->data));

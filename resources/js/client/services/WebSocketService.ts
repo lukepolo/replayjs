@@ -44,7 +44,7 @@ export default class WebSocketService {
     this.connection = null;
   }
 
-  private isAuthenticated() {
+  public isAuthenticated() {
     return this.getSession();
   }
 

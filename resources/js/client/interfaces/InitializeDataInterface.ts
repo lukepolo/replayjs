@@ -4,5 +4,4 @@ export default interface InitializeDataInterface extends TimingInterface {
   rootId: number;
   baseHref: string;
   children: Array<any>;
-  joiningEvent: boolean;
 }

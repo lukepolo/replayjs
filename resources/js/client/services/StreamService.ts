@@ -31,10 +31,11 @@ export default class StreamService {
   public connect(options: StreamOptionsInterface = {}) {
     this.boot(options);
     this.webSocketService.connect((channel) => {
+      console.info(`stream.${this.webSocketService.getSession()}`);
       this.channel = channel
         .join(`stream.${this.webSocketService.getSession()}`)
         .here(() => {
-          this.mirrorClient.connect(this.channel);
+          this.mirrorClient.setup(this.channel);
           this.captureClicks.setup(this.channel);
           this.captureScrollEvents.setup(this.channel);
           this.captureWindowResize.setup(this.channel);
@@ -48,7 +49,7 @@ export default class StreamService {
   }
 
   protected disconnect() {
-    this.mirrorClient.disconnect();
+    this.mirrorClient.teardown();
     this.captureClicks.teardown();
     this.captureScrollEvents.teardown();
     this.captureWindowResize.teardown();

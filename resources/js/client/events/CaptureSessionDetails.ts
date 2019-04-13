@@ -15,7 +15,7 @@ export default class CaptureSessionDetails {
     this.userData = Object.assign({}, this.userData, data);
   }
 
-  public whisper(data: SessionDetailsDataInterface) {
+  private whisper(data: SessionDetailsDataInterface) {
     this.channel.whisper(this.event, data);
   }
 }
