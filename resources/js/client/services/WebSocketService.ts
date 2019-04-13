@@ -65,6 +65,7 @@ export default class WebSocketService {
     });
 
     this.connection.connector.pusher.bind("auth", ({ guest, session }) => {
+      console.info(guest);
       this.guest = guest;
       this.session = session;
       this.queuedConnections.forEach((callback) => {
