@@ -32,7 +32,6 @@ export default class WebSocketService {
     }
 
     if (this.isAuthenticated()) {
-      console.info("no need to queue");
       return callback(this.connection);
     }
 
