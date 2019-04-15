@@ -2,18 +2,17 @@ import LzString from "lz-string";
 const MutationSummary = require("mutation-summary");
 
 export default class DomSource {
+  private nextId;
+  private mirror;
+  private target;
+  private knownNodes;
+
   constructor(target, mirror, testingQueries) {
-    var _this = this;
-    // @ts-ignore
     this.target = target;
-    // @ts-ignore
     this.mirror = mirror;
-    // @ts-ignore
     this.nextId = 1;
-    // @ts-ignore
     this.knownNodes = new MutationSummary.NodeMap();
 
-    // @ts-ignore
     var rootId = this.serializeNode(target).id;
     var children = [];
     for (var child = target.firstChild; child; child = child.nextSibling) {
@@ -36,7 +35,7 @@ export default class DomSource {
       rootNode: target,
       callback: function(summaries) {
         // @ts-ignore
-        _this.applyChanged(summaries);
+        this.applyChanged(summaries);
       },
       queries: queries,
     });
@@ -59,7 +58,7 @@ export default class DomSource {
     this.knownNodes.delete(node);
   };
 
-  serializeNode = function(node, recursive) {
+  serializeNode = function(node, recursive?) {
     if (node === null) return null;
 
     var id = this.knownNodes.get(node);
@@ -133,7 +132,7 @@ export default class DomSource {
     return LzString.compressToUTF16(attribute);
   };
 
-  compressNode = function(node) {
+  compressNode(node) {
     if (node.textContent || node.attributes) {
       node.compressed = 1;
     }
@@ -151,15 +150,14 @@ export default class DomSource {
     }
 
     return node;
-  };
+  }
 
-  serializeAddedAndMoved = function(added, reparented, reordered) {
-    var _this = this;
+  public serializeAddedAndMoved(added, reparented, reordered) {
     var all = added.concat(reparented).concat(reordered);
 
     var parentMap = new MutationSummary.NodeMap();
 
-    all.forEach(function(node) {
+    all.forEach((node) => {
       var parent = node.parentNode;
       var children = parentMap.get(parent);
       if (!children) {
@@ -172,7 +170,7 @@ export default class DomSource {
 
     var moved = [];
 
-    parentMap.keys().forEach(function(parent) {
+    parentMap.keys().forEach((parent) => {
       var children = parentMap.get(parent);
 
       var keys = children.keys();
@@ -182,10 +180,10 @@ export default class DomSource {
           node = node.previousSibling;
 
         while (node && children.has(node)) {
-          var data = _this.serializeNode(node);
+          var data = this.serializeNode(node);
           if (data !== null) {
-            data.previousSibling = _this.serializeNode(node.previousSibling);
-            data.parentNode = _this.serializeNode(node.parentNode);
+            data.previousSibling = this.serializeNode(node.previousSibling);
+            data.parentNode = this.serializeNode(node.parentNode);
             moved.push(data);
             children.delete(node);
           }
@@ -196,17 +194,16 @@ export default class DomSource {
     });
 
     return moved;
-  };
+  }
 
-  serializeAttributeChanges = function(attributeChanged) {
-    var _this = this;
+  public serializeAttributeChanges(attributeChanged) {
     var map = new MutationSummary.NodeMap();
 
-    Object.keys(attributeChanged).forEach(function(attrName) {
-      attributeChanged[attrName].forEach(function(element) {
+    Object.keys(attributeChanged).forEach((attrName) => {
+      attributeChanged[attrName].forEach((element) => {
         var record = map.get(element);
         if (!record) {
-          record = _this.serializeNode(element);
+          record = this.serializeNode(element);
 
           if (record !== null) {
             record.attributes = {};
@@ -215,24 +212,23 @@ export default class DomSource {
         }
 
         if (record !== null) {
-          record.attributes[attrName] = _this.compressAttribute(
+          record.attributes[attrName] = this.compressAttribute(
             element.getAttribute(attrName),
           );
         }
       });
     });
 
-    return map.keys().map(function(node) {
+    return map.keys().map((node) => {
       return map.get(node);
     });
-  };
+  }
 
-  applyChanged = function(summaries) {
-    var _this = this;
+  public applyChanged(summaries) {
     var summary = summaries[0];
 
-    var removed = summary.removed.map(function(node) {
-      return _this.serializeNode(node);
+    var removed = summary.removed.map((node) => {
+      return this.serializeNode(node);
     });
 
     var moved = this.serializeAddedAndMoved(
@@ -243,8 +239,8 @@ export default class DomSource {
 
     var attributes = this.serializeAttributeChanges(summary.attributeChanged);
 
-    var text = summary.characterDataChanged.map(function(node) {
-      var data = _this.serializeNode(node);
+    var text = summary.characterDataChanged.map((node) => {
+      var data = this.serializeNode(node);
       if (data !== null) {
         data.textContent = node.textContent;
       }
@@ -253,8 +249,8 @@ export default class DomSource {
 
     this.mirror.applyChanged(removed, moved, attributes, text);
 
-    summary.removed.forEach(function(node) {
-      _this.forgetNode(node);
+    summary.removed.forEach((node) => {
+      this.forgetNode(node);
     });
-  };
+  }
 }
