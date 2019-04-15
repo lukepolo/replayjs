@@ -8,6 +8,7 @@ export default class DomSource {
   private target;
   private knownNodes;
   private domCompressor: DomCompressor;
+  private mutationSummary;
 
   constructor(target, mirror, testingQueries) {
     this.target = target;
@@ -36,7 +37,7 @@ export default class DomSource {
     // @ts-ignore
     this.mutationSummary = new MutationSummary({
       rootNode: target,
-      callback: function(summaries) {
+      callback: (summaries) => {
         // @ts-ignore
         this.applyChanged(summaries);
       },
@@ -44,22 +45,22 @@ export default class DomSource {
     });
   }
 
-  disconnect = function() {
+  public disconnect() {
     if (this.mutationSummary) {
       this.mutationSummary.disconnect();
       this.mutationSummary = undefined;
     }
-  };
+  }
 
-  rememberNode = function(node) {
+  public rememberNode(node) {
     var id = this.nextId++;
     this.knownNodes.set(node, id);
     return id;
-  };
+  }
 
-  forgetNode = function(node) {
+  public forgetNode(node) {
     this.knownNodes.delete(node);
-  };
+  }
 
   public serializeNode(node, recursive?) {
     if (node === null) return null;
