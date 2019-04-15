@@ -1,4 +1,5 @@
 import LzString from "lz-string";
+import DomCompressor from "./DomCompressor";
 const MutationSummary = require("mutation-summary");
 
 export default class DomSource {
@@ -6,12 +7,14 @@ export default class DomSource {
   private mirror;
   private target;
   private knownNodes;
+  private domCompressor: DomCompressor;
 
   constructor(target, mirror, testingQueries) {
     this.target = target;
     this.mirror = mirror;
     this.nextId = 1;
     this.knownNodes = new MutationSummary.NodeMap();
+    this.domCompressor = new DomCompressor();
 
     var rootId = this.serializeNode(target).id;
     var children = [];
@@ -58,7 +61,7 @@ export default class DomSource {
     this.knownNodes.delete(node);
   };
 
-  serializeNode = function(node, recursive?) {
+  public serializeNode(node, recursive?) {
     if (node === null) return null;
 
     var id = this.knownNodes.get(node);
@@ -125,31 +128,7 @@ export default class DomSource {
         break;
     }
 
-    return this.compressNode(data);
-  };
-
-  compressAttribute = function(attribute) {
-    return LzString.compressToUTF16(attribute);
-  };
-
-  compressNode(node) {
-    if (node.textContent || node.attributes) {
-      node.compressed = 1;
-    }
-
-    if (node.textContent) {
-      node.textContent = LzString.compressToUTF16(node.textContent);
-    }
-
-    if (node.attributes) {
-      Object.keys(node.attributes).forEach((attributeName) => {
-        node.attributes[attributeName] = LzString.compressToUTF16(
-          node.attributes[attributeName],
-        );
-      });
-    }
-
-    return node;
+    return this.domCompressor.compressNode(data);
   }
 
   public serializeAddedAndMoved(added, reparented, reordered) {
@@ -212,7 +191,7 @@ export default class DomSource {
         }
 
         if (record !== null) {
-          record.attributes[attrName] = this.compressAttribute(
+          record.attributes[attrName] = this.domCompressor.compressAttribute(
             element.getAttribute(attrName),
           );
         }

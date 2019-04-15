@@ -2,7 +2,23 @@ import LzString from "lz-string";
 
 export default class DomCompressor {
   compressNode(node) {
-    return LzString.compressToUTF16(node);
+    if (node.textContent || node.attributes) {
+      node.compressed = 1;
+    }
+
+    if (node.textContent) {
+      node.textContent = LzString.compressToUTF16(node.textContent);
+    }
+
+    if (node.attributes) {
+      Object.keys(node.attributes).forEach((attributeName) => {
+        node.attributes[attributeName] = LzString.compressToUTF16(
+          node.attributes[attributeName],
+        );
+      });
+    }
+
+    return node;
   }
 
   decompressNode(node) {
