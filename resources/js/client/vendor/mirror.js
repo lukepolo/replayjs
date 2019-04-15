@@ -1,3 +1,6 @@
+import LzString from 'lz-string';
+import { TreeMirrorClient } from "./tree-mirror";
+
 var TreeMirror = (function() {
   function TreeMirror(root, delegate) {
     this.root = root;
@@ -61,7 +64,7 @@ var TreeMirror = (function() {
 
       if (node) {
         Object.keys(data.attributes).forEach(function(attrName) {
-          var newVal = data.attributes[attrName];
+          var newVal = _this.decompressAttribute(data.attributes[attrName]);
           if (newVal === null) {
             node.removeAttribute(attrName);
           } else {
@@ -94,12 +97,40 @@ var TreeMirror = (function() {
     });
   };
 
+  TreeMirror.prototype.decompressAttribute = function(attribute) {
+    return LzString.decompressFromUTF16(attribute);
+  };
+
+  TreeMirror.prototype.decompressNode = function(node) {
+    if (!node.compressed) {
+      return node;
+    }
+
+    if (node.textContent) {
+      node.textContent = LzString.decompressFromUTF16(node.textContent);
+    }
+
+    if (node.attributes) {
+      Object.keys(node.attributes).forEach((attributeName) => {
+        node.attributes[attributeName] = LzString.decompressFromUTF16(node.attributes[attributeName]);
+      });
+    }
+
+    return node;
+  };
+
   TreeMirror.prototype.deserializeNode = function(nodeData, parent) {
     var _this = this;
-    if (nodeData === null) return null;
+    if (nodeData === null) {
+      return null
+    }
+
+    nodeData = this.decompressNode(nodeData)
 
     var node = this.idMap[nodeData.id];
-    if (node) return node;
+    if (node) {
+      return node
+    }
 
     var doc = this.root.ownerDocument;
     if (doc === null) doc = this.root;

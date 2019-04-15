@@ -1,3 +1,4 @@
+import LzString from 'lz-string';
 import MutationSummary from "mutation-summary";
 
 var TreeMirrorClient = (function() {
@@ -107,7 +108,29 @@ var TreeMirrorClient = (function() {
         break;
     }
 
-    return data;
+    return this.compressNode(data);
+  };
+
+  TreeMirrorClient.prototype.compressAttribute = function(attribute) {
+    return LzString.compressToUTF16(attribute);
+  };
+
+  TreeMirrorClient.prototype.compressNode = function(node) {
+    if (node.textContent || node.attributes) {
+      node.compressed = 1;
+    }
+
+    if (node.textContent) {
+      node.textContent = LzString.compressToUTF16(node.textContent);
+    }
+
+    if (node.attributes) {
+      Object.keys(node.attributes).forEach((attributeName) => {
+        node.attributes[attributeName] = LzString.compressToUTF16(node.attributes[attributeName]);
+      });
+    }
+
+    return node;
   };
 
   TreeMirrorClient.prototype.serializeAddedAndMoved = function(
@@ -178,7 +201,7 @@ var TreeMirrorClient = (function() {
         }
 
         if (record !== null) {
-          record.attributes[attrName] = element.getAttribute(attrName);
+          record.attributes[attrName] = _this.compressAttribute(element.getAttribute(attrName));
         }
       });
     });
