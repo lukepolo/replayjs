@@ -1,4 +1,3 @@
-import LzString from "lz-string";
 import DomCompressor from "./DomCompressor";
 const MutationSummary = require("mutation-summary");
 
@@ -17,11 +16,11 @@ export default class DomSource {
     this.knownNodes = new MutationSummary.NodeMap();
     this.domCompressor = new DomCompressor();
 
-    var rootId = this.serializeNode(target).id;
-    var children = [];
-    for (var child = target.firstChild; child; child = child.nextSibling) {
+    let rootId = this.serializeNode(target).id;
+    let children = [];
+    for (let child = target.firstChild; child; child = child.nextSibling) {
       // @ts-ignore
-      var node = this.serializeNode(child, true);
+      let node = this.serializeNode(child, true);
       if (node !== null) {
         children.push(node);
       }
@@ -30,7 +29,7 @@ export default class DomSource {
     // @ts-ignore
     this.mirror.initialize(rootId, children);
 
-    var queries = [{ all: true }];
+    let queries = [{ all: true }];
 
     if (testingQueries) queries = queries.concat(testingQueries);
 
@@ -53,7 +52,7 @@ export default class DomSource {
   }
 
   public rememberNode(node) {
-    var id = this.nextId++;
+    let id = this.nextId++;
     this.knownNodes.set(node, id);
     return id;
   }
@@ -65,7 +64,7 @@ export default class DomSource {
   public serializeNode(node, recursive?) {
     if (node === null) return null;
 
-    var id = this.knownNodes.get(node);
+    let id = this.knownNodes.get(node);
     if (id !== undefined) {
       return { id: id };
     }
@@ -77,7 +76,7 @@ export default class DomSource {
 
     switch (data.nodeType) {
       case Node.DOCUMENT_TYPE_NODE:
-        var docType = node;
+        let docType = node;
         // @ts-ignore
         data.name = docType.name;
         // @ts-ignore
@@ -100,8 +99,8 @@ export default class DomSource {
         // @ts-ignore
         data.attributes = {};
 
-        for (var i = 0; i < elm.attributes.length; i++) {
-          var attr = elm.attributes[i];
+        for (let i = 0; i < elm.attributes.length; i++) {
+          let attr = elm.attributes[i];
           // @ts-ignore
           data.attributes[attr.name] = attr.value;
         }
@@ -118,7 +117,7 @@ export default class DomSource {
           // @ts-ignore
           data.childNodes = [];
 
-          for (var child = elm.firstChild; child; child = child.nextSibling) {
+          for (let child = elm.firstChild; child; child = child.nextSibling) {
             var node = this.serializeNode(child, true);
             if (node !== null) {
               // @ts-ignore
@@ -133,13 +132,13 @@ export default class DomSource {
   }
 
   public serializeAddedAndMoved(added, reparented, reordered) {
-    var all = added.concat(reparented).concat(reordered);
+    let all = added.concat(reparented).concat(reordered);
 
-    var parentMap = new MutationSummary.NodeMap();
+    let parentMap = new MutationSummary.NodeMap();
 
     all.forEach((node) => {
       var parent = node.parentNode;
-      var children = parentMap.get(parent);
+      let children = parentMap.get(parent);
       if (!children) {
         children = new MutationSummary.NodeMap();
         parentMap.set(parent, children);
@@ -148,14 +147,14 @@ export default class DomSource {
       children.set(node, true);
     });
 
-    var moved = [];
+    let moved = [];
 
     parentMap.keys().forEach((parent) => {
-      var children = parentMap.get(parent);
+      let children = parentMap.get(parent);
 
-      var keys = children.keys();
+      let keys = children.keys();
       while (keys.length) {
-        var node = keys.shift();
+        let node = keys.shift();
         while (node.previousSibling && children.has(node.previousSibling))
           node = node.previousSibling;
 
@@ -177,11 +176,11 @@ export default class DomSource {
   }
 
   public serializeAttributeChanges(attributeChanged) {
-    var map = new MutationSummary.NodeMap();
+    let map = new MutationSummary.NodeMap();
 
     Object.keys(attributeChanged).forEach((attrName) => {
       attributeChanged[attrName].forEach((element) => {
-        var record = map.get(element);
+        let record = map.get(element);
         if (!record) {
           record = this.serializeNode(element);
 
@@ -205,21 +204,21 @@ export default class DomSource {
   }
 
   public applyChanged(summaries) {
-    var summary = summaries[0];
+    let summary = summaries[0];
 
-    var removed = summary.removed.map((node) => {
+    let removed = summary.removed.map((node) => {
       return this.serializeNode(node);
     });
 
-    var moved = this.serializeAddedAndMoved(
+    let moved = this.serializeAddedAndMoved(
       summary.added,
       summary.reparented,
       summary.reordered,
     );
 
-    var attributes = this.serializeAttributeChanges(summary.attributeChanged);
+    let attributes = this.serializeAttributeChanges(summary.attributeChanged);
 
-    var text = summary.characterDataChanged.map((node) => {
+    let text = summary.characterDataChanged.map((node) => {
       var data = this.serializeNode(node);
       if (data !== null) {
         data.textContent = node.textContent;
