@@ -1,6 +1,6 @@
 export enum NodeDataTypes {
   id = "i",
-  nodeType = "nodeType",
+  nodeType = "nt",
   name = "n",
   publicId = "pi",
   systemId = "si",
@@ -15,7 +15,7 @@ export enum NodeDataTypes {
 
 export default interface NodeData {
   i: number;
-  nodeType?: number;
+  nt?: number;
   n?: string;
   pi?: string;
   si?: string;

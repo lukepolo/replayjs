@@ -63,8 +63,8 @@ export default class DomSource {
     }
 
     let data: NodeData = {
+      [NodeDataTypes.nodeType]: node.nodeType,
       [NodeDataTypes.id]: this.rememberNode(node),
-      [NodeDataTypes.nodeType]: node[NodeDataTypes.nodeType],
     };
 
     switch (data[NodeDataTypes.nodeType]) {
