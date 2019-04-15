@@ -1,15 +1,15 @@
 import InputEvents from "./events/InputEvents";
-import { TreeMirrorClient } from "./vendor/tree-mirror";
 import ListenInterface from "./interfaces/ListenInterface";
 import { NullPresenceChannel } from "laravel-echo/dist/channel";
 import InitializeDataInterface from "./interfaces/InitializeDataInterface";
 import DomChangesDataInterface from "./interfaces/DomChangesDataInterface";
+import DomSource from "./mirror/DomSource";
 
 export default class MirrorClient implements ListenInterface {
   protected baseHref: string;
   protected inputEvents: InputEvents;
   protected channel: NullPresenceChannel;
-  protected treeMirrorClient: TreeMirrorClient;
+  protected treeMirrorClient: DomSource;
 
   constructor(baseHref: string) {
     this.baseHref = baseHref;
@@ -60,7 +60,7 @@ export default class MirrorClient implements ListenInterface {
 
   private initialize() {
     this.disconnect();
-    this.treeMirrorClient = new TreeMirrorClient(
+    this.treeMirrorClient = new DomSource(
       document,
       {
         initialize: (rootId, children) => {
