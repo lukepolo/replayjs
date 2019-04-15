@@ -1,4 +1,4 @@
-import { TreeMirror } from "@app/../client/vendor/mirror";
+import DomMirror from "@app/../client/mirror/DomMirror";
 
 export default {
   created() {
@@ -43,7 +43,7 @@ export default {
       });
     },
     _setupMirror(baseHref) {
-      this.mirror = new TreeMirror(this.previewDocument, {
+      this.mirror = new DomMirror(this.previewDocument, {
         createElement: (tagName) => {
           if (tagName === "HEAD") {
             let node = document.createElement("HEAD");
