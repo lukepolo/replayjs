@@ -6,7 +6,7 @@ export default interface NodeData {
   systemId?: string;
   textContent?: string;
   tagName?: string;
-  attributes?: Array<Element>;
+  attributes?: object;
   childNodes?: NodeData[];
   compressed?: boolean;
 }

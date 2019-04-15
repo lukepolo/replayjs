@@ -125,7 +125,9 @@ export default class DomMirror {
     addedOrMoved.forEach((data) => {
       let node = this.deserializeNode(data);
       if (node) {
-        if (node.parentNode) node.parentNode.removeChild(node);
+        if (node.parentNode) {
+          node.parentNode.removeChild(node);
+        }
       }
     });
 

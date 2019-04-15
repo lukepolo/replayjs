@@ -48,16 +48,6 @@ export default class DomSource {
     }
   }
 
-  protected rememberNode(node: Node) {
-    let id = this.nextId++;
-    this.knownNodes.set(node, id);
-    return id;
-  }
-
-  protected forgetNode(node: Node) {
-    this.knownNodes.delete(node);
-  }
-
   protected serializeNode(node: Node, recursive?: boolean): NodeData {
     if (node === null) return null;
 
@@ -88,12 +78,10 @@ export default class DomSource {
       case Node.ELEMENT_NODE:
         let elm = <Element>node;
         data.tagName = elm.tagName;
-        // @ts-ignore
-        data.attributes = {}; // TODO - come back to
+        data.attributes = {};
 
         for (let i = 0; i < elm.attributes.length; i++) {
           let attr = elm.attributes[i];
-
           data.attributes[attr.name] = attr.value;
         }
 
@@ -232,5 +220,15 @@ export default class DomSource {
     summary.removed.forEach((node) => {
       this.forgetNode(node);
     });
+  }
+
+  protected rememberNode(node: Node) {
+    let id = this.nextId++;
+    this.knownNodes.set(node, id);
+    return id;
+  }
+
+  protected forgetNode(node: Node) {
+    this.knownNodes.delete(node);
   }
 }
