@@ -1,20 +1,24 @@
 import LzString from "lz-string";
-import NodeData from "./interfaces/NodeData";
+import NodeData, { NodeDataTypes } from "./interfaces/NodeData";
 
 export default class DomCompressor {
   compressNode(node: NodeData): NodeData {
-    if (node.textContent || node.attributes) {
-      node.compressed = true;
+    if (node[NodeDataTypes.textContent] || node[NodeDataTypes.attributes]) {
+      node[NodeDataTypes.compressed] = true;
     }
 
-    if (node.textContent) {
-      node.textContent = LzString.compressToUTF16(node.textContent);
+    if (node[NodeDataTypes.textContent]) {
+      node[NodeDataTypes.textContent] = LzString.compressToUTF16(
+        node[NodeDataTypes.textContent],
+      );
     }
 
-    if (node.attributes) {
-      Object.keys(node.attributes).forEach((attributeName) => {
-        node.attributes[attributeName] = LzString.compressToUTF16(
-          node.attributes[attributeName],
+    if (node[NodeDataTypes.attributes]) {
+      Object.keys(node[NodeDataTypes.attributes]).forEach((attributeName) => {
+        node[NodeDataTypes.attributes][
+          attributeName
+        ] = LzString.compressToUTF16(
+          node[NodeDataTypes.attributes][attributeName],
         );
       });
     }
@@ -23,23 +27,27 @@ export default class DomCompressor {
   }
 
   decompressNode(node: NodeData): NodeData {
-    if (!node.compressed) {
+    if (!node[NodeDataTypes.compressed]) {
       return node;
     }
 
-    if (node.textContent) {
-      node.textContent = LzString.decompressFromUTF16(node.textContent);
+    if (node[NodeDataTypes.textContent]) {
+      node[NodeDataTypes.textContent] = LzString.decompressFromUTF16(
+        node[NodeDataTypes.textContent],
+      );
     }
 
-    if (node.attributes) {
-      Object.keys(node.attributes).forEach((attributeName) => {
-        node.attributes[attributeName] = this.decompressAttribute(
-          node.attributes[attributeName],
+    if (node[NodeDataTypes.attributes]) {
+      Object.keys(node[NodeDataTypes.attributes]).forEach((attributeName) => {
+        node[NodeDataTypes.attributes][
+          attributeName
+        ] = this.decompressAttribute(
+          node[NodeDataTypes.attributes][attributeName],
         );
       });
     }
 
-    node.compressed = false;
+    node[NodeDataTypes.compressed] = false;
 
     return node;
   }

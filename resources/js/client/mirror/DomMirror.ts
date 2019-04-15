@@ -1,8 +1,8 @@
 import DomCompressor from "./DomCompressor";
-import NodeData from "./interfaces/NodeData";
+import TextData from "./interfaces/TextData";
 import PositionData from "./interfaces/PositionData";
 import AttributeData from "./interfaces/AttributeData";
-import TextData from "./interfaces/TextData";
+import NodeData, { NodeDataTypes } from "./interfaces/NodeData";
 
 export default class DomMirror {
   protected root;
@@ -31,14 +31,14 @@ export default class DomMirror {
     }
   }
 
-  public deserializeNode(nodeData: NodeData, parent?: Node) {
+  public deserializeNode(nodeData: NodeData, parent?: Node): Node {
     if (nodeData === null) {
       return;
     }
 
     nodeData = this.domCompressor.decompressNode(nodeData);
 
-    let node = this.idMap[nodeData.id];
+    let node = this.idMap[nodeData[NodeDataTypes.id]];
 
     if (node) {
       return node;
@@ -49,33 +49,33 @@ export default class DomMirror {
       doc = this.root;
     }
 
-    switch (nodeData.nodeType) {
+    switch (nodeData[NodeDataTypes.nodeType]) {
       case Node.COMMENT_NODE:
-        node = doc.createComment(nodeData.textContent);
+        node = doc.createComment(nodeData[NodeDataTypes.textContent]);
         break;
 
       case Node.TEXT_NODE:
-        node = doc.createTextNode(nodeData.textContent);
+        node = doc.createTextNode(nodeData[NodeDataTypes.textContent]);
         break;
 
       case Node.DOCUMENT_TYPE_NODE:
         node = doc.implementation.createDocumentType(
-          nodeData.name,
-          nodeData.publicId,
-          nodeData.systemId,
+          nodeData[NodeDataTypes.name],
+          nodeData[NodeDataTypes.publicId],
+          nodeData[NodeDataTypes.systemId],
         );
         break;
 
       case Node.ELEMENT_NODE:
         if (this.delegate && this.delegate.createElement) {
-          node = this.delegate.createElement(nodeData.tagName);
+          node = this.delegate.createElement(nodeData[NodeDataTypes.tagName]);
         }
         if (!node) {
-          node = doc.createElement(nodeData.tagName);
+          node = doc.createElement(nodeData[NodeDataTypes.tagName]);
         }
 
-        Object.keys(nodeData.attributes).forEach((name) => {
-          let attribute = nodeData.attributes[name];
+        Object.keys(nodeData[NodeDataTypes.attributes]).forEach((name) => {
+          let attribute = nodeData[NodeDataTypes.attributes][name];
 
           try {
             if (
@@ -97,15 +97,15 @@ export default class DomMirror {
       return;
     }
 
-    this.idMap[nodeData.id] = node;
+    this.idMap[nodeData[NodeDataTypes.id]] = node;
 
     if (parent) {
       parent.appendChild(node);
     }
 
-    if (nodeData.childNodes) {
-      for (let i = 0; i < nodeData.childNodes.length; i++) {
-        this.deserializeNode(nodeData.childNodes[i], node);
+    if (nodeData[NodeDataTypes.childNodes]) {
+      for (let i = 0; i < nodeData[NodeDataTypes.childNodes].length; i++) {
+        this.deserializeNode(nodeData[NodeDataTypes.childNodes][i], node);
       }
     }
 
@@ -125,8 +125,8 @@ export default class DomMirror {
     addedOrMoved.forEach((data) => {
       let node = this.deserializeNode(data);
       if (node) {
-        if (node.parentNode) {
-          node.parentNode.removeChild(node);
+        if (node[NodeDataTypes.parentNode]) {
+          node[NodeDataTypes.parentNode].removeChild(node);
         }
       }
     });
@@ -134,15 +134,18 @@ export default class DomMirror {
     removed.forEach((data) => {
       let node = this.deserializeNode(data);
       if (node) {
-        if (node.parentNode) node.parentNode.removeChild(node);
+        if (node[NodeDataTypes.parentNode])
+          node[NodeDataTypes.parentNode].removeChild(node);
       }
     });
 
     addedOrMoved.forEach((data) => {
       let node = this.deserializeNode(data);
       if (node) {
-        let parent = this.deserializeNode(data.parentNode);
-        let previous = this.deserializeNode(data.previousSibling);
+        let parent = this.deserializeNode(data[NodeDataTypes.parentNode]);
+        let previous = this.deserializeNode(
+          data[NodeDataTypes.previousSibling],
+        );
 
         try {
           parent.insertBefore(
@@ -156,12 +159,12 @@ export default class DomMirror {
     });
 
     attributes.forEach((data: AttributeData) => {
-      let node = this.deserializeNode(data);
+      let node = <Element>this.deserializeNode(data);
 
       if (node) {
-        Object.keys(data.attributes).forEach((attrName) => {
+        Object.keys(data[NodeDataTypes.attributes]).forEach((attrName) => {
           let newVal = this.domCompressor.decompressAttribute(
-            data.attributes[attrName],
+            data[NodeDataTypes.attributes][attrName],
           );
           if (newVal === null) {
             node.removeAttribute(attrName);
@@ -186,12 +189,12 @@ export default class DomMirror {
       let node = this.deserializeNode(data);
 
       if (node) {
-        node.textContent = data.textContent;
+        node[NodeDataTypes.textContent] = data[NodeDataTypes.textContent];
       }
     });
 
     removed.forEach((node) => {
-      delete this.idMap[node.id];
+      delete this.idMap[node[NodeDataTypes.id]];
     });
   }
 }

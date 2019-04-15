@@ -1,7 +1,8 @@
 import DomCompressor from "./DomCompressor";
-import NodeData from "./interfaces/NodeData";
 import PositionData from "./interfaces/PositionData";
 import AttributeData from "./interfaces/AttributeData";
+import NodeData, { NodeDataTypes } from "./interfaces/NodeData";
+
 const MutationSummary = require("mutation-summary");
 
 export default class DomSource {
@@ -30,7 +31,10 @@ export default class DomSource {
       }
     }
 
-    this.mirror.initialize(this.serializeNode(target).id, children);
+    this.mirror.initialize(
+      this.serializeNode(target)[NodeDataTypes.id],
+      children,
+    );
 
     this.mutationSummary = new MutationSummary({
       rootNode: target,
@@ -53,36 +57,38 @@ export default class DomSource {
 
     let id = this.knownNodes.get(node);
     if (id !== undefined) {
-      return { id: id };
+      return {
+        [NodeDataTypes.id]: id,
+      };
     }
 
     let data: NodeData = {
-      nodeType: node.nodeType,
-      id: this.rememberNode(node),
+      [NodeDataTypes.id]: this.rememberNode(node),
+      [NodeDataTypes.nodeType]: node[NodeDataTypes.nodeType],
     };
 
-    switch (data.nodeType) {
+    switch (data[NodeDataTypes.nodeType]) {
       case Node.DOCUMENT_TYPE_NODE:
         let docType = <DocumentType>node;
-        data.name = docType.name;
-        data.publicId = docType.publicId;
-        data.systemId = docType.systemId;
+        data[NodeDataTypes.name] = docType[NodeDataTypes.name];
+        data[NodeDataTypes.publicId] = docType[NodeDataTypes.publicId];
+        data[NodeDataTypes.systemId] = docType[NodeDataTypes.systemId];
         break;
 
       case Node.COMMENT_NODE:
         return null;
       case Node.TEXT_NODE:
-        data.textContent = node.textContent;
+        data[NodeDataTypes.textContent] = node.textContent;
         break;
 
       case Node.ELEMENT_NODE:
         let elm = <Element>node;
-        data.tagName = elm.tagName;
-        data.attributes = {};
+        data[NodeDataTypes.tagName] = elm.tagName;
+        data[NodeDataTypes.attributes] = {};
 
         for (let i = 0; i < elm.attributes.length; i++) {
           let attr = elm.attributes[i];
-          data.attributes[attr.name] = attr.value;
+          data[NodeDataTypes.attributes][attr.name] = attr.value;
         }
 
         if (
@@ -94,7 +100,7 @@ export default class DomSource {
         }
 
         if (recursive && elm.childNodes.length) {
-          data.childNodes = [];
+          data[NodeDataTypes.childNodes] = [];
 
           for (
             let child = <Node>elm.firstChild;
@@ -103,7 +109,7 @@ export default class DomSource {
           ) {
             let nodeData = this.serializeNode(child, true);
             if (nodeData !== null) {
-              data.childNodes.push(nodeData);
+              data[NodeDataTypes.childNodes].push(nodeData);
             }
           }
         }
@@ -148,8 +154,12 @@ export default class DomSource {
         while (node && children.has(node)) {
           let data = <PositionData>this.serializeNode(node);
           if (data !== null) {
-            data.previousSibling = this.serializeNode(node.previousSibling);
-            data.parentNode = this.serializeNode(node.parentNode);
+            data[NodeDataTypes.previousSibling] = this.serializeNode(
+              node.previousSibling,
+            );
+            data[NodeDataTypes.parentNode] = this.serializeNode(
+              node.parentNode,
+            );
             moved.push(data);
             children.delete(node);
           }
@@ -172,15 +182,16 @@ export default class DomSource {
         let record = map.get(element);
         if (!record) {
           record = this.serializeNode(element);
-
           if (record !== null) {
-            record.attributes = {};
+            record[NodeDataTypes.attributes] = {};
             map.set(element, record);
           }
         }
 
         if (record !== null) {
-          record.attributes[attrName] = this.domCompressor.compressAttribute(
+          record[NodeDataTypes.attributes][
+            attrName
+          ] = this.domCompressor.compressAttribute(
             element.getAttribute(attrName),
           );
         }
@@ -210,7 +221,7 @@ export default class DomSource {
     let text = summary.characterDataChanged.map((node) => {
       let data = this.serializeNode(node);
       if (data !== null) {
-        data.textContent = node.textContent;
+        data[NodeDataTypes.textContent] = node.textContent;
       }
       return data;
     });
