@@ -1,27 +1,27 @@
 export enum NodeDataTypes {
-  id = "id",
+  id = "i",
   nodeType = "nodeType",
-  name = "name",
-  publicId = "publicId",
-  systemId = "systemId",
-  textContent = "textContent",
-  tagName = "tagName",
-  attributes = "attributes",
-  childNodes = "childNodes",
-  compressed = "compressed",
-  parentNode = "parentNode",
-  previousSibling = "previousSibling",
+  name = "n",
+  publicId = "pi",
+  systemId = "si",
+  textContent = "tc",
+  tagName = "tn",
+  attributes = "a",
+  childNodes = "cn",
+  compressed = "c",
+  parentNode = "pn",
+  previousSibling = "ps",
 }
 
 export default interface NodeData {
-  id: number;
+  i: number;
   nodeType?: number;
-  name?: string;
-  publicId?: string;
-  systemId?: string;
-  textContent?: string;
-  tagName?: string;
-  attributes?: object;
-  childNodes?: NodeData[];
-  compressed?: boolean;
+  n?: string;
+  pi?: string;
+  si?: string;
+  tc?: string;
+  tn?: string;
+  a?: object;
+  cn?: NodeData[];
+  c?: boolean;
 }
