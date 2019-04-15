@@ -60,32 +60,28 @@ export default class MirrorClient implements ListenInterface {
 
   private initialize() {
     this.disconnect();
-    this.treeMirrorClient = new DomSource(
-      document,
-      {
-        initialize: (rootId, children) => {
-          this.whisperInitialized({
-            rootId,
-            children,
-            timing: Date.now(),
-            baseHref: this.baseHref,
-          });
-          this.inputEvents.setup();
-        },
-        applyChanged: (removed, addedOrMoved, attributes, text) => {
-          this.whisperChanges({
-            text,
-            removed,
-            attributes,
-            addedOrMoved,
-            timing: Date.now(),
-          });
-          if (addedOrMoved.length) {
-            this.inputEvents.setup();
-          }
-        },
+    this.treeMirrorClient = new DomSource(document, {
+      initialize: (rootId, children) => {
+        this.whisperInitialized({
+          rootId,
+          children,
+          timing: Date.now(),
+          baseHref: this.baseHref,
+        });
+        this.inputEvents.setup();
       },
-      [{ all: true }],
-    );
+      applyChanged: (removed, addedOrMoved, attributes, text) => {
+        this.whisperChanges({
+          text,
+          removed,
+          attributes,
+          addedOrMoved,
+          timing: Date.now(),
+        });
+        if (addedOrMoved.length) {
+          this.inputEvents.setup();
+        }
+      },
+    });
   }
 }

@@ -1,9 +1,10 @@
 import LzString from "lz-string";
+import NodeData from "./interfaces/NodeData";
 
 export default class DomCompressor {
-  compressNode(node) {
+  compressNode(node: NodeData): NodeData {
     if (node.textContent || node.attributes) {
-      node.compressed = 1;
+      node.compressed = true;
     }
 
     if (node.textContent) {
@@ -21,7 +22,7 @@ export default class DomCompressor {
     return node;
   }
 
-  decompressNode(node) {
+  decompressNode(node: NodeData): NodeData {
     if (!node.compressed) {
       return node;
     }
@@ -43,11 +44,11 @@ export default class DomCompressor {
     return node;
   }
 
-  public compressAttribute(attribute) {
+  public compressAttribute(attribute: string): string {
     return LzString.compressToUTF16(attribute);
   }
 
-  public decompressAttribute(attribute) {
+  public decompressAttribute(attribute: string): string {
     return LzString.decompressFromUTF16(attribute);
   }
 }

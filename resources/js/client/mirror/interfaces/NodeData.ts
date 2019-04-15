@@ -8,5 +8,5 @@ export default interface NodeData {
   tagName?: string;
   attributes?: Array<Element>;
   childNodes?: NodeData[];
-  compressed: boolean;
+  compressed?: boolean;
 }
