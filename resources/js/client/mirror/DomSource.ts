@@ -66,7 +66,7 @@ export default class DomSource {
       return { id: id };
     }
 
-    var data: NodeData = {
+    let data: NodeData = {
       nodeType: node.nodeType,
       id: this.rememberNode(node),
     };
@@ -153,11 +153,12 @@ export default class DomSource {
       let keys = children.keys();
       while (keys.length) {
         let node = keys.shift();
-        while (node.previousSibling && children.has(node.previousSibling))
+        while (node.previousSibling && children.has(node.previousSibling)) {
           node = node.previousSibling;
+        }
 
         while (node && children.has(node)) {
-          var data = <PositionData>this.serializeNode(node);
+          let data = <PositionData>this.serializeNode(node);
           if (data !== null) {
             data.previousSibling = this.serializeNode(node.previousSibling);
             data.parentNode = this.serializeNode(node.parentNode);
@@ -219,7 +220,7 @@ export default class DomSource {
     let attributes = this.serializeAttributeChanges(summary.attributeChanged);
 
     let text = summary.characterDataChanged.map((node) => {
-      var data = this.serializeNode(node);
+      let data = this.serializeNode(node);
       if (data !== null) {
         data.textContent = node.textContent;
       }
