@@ -135,7 +135,6 @@ export default class DomSource {
         children = new MutationSummary.NodeMap();
         parentMap.set(parent, children);
       }
-
       children.set(node, true);
     });
 
