@@ -9,8 +9,6 @@ export enum NodeDataTypes {
   attributes = "a",
   childNodes = "cn",
   compressed = "c",
-  parentNode = "parentNode",
-  previousSibling = "previousSibling",
 }
 
 export default interface NodeData {

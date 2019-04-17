@@ -125,8 +125,8 @@ export default class DomMirror {
     addedOrMoved.forEach((data) => {
       let node = this.deserializeNode(data);
       if (node) {
-        if (node[NodeDataTypes.parentNode]) {
-          node[NodeDataTypes.parentNode].removeChild(node);
+        if (node.parentNode) {
+          node.parentNode.removeChild(node);
         }
       }
     });
@@ -134,18 +134,15 @@ export default class DomMirror {
     removed.forEach((data) => {
       let node = this.deserializeNode(data);
       if (node) {
-        if (node[NodeDataTypes.parentNode])
-          node[NodeDataTypes.parentNode].removeChild(node);
+        if (node.parentNode) node.parentNode.removeChild(node);
       }
     });
 
     addedOrMoved.forEach((data) => {
       let node = this.deserializeNode(data);
       if (node) {
-        let parent = this.deserializeNode(data[NodeDataTypes.parentNode]);
-        let previous = this.deserializeNode(
-          data[NodeDataTypes.previousSibling],
-        );
+        let parent = this.deserializeNode(data.parentNode);
+        let previous = this.deserializeNode(data.previousSibling);
 
         try {
           parent.insertBefore(

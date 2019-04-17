@@ -153,12 +153,8 @@ export default class DomSource {
         while (node && children.has(node)) {
           let data = <PositionData>this.serializeNode(node);
           if (data !== null) {
-            data[NodeDataTypes.previousSibling] = this.serializeNode(
-              node.previousSibling,
-            );
-            data[NodeDataTypes.parentNode] = this.serializeNode(
-              node.parentNode,
-            );
+            data.previousSibling = this.serializeNode(node.previousSibling);
+            data.parentNode = this.serializeNode(node.parentNode);
             moved.push(data);
             children.delete(node);
           }
