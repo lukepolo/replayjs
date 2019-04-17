@@ -80,8 +80,8 @@ export default class DomSource {
       case Node.TEXT_NODE:
         data[NodeDataTypes.textContent] = node.textContent;
         break;
-
       case Node.ELEMENT_NODE:
+      case Node.DOCUMENT_FRAGMENT_NODE:
         let elm = <Element>node;
         data[NodeDataTypes.tagName] = elm.tagName;
         data[NodeDataTypes.attributes] = {};

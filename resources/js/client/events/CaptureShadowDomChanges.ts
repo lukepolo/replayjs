@@ -34,26 +34,25 @@ export default class CaptureShadowDomChanges implements ListenInterface {
     let channel = this.channel;
 
     return function(options) {
-      new DomSource(this.getRootNode(), {
-        initialize: (rootId, children) => {
-          channel.whisper("shadow-init", {
-            rootId,
-            children,
-          });
-          console.info(rootId, children);
-        },
-        applyChanged: (removed, addedOrMoved, attributes, text) => {
-          console.info("whisper changes");
-          channel.whisper("changes", {
-            text,
-            removed,
-            attributes,
-            addedOrMoved,
-            timing: Date.now(),
-          });
-        },
+      let sh = originalFunction.call(this, options);
+
+      let rootNode = this.getRootNode({
+        composed: true,
       });
-      return originalFunction.call(this, options);
+
+      let observer = new MutationObserver((mutations) => {
+        console.info(mutations);
+      });
+
+      observer.observe(sh, {
+        childList: true,
+        subtree: true,
+        characterData: true,
+        attributes: true,
+        characterDataOldValue: true,
+      });
+
+      return sh;
     };
   }
 
