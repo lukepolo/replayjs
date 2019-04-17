@@ -13,16 +13,15 @@ export default class CaptureConsoleMessages implements ListenInterface {
 
   public setup(channel: NullPresenceChannel) {
     this.channel = channel;
-    let originalConsoleLog = (this.originalConsoleLog = window.console.log);
-    let originalConsoleInfo = (this.originalConsoleInfo = window.console.info);
-    let originalConsoleWarn = (this.originalConsoleWarn = window.console.warn);
-    let originalConsoleError = (this.originalConsoleError =
-      window.console.error);
+    this.originalConsoleLog = window.console.log;
+    this.originalConsoleInfo = window.console.info;
+    this.originalConsoleWarn = window.console.warn;
+    this.originalConsoleError = window.console.error;
 
-    window.console.log = this.captureLog(originalConsoleLog, "log");
-    window.console.info = this.captureLog(originalConsoleInfo, "info");
-    window.console.warn = this.captureLog(originalConsoleWarn, "warn");
-    window.console.error = this.captureLog(originalConsoleError, "error");
+    window.console.log = this.captureLog(this.originalConsoleLog, "log");
+    window.console.info = this.captureLog(this.originalConsoleInfo, "info");
+    window.console.warn = this.captureLog(this.originalConsoleWarn, "warn");
+    window.console.error = this.captureLog(this.originalConsoleError, "error");
   }
 
   public teardown() {
