@@ -1,13 +1,14 @@
+import DomSource from "./../mirror/DomSource";
 import ListenInterface from "../interfaces/ListenInterface";
 import { NullPresenceChannel } from "laravel-echo/dist/channel";
 import ConsoleDataInterface from "../interfaces/ConsoleDataInterface";
 
 export default class CaptureShadowDomChanges implements ListenInterface {
-  protected channel: NullPresenceChannel;
-  protected readonly event = "console-message";
-
+  protected domSource: DomSource;
   protected originalAttachShadow;
   protected originalCreateShadowRoot;
+  protected readonly event = "changes";
+  protected channel: NullPresenceChannel;
 
   public setup(channel: NullPresenceChannel) {
     this.channel = channel;
@@ -32,16 +33,16 @@ export default class CaptureShadowDomChanges implements ListenInterface {
   private captureShadowEvents(originalFunction) {
     // let whisper = this.whisper.bind(this);
 
-    return function(option) {
-      // whisper({
-      //   type,
-      //   messages,
-      //   timing: Date.now(),
-      // });
-      var sh = originalFunction.call(this, option);
-      console.info("%s shadow attached to %s", option.mode, this);
-      //add a MutationObserver here
-      return sh;
+    return function(options) {
+      new DomSource(this, {
+        initialize: (rootId, children) => {
+          console.info(rootId, children);
+        },
+        applyChanged: (removed, addedOrMoved, attributes, text) => {
+          console.info(removed, addedOrMoved, attributes, text);
+        },
+      });
+      return originalFunction.call(this, options);
     };
   }
 
