@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\User\User;
 use App\Services\AssetService;
 use App\Services\GuestService;
+use App\Observers\UserObserver;
 use Illuminate\Support\ServiceProvider;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use BeyondCode\LaravelWebSockets\Facades\WebSocketsRouter;
@@ -39,6 +41,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        User::observe(UserObserver::class);
+
         WebSocketsRouter::webSocket('/app/{appKey}/{apiKey}', \App\WebSocketHandlers\ClientSocketHandler::class);
     }
 }
