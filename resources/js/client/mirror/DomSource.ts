@@ -237,4 +237,8 @@ export default class DomSource {
   protected forgetNode(node: Node) {
     this.knownNodes.delete(node);
   }
+
+  public getMutationSummary() {
+    return this.mutationSummary;
+  }
 }

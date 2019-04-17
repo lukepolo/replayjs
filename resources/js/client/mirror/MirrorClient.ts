@@ -4,20 +4,24 @@ import ListenInterface from "../interfaces/ListenInterface";
 import { NullPresenceChannel } from "laravel-echo/dist/channel";
 import InitializeDataInterface from "../interfaces/InitializeDataInterface";
 import DomChangesDataInterface from "../interfaces/DomChangesDataInterface";
+import CaptureShadowDomChanges from "../events/CaptureShadowDomChanges";
 
 export default class MirrorClient implements ListenInterface {
   protected baseHref: string;
   protected domSource: DomSource;
   protected inputEvents: InputEvents;
   protected channel: NullPresenceChannel;
+  protected captureShadowDomChanges: CaptureShadowDomChanges;
 
   constructor(baseHref: string) {
     this.baseHref = baseHref;
     this.inputEvents = new InputEvents();
+    this.captureShadowDomChanges = new CaptureShadowDomChanges();
   }
 
   public setup(channel: NullPresenceChannel) {
     this.channel = channel;
+
     this.initialize();
     window.addEventListener("focus", this.tabFocusActivity.bind(this));
     window.addEventListener("blur", this.tabFocusActivity.bind(this));
@@ -70,6 +74,8 @@ export default class MirrorClient implements ListenInterface {
         this.inputEvents.setup();
       },
       applyChanged: (removed, addedOrMoved, attributes, text) => {
+        console.info("OK HERE?");
+        console.info(removed, addedOrMoved, attributes, text);
         this.whisperChanges({
           text,
           removed,
@@ -82,5 +88,6 @@ export default class MirrorClient implements ListenInterface {
         }
       },
     });
+    this.captureShadowDomChanges.setup(this.channel, this.domSource);
   }
 }

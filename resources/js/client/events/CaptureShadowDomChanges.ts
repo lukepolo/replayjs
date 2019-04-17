@@ -10,7 +10,9 @@ export default class CaptureShadowDomChanges implements ListenInterface {
   protected readonly event = "changes";
   protected channel: NullPresenceChannel;
 
-  public setup(channel: NullPresenceChannel) {
+  // @ts-ignore
+  public setup(channel: NullPresenceChannel, domSource: DomSource) {
+    this.domSource = domSource;
     this.channel = channel;
     this.originalAttachShadow = HTMLElement.prototype.attachShadow;
     //// this.originalCreateShadowRoot = HTMLElement.prototype.createShadowRoot;
@@ -32,6 +34,7 @@ export default class CaptureShadowDomChanges implements ListenInterface {
 
   private captureShadowEvents(originalFunction) {
     let channel = this.channel;
+    let domSource = this.domSource;
 
     return function(options) {
       let sh = originalFunction.call(this, options);
@@ -41,7 +44,11 @@ export default class CaptureShadowDomChanges implements ListenInterface {
       });
 
       let observer = new MutationObserver((mutations) => {
-        console.info(mutations);
+        let mutationSummary = domSource.getMutationSummary();
+        if (mutationSummary) {
+          console.info("sending mutations", mutations);
+          mutationSummary.observerCallback(mutations);
+        }
       });
 
       observer.observe(sh, {
