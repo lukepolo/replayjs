@@ -1,4 +1,4 @@
-import MirrorClient from "../MirrorClient";
+import MirrorClient from "../mirror/MirrorClient";
 import WebSocketService from "./WebSocketService";
 import CaptureClicks from "../events/CaptureClicks";
 import { NullPresenceChannel } from "laravel-echo/dist/channel";
@@ -8,6 +8,7 @@ import CaptureSessionDetails from "../events/CaptureSessionDetails";
 import CaptureMouseMovements from "../events/CaptureMouseMovements";
 import CaptureConsoleMessages from "../events/CaptureConsoleMessages";
 import CaptureNetworkRequests from "../events/CaptureNetworkRequests";
+import CaptureShadowDomChanges from "../events/CaptureShadowDomChanges";
 import StreamOptionsInterface from "../interfaces/StreamOptionsInterface";
 import CaptureTabVisibilityEvents from "../events/CaptureTabVisibilityEvents";
 
@@ -22,6 +23,7 @@ export default class StreamService {
   protected captureSessionDetails: CaptureSessionDetails;
   protected captureConsoleMessages: CaptureConsoleMessages;
   protected captureNetworkRequests: CaptureNetworkRequests;
+  protected captureShadowDomChanges: CaptureShadowDomChanges;
   protected captureTabVisibilityEvents: CaptureTabVisibilityEvents;
 
   constructor(webSocketService: WebSocketService) {
@@ -41,6 +43,7 @@ export default class StreamService {
           this.captureMouseMovements.setup(this.channel);
           this.captureConsoleMessages.setup(this.channel);
           this.captureNetworkRequests.setup(this.channel);
+          this.captureShadowDomChanges.setup(this.channel);
           this.captureTabVisibilityEvents.setup(this.channel);
           this.captureSessionDetails.sendDetails(this.channel);
         });
@@ -69,6 +72,7 @@ export default class StreamService {
     this.captureMouseMovements = new CaptureMouseMovements();
     this.captureConsoleMessages = new CaptureConsoleMessages();
     this.captureNetworkRequests = new CaptureNetworkRequests();
+    this.captureShadowDomChanges = new CaptureShadowDomChanges();
     this.captureTabVisibilityEvents = new CaptureTabVisibilityEvents();
   }
 }

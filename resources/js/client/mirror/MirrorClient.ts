@@ -1,9 +1,9 @@
-import InputEvents from "./events/InputEvents";
-import ListenInterface from "./interfaces/ListenInterface";
+import InputEvents from "../events/InputEvents";
+import ListenInterface from "../interfaces/ListenInterface";
 import { NullPresenceChannel } from "laravel-echo/dist/channel";
-import InitializeDataInterface from "./interfaces/InitializeDataInterface";
-import DomChangesDataInterface from "./interfaces/DomChangesDataInterface";
-import DomSource from "./mirror/DomSource";
+import InitializeDataInterface from "../interfaces/InitializeDataInterface";
+import DomChangesDataInterface from "../interfaces/DomChangesDataInterface";
+import DomSource from "./DomSource";
 
 export default class MirrorClient implements ListenInterface {
   protected baseHref: string;
