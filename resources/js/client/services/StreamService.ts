@@ -41,7 +41,7 @@ export default class StreamService {
           this.captureScrollEvents.setup(this.channel);
           this.captureWindowResize.setup(this.channel);
           this.captureMouseMovements.setup(this.channel);
-          this.captureConsoleMessages.setup(this.channel);
+          // this.captureConsoleMessages.setup(this.channel);
           this.captureNetworkRequests.setup(this.channel);
           this.captureShadowDomChanges.setup(this.channel);
           this.captureTabVisibilityEvents.setup(this.channel);

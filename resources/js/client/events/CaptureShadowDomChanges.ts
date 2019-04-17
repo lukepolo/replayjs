@@ -31,15 +31,26 @@ export default class CaptureShadowDomChanges implements ListenInterface {
   }
 
   private captureShadowEvents(originalFunction) {
-    // let whisper = this.whisper.bind(this);
+    let channel = this.channel;
 
     return function(options) {
-      new DomSource(this, {
+      new DomSource(this.getRootNode(), {
         initialize: (rootId, children) => {
+          channel.whisper("shadow-init", {
+            rootId,
+            children,
+          });
           console.info(rootId, children);
         },
         applyChanged: (removed, addedOrMoved, attributes, text) => {
-          console.info(removed, addedOrMoved, attributes, text);
+          console.info("whisper changes");
+          channel.whisper("changes", {
+            text,
+            removed,
+            attributes,
+            addedOrMoved,
+            timing: Date.now(),
+          });
         },
       });
       return originalFunction.call(this, options);

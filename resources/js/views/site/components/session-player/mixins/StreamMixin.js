@@ -113,7 +113,15 @@ export default {
                   playerEventMirrorFunctions.DomChange,
                 );
               })
+              .listenForWhisper("shadow-init", (changes) => {
+                this._addEvent(
+                  playerEventTypes.DomChange,
+                  changes,
+                  playerEventMirrorFunctions.DomChange,
+                );
+              })
               .listenForWhisper("changes", (changes) => {
+                console.info(`Got some chagnges `, changes);
                 this._addEvent(
                   playerEventTypes.DomChange,
                   changes,
