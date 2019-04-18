@@ -28,6 +28,71 @@ export default class MutationSummary {
   private calcReordered: boolean;
   private queryValidators: any[];
 
+  constructor(opts: Options) {
+    if (MutationObserver === undefined) {
+      console.error("DOM Mutation Observers are required.");
+      console.error(
+        "https://developer.mozilla.org/en-US/docs/DOM/MutationObserver",
+      );
+      throw Error("DOM Mutation Observers are required");
+    }
+
+    this.connected = false;
+    this.options = MutationSummary.validateOptions(opts);
+    this.observerOptions = MutationSummary.createObserverOptions(
+      this.options.queries,
+    );
+    this.root = this.options.rootNode;
+    this.callback = this.options.callback;
+
+    this.elementFilter = Array.prototype.concat.apply(
+      [],
+      this.options.queries.map((query) => {
+        return query.elementFilter ? query.elementFilter : [];
+      }),
+    );
+    if (!this.elementFilter.length) this.elementFilter = undefined;
+
+    this.calcReordered = this.options.queries.some((query) => {
+      return query.all;
+    });
+
+    this.queryValidators = []; // TODO(rafaelw): Shouldn't always define this.
+    if (MutationSummary.createQueryValidator) {
+      this.queryValidators = this.options.queries.map((query) => {
+        return MutationSummary.createQueryValidator(this.root, query);
+      });
+    }
+
+    this.observer = new MutationObserver((mutations: MutationRecord[]) => {
+      this.observerCallback(mutations);
+    });
+
+    this.reconnect();
+  }
+
+  public reconnect() {
+    if (this.connected) throw Error("Already connected");
+
+    this.observer.observe(this.root, this.observerOptions);
+    this.connected = true;
+    this.checkpointQueryValidators();
+  }
+
+  public takeSummaries(): Summary[] {
+    if (!this.connected) throw Error("Not connected");
+
+    let summaries = this.createSummaries(this.observer.takeRecords());
+    return this.changesToReport(summaries) ? summaries : undefined;
+  }
+
+  public disconnect(): Summary[] {
+    let summaries = this.takeSummaries();
+    this.observer.disconnect();
+    this.connected = false;
+    return summaries;
+  }
+
   private static optionKeys: StringMap<boolean> = {
     callback: true, // required
     queries: true, // required
@@ -245,49 +310,6 @@ export default class MutationSummary {
     });
   }
 
-  constructor(opts: Options) {
-    if (MutationObserver === undefined) {
-      console.error("DOM Mutation Observers are required.");
-      console.error(
-        "https://developer.mozilla.org/en-US/docs/DOM/MutationObserver",
-      );
-      throw Error("DOM Mutation Observers are required");
-    }
-
-    this.connected = false;
-    this.options = MutationSummary.validateOptions(opts);
-    this.observerOptions = MutationSummary.createObserverOptions(
-      this.options.queries,
-    );
-    this.root = this.options.rootNode;
-    this.callback = this.options.callback;
-
-    this.elementFilter = Array.prototype.concat.apply(
-      [],
-      this.options.queries.map((query) => {
-        return query.elementFilter ? query.elementFilter : [];
-      }),
-    );
-    if (!this.elementFilter.length) this.elementFilter = undefined;
-
-    this.calcReordered = this.options.queries.some((query) => {
-      return query.all;
-    });
-
-    this.queryValidators = []; // TODO(rafaelw): Shouldn't always define this.
-    if (MutationSummary.createQueryValidator) {
-      this.queryValidators = this.options.queries.map((query) => {
-        return MutationSummary.createQueryValidator(this.root, query);
-      });
-    }
-
-    this.observer = new MutationObserver((mutations: MutationRecord[]) => {
-      this.observerCallback(mutations);
-    });
-
-    this.reconnect();
-  }
-
   private observerCallback(mutations: MutationRecord[]) {
     if (!this.options.observeOwnChanges) this.observer.disconnect();
 
@@ -303,27 +325,5 @@ export default class MutationSummary {
       this.checkpointQueryValidators();
       this.observer.observe(this.root, this.observerOptions);
     }
-  }
-
-  reconnect() {
-    if (this.connected) throw Error("Already connected");
-
-    this.observer.observe(this.root, this.observerOptions);
-    this.connected = true;
-    this.checkpointQueryValidators();
-  }
-
-  takeSummaries(): Summary[] {
-    if (!this.connected) throw Error("Not connected");
-
-    let summaries = this.createSummaries(this.observer.takeRecords());
-    return this.changesToReport(summaries) ? summaries : undefined;
-  }
-
-  disconnect(): Summary[] {
-    let summaries = this.takeSummaries();
-    this.observer.disconnect();
-    this.connected = false;
-    return summaries;
   }
 }
