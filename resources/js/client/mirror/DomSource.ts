@@ -14,6 +14,8 @@ export default class DomSource {
   protected mutationSummary;
   protected nextId: number = 1;
   protected domCompressor: DomCompressor;
+  protected listeners = [];
+  protected originalAttachShadow;
 
   constructor(target: Node, mirror) {
     this.mirror = mirror;
@@ -46,10 +48,48 @@ export default class DomSource {
         this.applyChanged(summaries);
       },
     });
+
+    // originalCreateShadowRoot -- TODO
+    this.originalAttachShadow = HTMLElement.prototype.attachShadow;
+    if (typeof this.originalAttachShadow === "function") {
+      HTMLElement.prototype.attachShadow = this.captureShadowEvents(
+        this.originalAttachShadow,
+      );
+    }
+  }
+
+  private captureShadowEvents(originalFunction) {
+    let mutationSummary = this.mutationSummary;
+
+    return function(options) {
+      let sh = originalFunction.call(this, options);
+
+      let rootNode = this.getRootNode({
+        composed: true,
+      });
+
+      let observer = new MutationObserver((mutations) => {
+        if (mutationSummary) {
+          console.info("sending mutations", mutations);
+          mutationSummary.observerCallback(mutations);
+        }
+      });
+
+      observer.observe(sh, {
+        childList: true,
+        subtree: true,
+        characterData: true,
+        attributes: true,
+        characterDataOldValue: true,
+      });
+
+      return sh;
+    };
   }
 
   public disconnect() {
     if (this.mutationSummary) {
+      HTMLElement.prototype.attachShadow = this.originalAttachShadow;
       this.mutationSummary.disconnect();
       this.mutationSummary = undefined;
     }
@@ -85,6 +125,7 @@ export default class DomSource {
         break;
 
       case Node.ELEMENT_NODE:
+      case Node.DOCUMENT_FRAGMENT_NODE:
         let elm = <Element>node;
         data[NodeDataTypes.tagName] = elm.tagName;
         data[NodeDataTypes.attributes] = {};

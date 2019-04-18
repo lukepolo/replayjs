@@ -67,6 +67,7 @@ export default class DomMirror {
         break;
 
       case Node.ELEMENT_NODE:
+      case Node.DOCUMENT_FRAGMENT_NODE:
         if (this.delegate && this.delegate.createElement) {
           node = this.delegate.createElement(nodeData[NodeDataTypes.tagName]);
         }
