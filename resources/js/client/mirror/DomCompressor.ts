@@ -3,6 +3,7 @@ import NodeData, { NodeDataTypes } from "./interfaces/NodeData";
 
 export default class DomCompressor {
   compressNode(node: NodeData): NodeData {
+    return node;
     if (node[NodeDataTypes.textContent] || node[NodeDataTypes.attributes]) {
       node[NodeDataTypes.compressed] = true;
     }
@@ -27,6 +28,7 @@ export default class DomCompressor {
   }
 
   decompressNode(node: NodeData): NodeData {
+    return node;
     if (!node[NodeDataTypes.compressed]) {
       return node;
     }
@@ -53,10 +55,12 @@ export default class DomCompressor {
   }
 
   public compressAttribute(attribute: string): string {
+    return attribute;
     return LzString.compressToUTF16(attribute);
   }
 
   public decompressAttribute(attribute: string): string {
+    return attribute;
     return LzString.decompressFromUTF16(attribute);
   }
 }
