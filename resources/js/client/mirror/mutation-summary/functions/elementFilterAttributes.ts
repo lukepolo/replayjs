@@ -1,5 +1,5 @@
-import Selector from "../mutation-summary/classes/Selector";
-import StringMap from "../mutation-summary/interfaces/StringMap";
+import Selector from "../classes/Selector";
+import StringMap from "../interfaces/StringMap";
 
 export default function elementFilterAttributes(
   selectors: Selector[],

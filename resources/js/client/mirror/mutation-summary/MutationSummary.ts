@@ -5,9 +5,9 @@ import Options from "./interfaces/Options";
 import Query from "./interfaces/Query";
 import Summary from "./classes/Summary";
 import StringMap from "./interfaces/StringMap";
-import elementFilterAttributes from "../functions/elementFilterAttributes";
-import validateAttribute from "../functions/validateAttribute";
-import validateElementAttributes from "../functions/validateElementAttributes";
+import elementFilterAttributes from "./functions/elementFilterAttributes";
+import validateAttribute from "./functions/validateAttribute";
+import validateElementAttributes from "./functions/validateElementAttributes";
 import MutationProjection from "./classes/MutationProjection";
 
 // TODO(rafaelw): Consider allowing backslash in the attrValue.
@@ -246,6 +246,14 @@ export default class MutationSummary {
   }
 
   constructor(opts: Options) {
+    if (MutationObserver === undefined) {
+      console.error("DOM Mutation Observers are required.");
+      console.error(
+        "https://developer.mozilla.org/en-US/docs/DOM/MutationObserver",
+      );
+      throw Error("DOM Mutation Observers are required");
+    }
+
     this.connected = false;
     this.options = MutationSummary.validateOptions(opts);
     this.observerOptions = MutationSummary.createObserverOptions(
