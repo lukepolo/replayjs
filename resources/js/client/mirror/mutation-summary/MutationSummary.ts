@@ -337,5 +337,11 @@ export default class MutationSummary {
     if (this.changesToReport(summaries)) {
       this.callback(summaries);
     }
+
+    // disconnect() may have been called during the callback.
+    if (!this.options.observeOwnChanges && this.connected) {
+      this.checkpointQueryValidators();
+      this.observer.observe(this.root, this.observerOptions);
+    }
   }
 }
