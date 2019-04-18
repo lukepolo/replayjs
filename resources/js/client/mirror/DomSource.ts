@@ -1,9 +1,11 @@
 import DomCompressor from "./DomCompressor";
 import PositionData from "./interfaces/PositionData";
 import AttributeData from "./interfaces/AttributeData";
+import NodeMap from "./mutation-summary/classes/NodeMap";
+import Summary from "./mutation-summary/classes/Summary";
 import NodeData, { NodeDataTypes } from "./interfaces/NodeData";
-
-const MutationSummary = require("mutation-summary");
+import StringMap from "./mutation-summary/interfaces/StringMap";
+import MutationSummary from "./../mirror/mutation-summary/MutationSummary";
 
 export default class DomSource {
   protected mirror;
@@ -17,7 +19,7 @@ export default class DomSource {
     this.mirror = mirror;
     this.target = target;
     this.domCompressor = new DomCompressor();
-    this.knownNodes = new MutationSummary.NodeMap();
+    this.knownNodes = new MutationSummary.NodeMap<NodeMap<number>>();
 
     let children = [];
     for (
@@ -38,7 +40,7 @@ export default class DomSource {
 
     this.mutationSummary = new MutationSummary({
       rootNode: target,
-      callback: (summaries) => {
+      callback: (summaries: Array<Summary>) => {
         this.applyChanged(summaries);
       },
       queries: [{ all: true }],
@@ -126,7 +128,7 @@ export default class DomSource {
   ): Array<PositionData> {
     let all = added.concat(reparented).concat(reordered);
 
-    let parentMap = new MutationSummary.NodeMap();
+    let parentMap = new MutationSummary.NodeMap<NodeMap<boolean>>();
 
     all.forEach((node) => {
       let parent = node.parentNode;
@@ -168,15 +170,15 @@ export default class DomSource {
   }
 
   protected serializeAttributeChanges(
-    attributeChanged: Array<Element[]>,
+    attributeChanged: StringMap<Element[]>,
   ): Array<AttributeData> {
-    let map = new MutationSummary.NodeMap();
+    let map = new MutationSummary.NodeMap<AttributeData>();
 
     Object.keys(attributeChanged).forEach((attrName) => {
       attributeChanged[attrName].forEach((element) => {
         let record = map.get(element);
         if (!record) {
-          record = this.serializeNode(element);
+          record = <AttributeData>this.serializeNode(element);
           if (record !== null) {
             record[NodeDataTypes.attributes] = {};
             map.set(element, record);
