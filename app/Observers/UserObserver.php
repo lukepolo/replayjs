@@ -16,8 +16,8 @@ class UserObserver
      */
     public function created(User $user)
     {
-        Newsletter::subscribeOrUpdate($user->email, [
-            'FNAME' => $user->name,
-        ]);
+        //Newsletter::subscribeOrUpdate($user->email, [
+//            'FNAME' => $user->name,
+        //]);
     }
 }
