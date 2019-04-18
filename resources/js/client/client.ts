@@ -11,7 +11,7 @@ declare global {
   }
 }
 
-export default class Client {
+class Client {
   protected chatService: ChatService;
   protected streamService: StreamService;
   protected websocketService: WebSocketService;
