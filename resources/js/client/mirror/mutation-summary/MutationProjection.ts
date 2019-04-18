@@ -41,8 +41,9 @@ export default class MutationProjection {
     if (
       !this.treeChanges.anyParentsChanged &&
       !this.treeChanges.anyAttributesChanged
-    )
+    ) {
       return;
+    }
 
     let changedNodes: Node[] = this.treeChanges.keys();
     for (let i = 0; i < changedNodes.length; i++) {
@@ -51,7 +52,9 @@ export default class MutationProjection {
   }
 
   public visitNode(node: Node, parentReachable: Movement) {
-    if (this.visited.has(node)) return;
+    if (this.visited.has(node)) {
+      return;
+    }
 
     this.visited.set(node, true);
 
@@ -60,10 +63,13 @@ export default class MutationProjection {
 
     // node inherits its parent's reachability change unless
     // its parentNode was mutated.
-    if ((change && change.childList) || reachable == undefined)
+    if ((change && change.childList) || reachable == undefined) {
       reachable = this.treeChanges.reachabilityChange(node);
+    }
 
-    if (reachable === Movement.STAYED_OUT) return;
+    if (reachable === Movement.STAYED_OUT) {
+      return;
+    }
 
     // Cache match results for sub-patterns.
     this.matchabilityChange(node);

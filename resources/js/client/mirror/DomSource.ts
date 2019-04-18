@@ -69,10 +69,7 @@ export default class DomSource {
       });
 
       let observer = new MutationObserver((mutations) => {
-        if (mutationSummary) {
-          console.info("sending mutations", mutations);
-          mutationSummary.observerCallback(mutations);
-        }
+        mutationSummary.observerCallback(mutations);
       });
 
       observer.observe(sh, {
