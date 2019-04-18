@@ -44,6 +44,7 @@ export default class DomSource {
         this.applyChanged(summaries);
       },
       queries: [{ all: true }],
+      oldPreviousSibling: true,
     });
   }
 

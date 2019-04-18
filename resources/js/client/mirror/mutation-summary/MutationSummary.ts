@@ -18,7 +18,7 @@ export default class MutationSummary {
   public static parseElementFilter = Selector.parseSelectors; // exposed for testing.
 
   public static createQueryValidator: (root: Node, query: Query) => any;
-  private connected: boolean;
+  private connected: boolean = false;
   private options: Options;
   private observer: MutationObserver;
   private observerOptions: MutationObserverInit;
@@ -32,12 +32,11 @@ export default class MutationSummary {
     if (MutationObserver === undefined) {
       throw Error("DOM Mutation Observers are required");
     }
-
-    this.connected = false;
     this.options = MutationSummary.validateOptions(opts);
     this.observerOptions = MutationSummary.createObserverOptions(
       this.options.queries,
     );
+
     this.root = this.options.rootNode;
     this.callback = this.options.callback;
 
@@ -53,6 +52,7 @@ export default class MutationSummary {
       return query.all;
     });
 
+    // TODO _ i dont think we need this for replay
     this.queryValidators = []; // TODO(rafaelw): Shouldn't always define this.
     if (MutationSummary.createQueryValidator) {
       this.queryValidators = this.options.queries.map((query) => {
@@ -68,7 +68,9 @@ export default class MutationSummary {
   }
 
   public reconnect() {
-    if (this.connected) throw Error("Already connected");
+    if (this.connected) {
+      throw Error("Already connected");
+    }
 
     this.observer.observe(this.root, this.observerOptions);
     this.connected = true;
@@ -307,19 +309,19 @@ export default class MutationSummary {
   }
 
   private observerCallback(mutations: MutationRecord[]) {
-    if (!this.options.observeOwnChanges) this.observer.disconnect();
+    if (!this.options.observeOwnChanges) {
+      this.observer.disconnect();
+    }
 
     let summaries = this.createSummaries(mutations);
     this.runQueryValidators(summaries);
 
-    if (this.options.observeOwnChanges) this.checkpointQueryValidators();
-
-    if (this.changesToReport(summaries)) this.callback(summaries);
-
-    // disconnect() may have been called during the callback.
-    if (!this.options.observeOwnChanges && this.connected) {
+    if (this.options.observeOwnChanges) {
       this.checkpointQueryValidators();
-      this.observer.observe(this.root, this.observerOptions);
+    }
+
+    if (this.changesToReport(summaries)) {
+      this.callback(summaries);
     }
   }
 }
