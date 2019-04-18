@@ -77,7 +77,10 @@ export default class TreeChanges extends NodeMap<NodeChange> {
       return false;
     }
 
-    console.info(`NODE:`, node);
+    console.info(`NODE:`, node.toString());
+    if (node.toString() === "[object ShadowRoot]") {
+      return true;
+    }
 
     this.reachableCache = this.reachableCache || new NodeMap<boolean>();
     let isReachable = this.reachableCache.get(node);

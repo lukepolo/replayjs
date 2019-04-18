@@ -70,7 +70,12 @@ export default class MirrorClient implements ListenInterface {
         this.inputEvents.setup();
       },
       applyChanged: (removed, addedOrMoved, attributes, text) => {
-        console.info("here?");
+        console.group("CHANGES");
+        console.info("Removed", removed);
+        console.info("addedOrMoved", addedOrMoved);
+        console.info("attributes", attributes);
+        console.info("text", text);
+        console.groupEnd();
         this.whisperChanges({
           text,
           removed,

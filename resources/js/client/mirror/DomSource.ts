@@ -72,7 +72,7 @@ export default class DomSource {
         mutationSummary.observerCallback(mutations);
       });
 
-      observer.observe(sh, {
+      observer.observe(this.shadowRoot, {
         childList: true,
         subtree: true,
         characterData: true,
@@ -127,9 +127,11 @@ export default class DomSource {
         data[NodeDataTypes.tagName] = elm.tagName;
         data[NodeDataTypes.attributes] = {};
 
-        for (let i = 0; i < elm.attributes.length; i++) {
-          let attr = elm.attributes[i];
-          data[NodeDataTypes.attributes][attr.name] = attr.value;
+        if (elm.attributes) {
+          for (let i = 0; i < elm.attributes.length; i++) {
+            let attr = elm.attributes[i];
+            data[NodeDataTypes.attributes][attr.name] = attr.value;
+          }
         }
 
         if (
