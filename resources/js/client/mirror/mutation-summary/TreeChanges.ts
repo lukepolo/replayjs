@@ -77,14 +77,13 @@ export default class TreeChanges extends NodeMap<NodeChange> {
       return false;
     }
 
-    // @ts-ignore
-    console.info(node);
+    console.info(`NODE:`, node);
 
     this.reachableCache = this.reachableCache || new NodeMap<boolean>();
     let isReachable = this.reachableCache.get(node);
     if (isReachable === undefined) {
       isReachable = this.getIsReachable(node.parentNode);
-      console.info(`Is reachable ${isReachable}`);
+      console.info(`Reachable: ${isReachable}`);
       this.reachableCache.set(node, isReachable);
     }
     return isReachable;
