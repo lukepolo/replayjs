@@ -66,7 +66,7 @@ export default class MutationSummary {
       return query.all;
     });
 
-    // TODO _ i dont think we need this for replay
+    // TODO - i dont think we need this for replay
     this.queryValidators = []; // TODO(rafaelw): Shouldn't always define this.
     if (MutationSummary.createQueryValidator) {
       this.queryValidators = this.options.queries.map((query) => {
