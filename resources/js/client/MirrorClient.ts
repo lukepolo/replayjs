@@ -1,15 +1,15 @@
+import DomSource from "./mirror/DomSource";
 import InputEvents from "./events/InputEvents";
 import ListenInterface from "./interfaces/ListenInterface";
 import { NullPresenceChannel } from "laravel-echo/dist/channel";
 import InitializeDataInterface from "./interfaces/InitializeDataInterface";
 import DomChangesDataInterface from "./interfaces/DomChangesDataInterface";
-import DomSource from "./mirror/DomSource";
 
 export default class MirrorClient implements ListenInterface {
   protected baseHref: string;
+  protected domSource: DomSource;
   protected inputEvents: InputEvents;
   protected channel: NullPresenceChannel;
-  protected treeMirrorClient: DomSource;
 
   constructor(baseHref: string) {
     this.baseHref = baseHref;
@@ -30,9 +30,9 @@ export default class MirrorClient implements ListenInterface {
   }
 
   private disconnect() {
-    if (this.treeMirrorClient) {
-      this.treeMirrorClient.disconnect();
-      this.treeMirrorClient = null;
+    if (this.domSource) {
+      this.domSource.disconnect();
+      this.domSource = null;
     }
   }
 
@@ -59,7 +59,7 @@ export default class MirrorClient implements ListenInterface {
 
   private initialize() {
     this.disconnect();
-    this.treeMirrorClient = new DomSource(document, {
+    this.domSource = new DomSource(document, {
       initialize: (rootId, children) => {
         this.whisperInitialized({
           rootId,
