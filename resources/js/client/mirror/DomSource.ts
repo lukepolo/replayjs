@@ -40,11 +40,11 @@ export default class DomSource {
 
     this.mutationSummary = new MutationSummary({
       rootNode: target,
+      queries: [{ all: true }],
+      oldPreviousSibling: true,
       callback: (summaries: Array<Summary>) => {
         this.applyChanged(summaries);
       },
-      queries: [{ all: true }],
-      oldPreviousSibling: true,
     });
   }
 
