@@ -1,8 +1,8 @@
 import DomCompressor from "./DomCompressor";
 import PositionData from "./interfaces/PositionData";
 import AttributeData from "./interfaces/AttributeData";
-import NodeMap from "./mutation-summary/classes/NodeMap";
-import Summary from "./mutation-summary/classes/Summary";
+import NodeMap from "./mutation-summary/NodeMap";
+import Summary from "./mutation-summary/Summary";
 import NodeData, { NodeDataTypes } from "./interfaces/NodeData";
 import StringMap from "./mutation-summary/interfaces/StringMap";
 import MutationSummary from "./../mirror/mutation-summary/MutationSummary";

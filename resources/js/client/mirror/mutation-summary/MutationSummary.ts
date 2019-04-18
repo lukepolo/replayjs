@@ -1,14 +1,14 @@
 // TODO(rafaelw): Allow ':' and '.' as valid name characters.
-import NodeMap from "./classes/NodeMap";
-import Selector from "./classes/Selector";
+import NodeMap from "./NodeMap";
+import Selector from "./Selector";
 import Options from "./interfaces/Options";
 import Query from "./interfaces/Query";
-import Summary from "./classes/Summary";
+import Summary from "./Summary";
 import StringMap from "./interfaces/StringMap";
 import elementFilterAttributes from "./functions/elementFilterAttributes";
 import validateAttribute from "./functions/validateAttribute";
 import validateElementAttributes from "./functions/validateElementAttributes";
-import MutationProjection from "./classes/MutationProjection";
+import MutationProjection from "./MutationProjection";
 
 // TODO(rafaelw): Consider allowing backslash in the attrValue.
 // TODO(rafaelw): There's got a to be way to represent this state machine more compactly???

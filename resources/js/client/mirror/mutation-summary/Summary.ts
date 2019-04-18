@@ -1,6 +1,6 @@
-import StringMap from "../interfaces/StringMap";
+import StringMap from "./interfaces/StringMap";
 import MutationProjection from "./MutationProjection";
-import Query from "../interfaces/Query";
+import Query from "./interfaces/Query";
 
 export default class Summary {
   public added: Node[];

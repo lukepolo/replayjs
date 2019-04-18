@@ -1,6 +1,6 @@
 import Qualifier from "./Qualifier";
 import NodeChange from "./NodeChange";
-import { Movement } from "../enums/Movement";
+import { Movement } from "./enums/Movement";
 
 const validNameInitialChar = /[a-zA-Z_]+/;
 const validNameNonInitialChar = /[a-zA-Z0-9_\-]+/;

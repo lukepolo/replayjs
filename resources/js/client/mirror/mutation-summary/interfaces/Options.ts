@@ -1,5 +1,5 @@
 import Query from "./Query";
-import Summary from "../classes/Summary";
+import Summary from "../Summary";
 
 export default interface Options {
   callback: (summaries: Summary[]) => any;

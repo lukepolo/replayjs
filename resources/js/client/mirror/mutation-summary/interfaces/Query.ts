@@ -1,4 +1,4 @@
-import Selector from "../classes/Selector";
+import Selector from "../Selector";
 
 export default interface Query {
   element?: string;

@@ -1,4 +1,4 @@
-import StringMap from "../interfaces/StringMap";
+import StringMap from "./interfaces/StringMap";
 
 export default class NodeChange {
   public isCaseInsensitive: boolean;

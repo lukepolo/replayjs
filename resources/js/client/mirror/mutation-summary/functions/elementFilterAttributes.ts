@@ -1,4 +1,4 @@
-import Selector from "../classes/Selector";
+import Selector from "../Selector";
 import StringMap from "../interfaces/StringMap";
 
 export default function elementFilterAttributes(

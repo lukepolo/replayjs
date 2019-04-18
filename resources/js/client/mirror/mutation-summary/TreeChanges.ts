@@ -1,6 +1,6 @@
 import NodeMap from "./NodeMap";
 import NodeChange from "./NodeChange";
-import { Movement } from "../enums/Movement";
+import { Movement } from "./enums/Movement";
 
 export default class TreeChanges extends NodeMap<NodeChange> {
   public anyParentsChanged: boolean;

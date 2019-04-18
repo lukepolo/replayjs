@@ -1,4 +1,4 @@
-import escapeQuotes from "../functions/escapeQuotes";
+import escapeQuotes from "./functions/escapeQuotes";
 
 export default class Qualifier {
   public attrName: string;
