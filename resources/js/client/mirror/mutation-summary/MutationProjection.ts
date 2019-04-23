@@ -387,4 +387,33 @@ export default class MutationProjection {
     change.maybeMoved.keys().forEach(isMoved);
     return change.moved.get(node);
   }
+
+  public getOldParentNode(node: Node): Node {
+    let change = this.treeChanges.get(node);
+    if (change && change.childList)
+      return change.oldParentNode ? change.oldParentNode : null;
+
+    let reachabilityChange = this.treeChanges.reachabilityChange(node);
+    if (
+      reachabilityChange === Movement.STAYED_OUT ||
+      reachabilityChange === Movement.ENTERED
+    )
+      throw Error("getOldParentNode requested on invalid node.");
+
+    return node.parentNode;
+  }
+
+  public getOldPreviousSibling(node: Node): Node {
+    let parentNode = <Node>node.parentNode;
+    let nodeChange = this.treeChanges.get(node);
+    if (nodeChange && nodeChange.oldParentNode) {
+      parentNode = nodeChange.oldParentNode;
+    }
+
+    let change = this.childListChangeMap.get(parentNode);
+    if (!change)
+      throw Error("getOldPreviousSibling requested on invalid node.");
+
+    return change.oldPrevious.get(node);
+  }
 }
