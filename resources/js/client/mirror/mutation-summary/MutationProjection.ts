@@ -2,12 +2,12 @@ import NodeMap from "./NodeMap";
 import TreeChanges from "./TreeChanges";
 import ChildListChange from "./ChildListChange";
 import StringMap from "./interfaces/StringMap";
-import { Movement } from "./enums/Movement";
+import { NodeMovement } from "./enums/NodeMovement";
 
 export default class MutationProjection {
   public entered: Node[];
   public exited: Node[];
-  public stayedIn: NodeMap<Movement>;
+  public stayedIn: NodeMap<NodeMovement>;
 
   private treeChanges: TreeChanges;
   private visited: NodeMap<boolean>;
@@ -21,7 +21,7 @@ export default class MutationProjection {
     this.treeChanges = new TreeChanges(rootNode, mutations);
     this.entered = [];
     this.exited = [];
-    this.stayedIn = new NodeMap<Movement>();
+    this.stayedIn = new NodeMap<NodeMovement>();
     this.visited = new NodeMap<boolean>();
     this.childListChangeMap = undefined;
 
@@ -41,7 +41,7 @@ export default class MutationProjection {
     }
   }
 
-  public visitNode(node: Node, parentReachable?: Movement) {
+  public visitNode(node: Node, parentReachable?: NodeMovement) {
     if (this.visited.has(node)) {
       return;
     }
@@ -57,31 +57,31 @@ export default class MutationProjection {
       reachable = this.treeChanges.reachabilityChange(node);
     }
 
-    if (reachable === Movement.STAYED_OUT) {
+    if (reachable === NodeMovement.STAYED_OUT) {
       return;
     }
 
-    if (reachable === Movement.ENTERED) {
+    if (reachable === NodeMovement.ENTERED) {
       this.entered.push(node);
-    } else if (reachable === Movement.EXITED) {
+    } else if (reachable === NodeMovement.EXITED) {
       this.exited.push(node);
       this.ensureHasOldPreviousSiblingIfNeeded(node);
-    } else if (reachable === Movement.STAYED_IN) {
-      let movement = Movement.STAYED_IN;
+    } else if (reachable === NodeMovement.STAYED_IN) {
+      let movement = NodeMovement.STAYED_IN;
 
       if (change && change.childList) {
         if (change.oldParentNode !== node.parentNode) {
-          movement = Movement.REPARENTED;
+          movement = NodeMovement.REPARENTED;
           this.ensureHasOldPreviousSiblingIfNeeded(node);
         } else if (this.wasReordered(node)) {
-          movement = Movement.REORDERED;
+          movement = NodeMovement.REORDERED;
         }
       }
 
       this.stayedIn.set(node, movement);
     }
 
-    if (reachable === Movement.STAYED_IN) {
+    if (reachable === NodeMovement.STAYED_IN) {
       return;
     }
 
@@ -127,7 +127,9 @@ export default class MutationProjection {
       let change = this.treeChanges.get(node);
       if (!change.attributes) continue;
 
-      if (Movement.STAYED_IN !== this.treeChanges.reachabilityChange(node)) {
+      if (
+        NodeMovement.STAYED_IN !== this.treeChanges.reachabilityChange(node)
+      ) {
         continue;
       }
 
@@ -165,7 +167,9 @@ export default class MutationProjection {
     let result: Node[] = [];
     for (let i = 0; i < nodes.length; i++) {
       let target = nodes[i];
-      if (Movement.STAYED_IN !== this.treeChanges.reachabilityChange(target))
+      if (
+        NodeMovement.STAYED_IN !== this.treeChanges.reachabilityChange(target)
+      )
         continue;
 
       let change = this.treeChanges.get(target);
@@ -202,7 +206,7 @@ export default class MutationProjection {
 
       if (
         this.treeChanges.reachabilityChange(mutation.target) !==
-          Movement.STAYED_IN &&
+          NodeMovement.STAYED_IN &&
         !this.calcOldPreviousSibling
       )
         continue;

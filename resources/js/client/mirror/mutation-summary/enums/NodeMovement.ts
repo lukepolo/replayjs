@@ -1,4 +1,4 @@
-export enum Movement {
+export enum NodeMovement {
   STAYED_OUT,
   ENTERED,
   STAYED_IN,

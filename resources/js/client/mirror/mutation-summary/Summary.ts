@@ -1,4 +1,4 @@
-import { Movement } from "./enums/Movement";
+import { NodeMovement } from "./enums/NodeMovement";
 import StringMap from "./interfaces/StringMap";
 import MutationProjection from "./MutationProjection";
 
@@ -37,10 +37,10 @@ export default class Summary {
     });
 
     projection.stayedIn.keys().forEach((node) => {
-      let movement: Movement = projection.stayedIn.get(node);
-      if (this.reparented && movement === Movement.REPARENTED) {
+      let movement: NodeMovement = projection.stayedIn.get(node);
+      if (this.reparented && movement === NodeMovement.REPARENTED) {
         this.reparented.push(node);
-      } else if (this.reordered && movement === Movement.REORDERED) {
+      } else if (this.reordered && movement === NodeMovement.REORDERED) {
         this.reordered.push(node);
       }
     });

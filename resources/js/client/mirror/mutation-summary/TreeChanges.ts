@@ -1,6 +1,6 @@
 import NodeMap from "./NodeMap";
 import NodeChange from "./NodeChange";
-import { Movement } from "./enums/Movement";
+import { NodeMovement } from "./enums/NodeMovement";
 
 export default class TreeChanges extends NodeMap<NodeChange> {
   public anyParentsChanged: boolean;
@@ -105,11 +105,15 @@ export default class TreeChanges extends NodeMap<NodeChange> {
     return wasReachable;
   }
 
-  public reachabilityChange(node: Node): Movement {
+  public reachabilityChange(node: Node): NodeMovement {
     if (this.getIsReachable(node)) {
-      return this.getWasReachable(node) ? Movement.STAYED_IN : Movement.ENTERED;
+      return this.getWasReachable(node)
+        ? NodeMovement.STAYED_IN
+        : NodeMovement.ENTERED;
     }
 
-    return this.getWasReachable(node) ? Movement.EXITED : Movement.STAYED_OUT;
+    return this.getWasReachable(node)
+      ? NodeMovement.EXITED
+      : NodeMovement.STAYED_OUT;
   }
 }
