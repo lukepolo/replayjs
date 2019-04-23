@@ -43,11 +43,11 @@ export default class MutationProjection {
 
     let changedNodes: Node[] = this.treeChanges.keys();
     for (let i = 0; i < changedNodes.length; i++) {
-      this.visitNode(changedNodes[i], undefined);
+      this.visitNode(changedNodes[i]);
     }
   }
 
-  public visitNode(node: Node, parentReachable: Movement) {
+  public visitNode(node: Node, parentReachable?: Movement) {
     if (this.visited.has(node)) {
       return;
     }
@@ -87,7 +87,9 @@ export default class MutationProjection {
       this.stayedIn.set(node, movement);
     }
 
-    if (reachable === Movement.STAYED_IN) return;
+    if (reachable === Movement.STAYED_IN) {
+      return;
+    }
 
     // reachable === ENTERED || reachable === EXITED.
     for (let child = <Node>node.firstChild; child; child = child.nextSibling) {
@@ -95,7 +97,7 @@ export default class MutationProjection {
     }
   }
 
-  public ensureHasOldPreviousSiblingIfNeeded(node: Node) {
+  private ensureHasOldPreviousSiblingIfNeeded(node: Node) {
     if (!this.calcOldPreviousSibling) return;
 
     this.processChildlistChanges();
@@ -153,35 +155,6 @@ export default class MutationProjection {
       if (matchable === Movement.EXITED || matchable === Movement.STAYED_IN)
         summary.removed.push(node);
     }
-  }
-
-  public getOldParentNode(node: Node): Node {
-    let change = this.treeChanges.get(node);
-    if (change && change.childList)
-      return change.oldParentNode ? change.oldParentNode : null;
-
-    let reachabilityChange = this.treeChanges.reachabilityChange(node);
-    if (
-      reachabilityChange === Movement.STAYED_OUT ||
-      reachabilityChange === Movement.ENTERED
-    )
-      throw Error("getOldParentNode requested on invalid node.");
-
-    return node.parentNode;
-  }
-
-  public getOldPreviousSibling(node: Node): Node {
-    let parentNode = <Node>node.parentNode;
-    let nodeChange = this.treeChanges.get(node);
-    if (nodeChange && nodeChange.oldParentNode) {
-      parentNode = nodeChange.oldParentNode;
-    }
-
-    let change = this.childListChangeMap.get(parentNode);
-    if (!change)
-      throw Error("getOldPreviousSibling requested on invalid node.");
-
-    return change.oldPrevious.get(node);
   }
 
   public attributeChangedNodes(): StringMap<Element[]> {

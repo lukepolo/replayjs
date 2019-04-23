@@ -20,12 +20,5 @@ export default class Summary {
 
     this.attributeChanged = projection.attributeChangedNodes();
     this.characterDataChanged = projection.getCharacterDataChanged();
-    this.getOldPreviousSibling = projection.getOldPreviousSibling.bind(
-      projection,
-    );
-  }
-
-  getOldPreviousSibling(node: Node): Node {
-    return this.projection.getOldPreviousSibling(node);
   }
 }
