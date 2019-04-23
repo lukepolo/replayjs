@@ -1,7 +1,6 @@
 import NodeMap from "./NodeMap";
 import TreeChanges from "./TreeChanges";
 import ChildListChange from "./ChildListChange";
-import NumberMap from "./interfaces/NumberMap";
 import StringMap from "./interfaces/StringMap";
 import { Movement } from "./enums/Movement";
 
@@ -13,8 +12,6 @@ export default class MutationProjection {
   private treeChanges: TreeChanges;
   private visited: NodeMap<boolean>;
   private childListChangeMap: NodeMap<ChildListChange>;
-  private characterDataOnly: boolean;
-  private matchCache: NumberMap<NodeMap<Movement>>;
 
   constructor(
     public rootNode: Node,
@@ -27,8 +24,6 @@ export default class MutationProjection {
     this.stayedIn = new NodeMap<Movement>();
     this.visited = new NodeMap<boolean>();
     this.childListChangeMap = undefined;
-    this.characterDataOnly = undefined;
-    this.matchCache = undefined;
 
     this.processMutations();
   }
