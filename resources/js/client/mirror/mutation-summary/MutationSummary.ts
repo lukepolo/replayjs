@@ -66,6 +66,7 @@ export default class MutationSummary {
         this.options.oldPreviousSibling, // TODO - we may not need this // https://github.com/rafaelw/mutation-summary/blob/master/APIReference.md
       );
       // TODO - wont work
+      console.info(summary);
       if (summary) {
         this.callback(summary);
       }

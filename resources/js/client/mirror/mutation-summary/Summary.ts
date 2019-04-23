@@ -31,6 +31,8 @@ export default class Summary {
     this.characterDataChanged = projection.getCharacterDataChanged();
   }
 
+  // TODO - really we dont need this.... summary should just be the projection...
+  // I get filtering but, we dont really need it that complex
   public getChanged(projection: MutationProjection) {
     projection.entered.forEach((node) => {
       this.added.push(node);

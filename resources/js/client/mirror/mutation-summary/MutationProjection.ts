@@ -93,7 +93,7 @@ export default class MutationProjection {
   private ensureHasOldPreviousSiblingIfNeeded(node: Node) {
     if (!this.calcOldPreviousSibling) return;
 
-    this.processChildlistChanges();
+    this.processChildListChanges();
 
     let parentNode = <Node>node.parentNode;
     let nodeChange = this.treeChanges.get(node);
@@ -161,31 +161,31 @@ export default class MutationProjection {
   }
 
   public getCharacterDataChanged(): Node[] {
-    if (!this.treeChanges.anyCharacterDataChanged) return []; // No characterData mutations occurred.
+    if (!this.treeChanges.anyCharacterDataChanged) {
+      return [];
+    }
 
     let nodes = this.treeChanges.keys();
     let result: Node[] = [];
-    for (let i = 0; i < nodes.length; i++) {
-      let target = nodes[i];
+    nodes.forEach((node) => {
       if (
-        NodeMovement.STAYED_IN !== this.treeChanges.reachabilityChange(target)
-      )
-        continue;
-
-      let change = this.treeChanges.get(target);
+        this.treeChanges.reachabilityChange(node) !== NodeMovement.STAYED_IN
+      ) {
+        return;
+      }
+      let change = this.treeChanges.get(node);
       if (
         !change.characterData ||
-        target.textContent == change.characterDataOldValue
-      )
-        continue;
-
-      result.push(target);
-    }
-
+        node.textContent == change.characterDataOldValue
+      ) {
+        return;
+      }
+      result.push(node);
+    });
     return result;
   }
 
-  public getChildlistChange(el: Element): ChildListChange {
+  public getChildListChange(el: Element): ChildListChange {
     let change = this.childListChangeMap.get(el);
     if (!change) {
       change = new ChildListChange();
@@ -195,7 +195,7 @@ export default class MutationProjection {
     return change;
   }
 
-  public processChildlistChanges() {
+  public processChildListChanges() {
     if (this.childListChangeMap) return;
 
     this.childListChangeMap = new NodeMap<ChildListChange>();
@@ -211,7 +211,7 @@ export default class MutationProjection {
       )
         continue;
 
-      let change = this.getChildlistChange(<Element>mutation.target);
+      let change = this.getChildListChange(<Element>mutation.target);
 
       let oldPrevious = mutation.previousSibling;
 
@@ -264,7 +264,7 @@ export default class MutationProjection {
   public wasReordered(node: Node) {
     if (!this.treeChanges.anyParentsChanged) return false;
 
-    this.processChildlistChanges();
+    this.processChildListChanges();
 
     let parentNode = <Node>node.parentNode;
     let nodeChange = this.treeChanges.get(node);
