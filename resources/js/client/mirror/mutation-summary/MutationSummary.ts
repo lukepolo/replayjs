@@ -1,8 +1,5 @@
-// TODO(rafaelw): Allow ':' and '.' as valid name characters.
 import Summary from "./Summary";
 import Options from "./interfaces/Options";
-
-// TODO(rafaelw): Consider allowing backslash in the attrValue.
 
 export default class MutationSummary {
   protected root: Node;
