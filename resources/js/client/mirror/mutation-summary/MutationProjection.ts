@@ -3,7 +3,6 @@ import TreeChanges from "./TreeChanges";
 import ChildListChange from "./ChildListChange";
 import NumberMap from "./interfaces/NumberMap";
 import StringMap from "./interfaces/StringMap";
-import Selector from "./Selector";
 import Summary from "./Summary";
 import { Movement } from "./enums/Movement";
 
