@@ -19,7 +19,7 @@ export default class DomSource {
     this.mirror = mirror;
     this.target = target;
     this.domCompressor = new DomCompressor();
-    this.knownNodes = new MutationSummary.NodeMap<NodeMap<number>>();
+    this.knownNodes = new NodeMap<NodeMap<number>>();
 
     let children = [];
     for (
@@ -128,13 +128,13 @@ export default class DomSource {
   ): Array<PositionData> {
     let all = added.concat(reparented).concat(reordered);
 
-    let parentMap = new MutationSummary.NodeMap<NodeMap<boolean>>();
+    let parentMap = new NodeMap<NodeMap<boolean>>();
 
     all.forEach((node) => {
       let parent = node.parentNode;
       let children = parentMap.get(parent);
       if (!children) {
-        children = new MutationSummary.NodeMap();
+        children = new NodeMap();
         parentMap.set(parent, children);
       }
       children.set(node, true);
@@ -172,7 +172,7 @@ export default class DomSource {
   protected serializeAttributeChanges(
     attributeChanged: StringMap<Element[]>,
   ): Array<AttributeData> {
-    let map = new MutationSummary.NodeMap<AttributeData>();
+    let map = new NodeMap<AttributeData>();
 
     Object.keys(attributeChanged).forEach((attrName) => {
       attributeChanged[attrName].forEach((element) => {

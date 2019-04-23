@@ -13,10 +13,8 @@
 // limitations under the License.
 
 // TODO(rafaelw): Allow ':' and '.' as valid name characters.
-import NodeMap from "./NodeMap";
-import Selector from "./Selector";
-import Options from "./interfaces/Options";
 import Summary from "./Summary";
+import Options from "./interfaces/Options";
 import StringMap from "./interfaces/StringMap";
 import MutationProjection from "./MutationProjection";
 
@@ -24,24 +22,21 @@ import MutationProjection from "./MutationProjection";
 // TODO(rafaelw): There's got a to be way to represent this state machine more compactly???
 
 export default class MutationSummary {
-  public static NodeMap = NodeMap; // exposed for use in TreeMirror.
+  protected root: Node;
+  protected options: Options;
+  protected calcReordered: boolean;
+  protected connected: boolean = false;
+  protected observer: MutationObserver;
+  protected callback: (summaries: Summary[]) => any;
 
-  private connected: boolean = false;
-  private options: Options;
-  private observer: MutationObserver;
-  private observerOptions = {
+  protected observerOptions = {
+    subtree: true,
+    childList: true,
     attributes: true,
     attributeOldValue: true,
     characterData: true,
     characterDataOldValue: true,
-    childList: true,
-    subtree: true,
   };
-
-  private root: Node;
-  private callback: (summaries: Summary[]) => any;
-  private elementFilter: Selector[];
-  private calcReordered: boolean;
 
   constructor(opts: Options) {
     if (MutationObserver === undefined) {
@@ -56,15 +51,15 @@ export default class MutationSummary {
       this.observerCallback(mutations);
     });
 
-    this.reconnect();
+    this.connect();
   }
 
-  public reconnect() {
+  public connect() {
     if (this.connected) {
       throw Error("Already connected");
     }
-
     this.observer.observe(this.root, this.observerOptions);
+
     this.connected = true;
   }
 
@@ -83,8 +78,7 @@ export default class MutationSummary {
   }
 
   private static optionKeys: StringMap<boolean> = {
-    callback: true, // required
-    queries: true, // required
+    callback: true,
     rootNode: true,
     oldPreviousSibling: true,
     observeOwnChanges: true,
@@ -104,8 +98,8 @@ export default class MutationSummary {
     return {
       callback: options.callback,
       rootNode: options.rootNode || document,
-      observeOwnChanges: !!options.observeOwnChanges,
-      oldPreviousSibling: !!options.oldPreviousSibling,
+      observeOwnChanges: options.observeOwnChanges,
+      oldPreviousSibling: options.oldPreviousSibling,
     };
   }
 
@@ -115,7 +109,6 @@ export default class MutationSummary {
     let projection = new MutationProjection(
       this.root,
       mutations,
-      this.elementFilter,
       this.calcReordered,
       this.options.oldPreviousSibling,
     );

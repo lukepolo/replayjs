@@ -17,11 +17,9 @@ export default class MutationProjection {
   private characterDataOnly: boolean;
   private matchCache: NumberMap<NodeMap<Movement>>;
 
-  // TOOD(any)
   constructor(
     public rootNode: Node,
     public mutations: MutationRecord[],
-    public selectors: Selector[],
     public calcReordered: boolean,
     public calcOldPreviousSibling: boolean,
   ) {
@@ -51,7 +49,9 @@ export default class MutationProjection {
   }
 
   public visitNode(node: Node, parentReachable: Movement) {
-    if (this.visited.has(node)) return;
+    if (this.visited.has(node)) {
+      return;
+    }
 
     this.visited.set(node, true);
 
@@ -60,13 +60,13 @@ export default class MutationProjection {
 
     // node inherits its parent's reachability change unless
     // its parentNode was mutated.
-    if ((change && change.childList) || reachable == undefined)
+    if ((change && change.childList) || reachable == undefined) {
       reachable = this.treeChanges.reachabilityChange(node);
+    }
 
-    if (reachable === Movement.STAYED_OUT) return;
-
-    // Cache match results for sub-patterns.
-    this.matchabilityChange(node);
+    if (reachable === Movement.STAYED_OUT) {
+      return;
+    }
 
     if (reachable === Movement.ENTERED) {
       this.entered.push(node);
@@ -277,67 +277,8 @@ export default class MutationProjection {
     return result;
   }
 
-  public computeMatchabilityChange(selector: Selector, el: Element): Movement {
-    if (!this.matchCache) this.matchCache = [];
-    if (!this.matchCache[selector.uid])
-      this.matchCache[selector.uid] = new NodeMap<Movement>();
-
-    let cache = this.matchCache[selector.uid];
-    let result = cache.get(el);
-    if (result === undefined) {
-      result = selector.matchabilityChange(el, this.treeChanges.get(el));
-      cache.set(el, result);
-    }
-    return result;
-  }
-
   public matchabilityChange(node: Node): Movement {
-    // TODO(rafaelw): Include PI, CDATA?
-    // Only include text nodes.
-    if (this.characterDataOnly) {
-      switch (node.nodeType) {
-        case Node.COMMENT_NODE:
-        case Node.TEXT_NODE:
-          return Movement.STAYED_IN;
-        default:
-          return Movement.STAYED_OUT;
-      }
-    }
-
-    // No element filter. Include all nodes.
-    if (!this.selectors) return Movement.STAYED_IN;
-
-    // Element filter. Exclude non-elements.
-    if (node.nodeType !== Node.ELEMENT_NODE) return Movement.STAYED_OUT;
-
-    let el = <Element>node;
-
-    let matchChanges = this.selectors.map((selector: Selector) => {
-      return this.computeMatchabilityChange(selector, el);
-    });
-
-    let accum: Movement = Movement.STAYED_OUT;
-    let i = 0;
-
-    while (accum !== Movement.STAYED_IN && i < matchChanges.length) {
-      switch (matchChanges[i]) {
-        case Movement.STAYED_IN:
-          accum = Movement.STAYED_IN;
-          break;
-        case Movement.ENTERED:
-          if (accum === Movement.EXITED) accum = Movement.STAYED_IN;
-          else accum = Movement.ENTERED;
-          break;
-        case Movement.EXITED:
-          if (accum === Movement.ENTERED) accum = Movement.STAYED_IN;
-          else accum = Movement.EXITED;
-          break;
-      }
-
-      i++;
-    }
-
-    return accum;
+    return Movement.STAYED_IN;
   }
 
   public getChildlistChange(el: Element): ChildListChange {
