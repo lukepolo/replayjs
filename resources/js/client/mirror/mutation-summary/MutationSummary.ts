@@ -1,7 +1,6 @@
 // TODO(rafaelw): Allow ':' and '.' as valid name characters.
 import Summary from "./Summary";
 import Options from "./interfaces/Options";
-import MutationProjection from "./MutationProjection";
 
 // TODO(rafaelw): Consider allowing backslash in the attrValue.
 
