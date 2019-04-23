@@ -13,7 +13,6 @@ export default class Summary {
   constructor(
     rootNode: Node,
     mutations: MutationRecord[],
-    calcReordered: boolean,
     calcOldPreviousSibling: boolean,
   ) {
     this.added = [];
@@ -24,7 +23,6 @@ export default class Summary {
     let projection = new MutationProjection(
       rootNode,
       mutations,
-      calcReordered,
       calcOldPreviousSibling,
     );
 

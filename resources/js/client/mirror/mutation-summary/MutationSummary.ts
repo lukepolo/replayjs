@@ -7,7 +7,6 @@ import Options from "./interfaces/Options";
 export default class MutationSummary {
   protected root: Node;
   protected options: Options;
-  protected calcReordered: boolean;
   protected connected: boolean = false;
   protected observer: MutationObserver;
   protected callback: (summary: Summary) => any;
@@ -67,7 +66,6 @@ export default class MutationSummary {
       let summary = new Summary(
         this.root,
         mutations,
-        this.calcReordered,
         this.options.oldPreviousSibling,
       );
       // TODO - wont work

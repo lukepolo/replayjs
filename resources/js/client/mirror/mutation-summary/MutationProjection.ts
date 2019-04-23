@@ -19,7 +19,6 @@ export default class MutationProjection {
   constructor(
     public rootNode: Node,
     public mutations: MutationRecord[],
-    public calcReordered: boolean,
     public calcOldPreviousSibling: boolean,
   ) {
     this.treeChanges = new TreeChanges(rootNode, mutations);
@@ -79,7 +78,7 @@ export default class MutationProjection {
         if (change.oldParentNode !== node.parentNode) {
           movement = Movement.REPARENTED;
           this.ensureHasOldPreviousSiblingIfNeeded(node);
-        } else if (this.calcReordered && this.wasReordered(node)) {
+        } else if (this.wasReordered(node)) {
           movement = Movement.REORDERED;
         }
       }
