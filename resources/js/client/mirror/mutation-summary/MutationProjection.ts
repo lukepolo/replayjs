@@ -118,14 +118,7 @@ export default class MutationProjection {
     }
   }
 
-  public getChanged(
-    summary: Summary,
-    selectors: Selector[],
-    characterDataOnly: boolean,
-  ) {
-    this.selectors = selectors;
-    this.characterDataOnly = characterDataOnly;
-
+  public getChanged(summary: Summary) {
     for (let i = 0; i < this.entered.length; i++) {
       let node = this.entered[i];
       let matchable = this.matchabilityChange(node);
@@ -204,22 +197,11 @@ export default class MutationProjection {
     return value;
   }
 
-  public attributeChangedNodes(
-    includeAttributes: string[],
-  ): StringMap<Element[]> {
+  public attributeChangedNodes(): StringMap<Element[]> {
     if (!this.treeChanges.anyAttributesChanged) return {}; // No attributes mutations occurred.
 
     let attributeFilter: StringMap<boolean>;
     let caseInsensitiveFilter: StringMap<string>;
-    if (includeAttributes) {
-      attributeFilter = {};
-      caseInsensitiveFilter = {};
-      for (let i = 0; i < includeAttributes.length; i++) {
-        let attrName: string = includeAttributes[i];
-        attributeFilter[attrName] = true;
-        caseInsensitiveFilter[attrName.toLowerCase()] = attrName;
-      }
-    }
 
     let result: StringMap<Element[]> = {};
     let nodes = this.treeChanges.keys();
