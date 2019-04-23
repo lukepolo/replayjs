@@ -3,14 +3,14 @@ import TreeChanges from "./TreeChanges";
 import ChildListChange from "./ChildListChange";
 import NumberMap from "./interfaces/NumberMap";
 import StringMap from "./interfaces/StringMap";
-import Summary from "./Summary";
 import { Movement } from "./enums/Movement";
 
 export default class MutationProjection {
+  public entered: Node[];
+  public exited: Node[];
+  public stayedIn: NodeMap<Movement>;
+
   private treeChanges: TreeChanges;
-  private entered: Node[];
-  private exited: Node[];
-  private stayedIn: NodeMap<Movement>;
   private visited: NodeMap<boolean>;
   private childListChangeMap: NodeMap<ChildListChange>;
   private characterDataOnly: boolean;
@@ -116,44 +116,6 @@ export default class MutationProjection {
 
     if (!change.oldPrevious.has(node)) {
       change.oldPrevious.set(node, node.previousSibling);
-    }
-  }
-
-  public getChanged(summary: Summary) {
-    for (let i = 0; i < this.entered.length; i++) {
-      let node = this.entered[i];
-      let matchable = this.matchabilityChange(node);
-      if (matchable === Movement.ENTERED || matchable === Movement.STAYED_IN) {
-        summary.added.push(node);
-      }
-    }
-
-    let stayedInNodes = this.stayedIn.keys();
-    for (let i = 0; i < stayedInNodes.length; i++) {
-      let node = stayedInNodes[i];
-      let matchable = this.matchabilityChange(node);
-
-      if (matchable === Movement.ENTERED) {
-        summary.added.push(node);
-      } else if (matchable === Movement.EXITED) {
-        summary.removed.push(node);
-      } else if (
-        matchable === Movement.STAYED_IN &&
-        (summary.reparented || summary.reordered)
-      ) {
-        let movement: Movement = this.stayedIn.get(node);
-        if (summary.reparented && movement === Movement.REPARENTED)
-          summary.reparented.push(node);
-        else if (summary.reordered && movement === Movement.REORDERED)
-          summary.reordered.push(node);
-      }
-    }
-
-    for (let i = 0; i < this.exited.length; i++) {
-      let node = this.exited[i];
-      let matchable = this.matchabilityChange(node);
-      if (matchable === Movement.EXITED || matchable === Movement.STAYED_IN)
-        summary.removed.push(node);
     }
   }
 

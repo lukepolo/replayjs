@@ -1,7 +1,6 @@
 // TODO(rafaelw): Allow ':' and '.' as valid name characters.
 import Summary from "./Summary";
 import Options from "./interfaces/Options";
-import StringMap from "./interfaces/StringMap";
 import MutationProjection from "./MutationProjection";
 
 // TODO(rafaelw): Consider allowing backslash in the attrValue.
@@ -12,7 +11,7 @@ export default class MutationSummary {
   protected calcReordered: boolean;
   protected connected: boolean = false;
   protected observer: MutationObserver;
-  protected callback: (summaries: Summary[]) => any;
+  protected callback: (summary: Summary) => any;
 
   protected observerOptions = {
     subtree: true,
@@ -52,64 +51,32 @@ export default class MutationSummary {
     this.connected = false;
   }
 
-  private createSummaries(mutations: MutationRecord[]): Summary[] {
-    if (!mutations || !mutations.length) return [];
-
-    let projection = new MutationProjection(
-      this.root,
-      mutations,
-      this.calcReordered,
-      this.options.oldPreviousSibling,
-    );
-
-    return [new Summary(projection)];
-  }
-
-  // TODO - lets rewrite this part
-  private changesToReport(summaries: Summary[]): boolean {
-    return summaries.some((summary) => {
-      if (
-        [
-          "added",
-          "removed",
-          "reordered",
-          "reparented",
-          "valueChanged",
-          "characterDataChanged",
-        ].some(function(prop) {
-          return summary[prop] && summary[prop].length;
-        })
-      ) {
-        return true;
-      }
-
-      if (summary.attributeChanged) {
-        let attrNames = Object.keys(summary.attributeChanged);
-        let attrsChanged = attrNames.some((attrName) => {
-          return !!summary.attributeChanged[attrName].length;
-        });
-        if (attrsChanged) {
-          return true;
-        }
-      }
-      return false;
-    });
-  }
-
   private observerCallback(mutations: MutationRecord[]) {
-    if (!this.options.observeOwnChanges) {
-      this.observer.disconnect();
-    }
+    // TODO - validate this
+    // We disconnect, as we dont want to hear about these changes again
+    this.observer.disconnect();
 
-    let summaries = this.createSummaries(mutations);
+    this.sendSummary(mutations);
 
-    if (this.changesToReport(summaries)) {
-      this.callback(summaries);
-    }
-
-    // disconnect() may have been called during the callback.
-    if (!this.options.observeOwnChanges && this.connected) {
+    if (this.connected) {
       this.observer.observe(this.root, this.observerOptions);
+    }
+  }
+
+  private sendSummary(mutations: MutationRecord[]) {
+    if (mutations && mutations.length) {
+      let summary = new Summary(
+        new MutationProjection(
+          this.root,
+          mutations,
+          this.calcReordered,
+          this.options.oldPreviousSibling,
+        ),
+      );
+      // TODO - wont work
+      if (summary) {
+        this.callback(summary);
+      }
     }
   }
 }

@@ -41,8 +41,8 @@ export default class DomSource {
     this.mutationSummary = new MutationSummary({
       rootNode: target,
       oldPreviousSibling: true,
-      callback: (summaries: Array<Summary>) => {
-        this.applyChanged(summaries);
+      callback: (summary: Summary) => {
+        this.applyChanged(summary);
       },
     });
   }
@@ -200,9 +200,7 @@ export default class DomSource {
     });
   }
 
-  protected applyChanged(summaries) {
-    let summary = summaries[0];
-
+  protected applyChanged(summary: Summary) {
     let removed = summary.removed.map((node) => {
       return this.serializeNode(node);
     });
