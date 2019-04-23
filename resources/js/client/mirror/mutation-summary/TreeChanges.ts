@@ -89,8 +89,12 @@ export default class TreeChanges extends NodeMap<NodeChange> {
 
   // A node wasReachable if its oldParent wasReachable.
   public getWasReachable(node: Node): boolean {
-    if (node === this.rootNode) return true;
-    if (!node) return false;
+    if (node === this.rootNode) {
+      return true;
+    }
+    if (!node) {
+      return false;
+    }
 
     this.wasReachableCache = this.wasReachableCache || new NodeMap<boolean>();
     let wasReachable: boolean = this.wasReachableCache.get(node);

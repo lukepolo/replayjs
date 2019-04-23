@@ -10,11 +10,23 @@ export default class Summary {
   public characterDataChanged: Node[];
   public attributeChanged: StringMap<Element[]>;
 
-  constructor(private projection: MutationProjection) {
+  constructor(
+    rootNode: Node,
+    mutations: MutationRecord[],
+    calcReordered: boolean,
+    calcOldPreviousSibling: boolean,
+  ) {
     this.added = [];
     this.removed = [];
     this.reparented = [];
     this.reordered = [];
+
+    let projection = new MutationProjection(
+      rootNode,
+      mutations,
+      calcReordered,
+      calcOldPreviousSibling,
+    );
 
     this.getChanged(projection);
     this.attributeChanged = projection.attributeChangedNodes();
@@ -23,36 +35,20 @@ export default class Summary {
 
   public getChanged(projection: MutationProjection) {
     projection.entered.forEach((node) => {
-      let matchable = projection.matchabilityChange(node);
-      if (matchable === Movement.ENTERED || matchable === Movement.STAYED_IN) {
-        this.added.push(node);
-      }
+      this.added.push(node);
     });
 
     projection.stayedIn.keys().forEach((node) => {
-      switch (projection.matchabilityChange(node)) {
-        case Movement.ENTERED:
-          this.added.push(node);
-          break;
-        case Movement.EXITED:
-          this.removed.push(node);
-          break;
-        case Movement.STAYED_IN:
-          let movement: Movement = projection.stayedIn.get(node);
-          if (this.reparented && movement === Movement.REPARENTED) {
-            this.reparented.push(node);
-          } else if (this.reordered && movement === Movement.REORDERED) {
-            this.reordered.push(node);
-          }
-          break;
+      let movement: Movement = projection.stayedIn.get(node);
+      if (this.reparented && movement === Movement.REPARENTED) {
+        this.reparented.push(node);
+      } else if (this.reordered && movement === Movement.REORDERED) {
+        this.reordered.push(node);
       }
     });
 
     projection.exited.forEach((node) => {
-      let matchable = projection.matchabilityChange(node);
-      if (matchable === Movement.EXITED || matchable === Movement.STAYED_IN) {
-        this.removed.push(node);
-      }
+      this.removed.push(node);
     });
   }
 }

@@ -66,12 +66,10 @@ export default class MutationSummary {
   private sendSummary(mutations: MutationRecord[]) {
     if (mutations && mutations.length) {
       let summary = new Summary(
-        new MutationProjection(
-          this.root,
-          mutations,
-          this.calcReordered,
-          this.options.oldPreviousSibling,
-        ),
+        this.root,
+        mutations,
+        this.calcReordered,
+        this.options.oldPreviousSibling,
       );
       // TODO - wont work
       if (summary) {
