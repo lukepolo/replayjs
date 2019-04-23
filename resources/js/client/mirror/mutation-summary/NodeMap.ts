@@ -16,7 +16,9 @@ export default class NodeMap<T> {
 
   private nodeId(node: Node) {
     let id = node[NodeMap.ID_PROP];
-    if (!id) id = node[NodeMap.ID_PROP] = NodeMap.nextId_++;
+    if (!id) {
+      id = node[NodeMap.ID_PROP] = NodeMap.nextId_++;
+    }
     return id;
   }
 

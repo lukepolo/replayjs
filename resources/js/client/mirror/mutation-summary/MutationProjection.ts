@@ -185,18 +185,6 @@ export default class MutationProjection {
     return change.oldPrevious.get(node);
   }
 
-  public getOldAttribute(element: Node, attrName: string): string {
-    let change = this.treeChanges.get(element);
-    if (!change || !change.attributes)
-      throw Error("getOldAttribute requested on invalid node.");
-
-    let value = change.getAttributeOldValue(attrName);
-    if (value === undefined)
-      throw Error("getOldAttribute requested for unchanged attribute name.");
-
-    return value;
-  }
-
   public attributeChangedNodes(): StringMap<Element[]> {
     if (!this.treeChanges.anyAttributesChanged) return {}; // No attributes mutations occurred.
 
@@ -244,14 +232,6 @@ export default class MutationProjection {
     }
 
     return result;
-  }
-
-  public getOldCharacterData(node: Node): string {
-    let change = this.treeChanges.get(node);
-    if (!change || !change.characterData)
-      throw Error("getOldCharacterData requested on invalid node.");
-
-    return change.characterDataOldValue;
   }
 
   public getCharacterDataChanged(): Node[] {

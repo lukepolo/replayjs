@@ -56,12 +56,12 @@ export default class TreeChanges extends NodeMap<NodeChange> {
   }
 
   public getChange(node: Node): NodeChange {
-    let change = this.get(node);
-    if (!change) {
-      change = new NodeChange(node);
-      this.set(node, change);
+    let cachedNode = this.get(node);
+    if (!cachedNode) {
+      cachedNode = new NodeChange(node);
+      this.set(node, cachedNode);
     }
-    return change;
+    return cachedNode;
   }
 
   public getOldParent(node: Node): Node {

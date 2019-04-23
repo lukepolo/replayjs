@@ -25,18 +25,6 @@ export default class Summary {
     );
   }
 
-  getOldParentNode(node: Node): Node {
-    return this.projection.getOldParentNode(node);
-  }
-
-  getOldAttribute(node: Node, name: string): string {
-    return this.projection.getOldAttribute(node, name);
-  }
-
-  getOldCharacterData(node: Node): string {
-    return this.projection.getOldCharacterData(node);
-  }
-
   getOldPreviousSibling(node: Node): Node {
     return this.projection.getOldPreviousSibling(node);
   }
