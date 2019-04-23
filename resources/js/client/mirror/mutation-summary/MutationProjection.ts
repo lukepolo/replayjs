@@ -1,7 +1,7 @@
 import NodeMap from "./NodeMap";
 import TreeChanges from "./TreeChanges";
-import ChildListChange from "./ChildListChange";
 import StringMap from "./interfaces/StringMap";
+import ChildListChange from "./ChildListChange";
 import { NodeMovement } from "./enums/NodeMovement";
 
 export default class MutationProjection {

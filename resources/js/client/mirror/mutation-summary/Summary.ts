@@ -1,12 +1,12 @@
-import { NodeMovement } from "./enums/NodeMovement";
 import StringMap from "./interfaces/StringMap";
+import { NodeMovement } from "./enums/NodeMovement";
 import MutationProjection from "./MutationProjection";
 
 export default class Summary {
   public added: Node[];
   public removed: Node[];
-  public reparented: Node[];
   public reordered: Node[];
+  public reparented: Node[];
   public characterDataChanged: Node[];
   public attributeChanged: StringMap<Element[]>;
 
