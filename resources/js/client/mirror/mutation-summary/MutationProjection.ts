@@ -9,44 +9,42 @@ export default class MutationProjection {
   public exited: Node[];
   public stayedIn: NodeMap<NodeMovement>;
 
-  private treeChanges: TreeChanges;
-  private visited: NodeMap<boolean>;
-  private childListChangeMap: NodeMap<ChildListChange>;
+  protected treeChanges: TreeChanges;
+  protected visitedNodes: NodeMap<boolean>;
+  protected childListChangeMap: NodeMap<ChildListChange>;
 
   constructor(
     public rootNode: Node,
     public mutations: MutationRecord[],
     public calcOldPreviousSibling: boolean,
   ) {
-    this.treeChanges = new TreeChanges(rootNode, mutations);
-    this.entered = [];
     this.exited = [];
-    this.stayedIn = new NodeMap<NodeMovement>();
-    this.visited = new NodeMap<boolean>();
+    this.entered = [];
     this.childListChangeMap = undefined;
-
+    this.stayedIn = new NodeMap<NodeMovement>();
+    this.visitedNodes = new NodeMap<boolean>();
+    this.treeChanges = new TreeChanges(rootNode, mutations);
     this.processMutations();
   }
 
-  public processMutations() {
+  protected processMutations() {
     if (
       !this.treeChanges.anyParentsChanged &&
       !this.treeChanges.anyAttributesChanged
-    )
+    ) {
       return;
-
-    let changedNodes: Node[] = this.treeChanges.keys();
-    for (let i = 0; i < changedNodes.length; i++) {
-      this.visitNode(changedNodes[i]);
     }
+    this.treeChanges.keys().forEach((node) => {
+      this.visitNode(node);
+    });
   }
 
-  public visitNode(node: Node, parentReachable?: NodeMovement) {
-    if (this.visited.has(node)) {
+  protected visitNode(node: Node, parentReachable?: NodeMovement) {
+    if (this.visitedNodes.has(node)) {
       return;
     }
 
-    this.visited.set(node, true);
+    this.visitedNodes.set(node, true);
 
     let reachable = parentReachable;
     let change = this.treeChanges.get(node);
@@ -90,7 +88,7 @@ export default class MutationProjection {
     }
   }
 
-  private ensureHasOldPreviousSiblingIfNeeded(node: Node) {
+  protected ensureHasOldPreviousSiblingIfNeeded(node: Node) {
     if (!this.calcOldPreviousSibling) return;
 
     this.processChildListChanges();
@@ -113,7 +111,9 @@ export default class MutationProjection {
   }
 
   public attributeChangedNodes(): StringMap<Element[]> {
-    if (!this.treeChanges.anyAttributesChanged) return {}; // No attributes mutations occurred.
+    if (!this.treeChanges.anyAttributesChanged) {
+      return {};
+    }
 
     let attributeFilter: StringMap<boolean>;
     let caseInsensitiveFilter: StringMap<string>;
@@ -185,7 +185,7 @@ export default class MutationProjection {
     return result;
   }
 
-  public getChildListChange(el: Element): ChildListChange {
+  protected getChildListChange(el: Element): ChildListChange {
     let change = this.childListChangeMap.get(el);
     if (!change) {
       change = new ChildListChange();
@@ -195,7 +195,7 @@ export default class MutationProjection {
     return change;
   }
 
-  public processChildListChanges() {
+  protected processChildListChanges() {
     if (this.childListChangeMap) return;
 
     this.childListChangeMap = new NodeMap<ChildListChange>();
@@ -261,7 +261,7 @@ export default class MutationProjection {
     }
   }
 
-  public wasReordered(node: Node) {
+  protected wasReordered(node: Node) {
     if (!this.treeChanges.anyParentsChanged) return false;
 
     this.processChildListChanges();
