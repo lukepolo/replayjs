@@ -1,17 +1,3 @@
-// Copyright 2011 Google Inc.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
 // TODO(rafaelw): Allow ':' and '.' as valid name characters.
 import Summary from "./Summary";
 import Options from "./interfaces/Options";
@@ -19,7 +5,6 @@ import StringMap from "./interfaces/StringMap";
 import MutationProjection from "./MutationProjection";
 
 // TODO(rafaelw): Consider allowing backslash in the attrValue.
-// TODO(rafaelw): There's got a to be way to represent this state machine more compactly???
 
 export default class MutationSummary {
   protected root: Node;
@@ -38,12 +23,11 @@ export default class MutationSummary {
     characterDataOldValue: true,
   };
 
-  constructor(opts: Options) {
+  constructor(options: Options) {
     if (MutationObserver === undefined) {
       throw Error("DOM Mutation Observers are required");
     }
-    this.options = MutationSummary.validateOptions(opts);
-
+    this.options = options;
     this.root = this.options.rootNode;
     this.callback = this.options.callback;
 
@@ -63,44 +47,9 @@ export default class MutationSummary {
     this.connected = true;
   }
 
-  public takeSummaries(): Summary[] {
-    if (!this.connected) throw Error("Not connected");
-
-    let summaries = this.createSummaries(this.observer.takeRecords());
-    return this.changesToReport(summaries) ? summaries : undefined;
-  }
-
-  public disconnect(): Summary[] {
-    let summaries = this.takeSummaries();
+  public disconnect() {
     this.observer.disconnect();
     this.connected = false;
-    return summaries;
-  }
-
-  private static optionKeys: StringMap<boolean> = {
-    callback: true,
-    rootNode: true,
-    oldPreviousSibling: true,
-    observeOwnChanges: true,
-  };
-
-  private static validateOptions(options: Options): Options {
-    for (let prop in options) {
-      if (!(prop in MutationSummary.optionKeys))
-        throw Error("Invalid option: " + prop);
-    }
-
-    if (typeof options.callback !== "function")
-      throw Error(
-        "Invalid options: callback is required and must be a function",
-      );
-
-    return {
-      callback: options.callback,
-      rootNode: options.rootNode || document,
-      observeOwnChanges: options.observeOwnChanges,
-      oldPreviousSibling: options.oldPreviousSibling,
-    };
   }
 
   private createSummaries(mutations: MutationRecord[]): Summary[] {
@@ -116,29 +65,32 @@ export default class MutationSummary {
     return [new Summary(projection)];
   }
 
+  // TODO - lets rewrite this part
   private changesToReport(summaries: Summary[]): boolean {
     return summaries.some((summary) => {
-      let summaryProps = [
-        "added",
-        "removed",
-        "reordered",
-        "reparented",
-        "valueChanged",
-        "characterDataChanged",
-      ];
       if (
-        summaryProps.some(function(prop) {
+        [
+          "added",
+          "removed",
+          "reordered",
+          "reparented",
+          "valueChanged",
+          "characterDataChanged",
+        ].some(function(prop) {
           return summary[prop] && summary[prop].length;
         })
-      )
+      ) {
         return true;
+      }
 
       if (summary.attributeChanged) {
         let attrNames = Object.keys(summary.attributeChanged);
         let attrsChanged = attrNames.some((attrName) => {
           return !!summary.attributeChanged[attrName].length;
         });
-        if (attrsChanged) return true;
+        if (attrsChanged) {
+          return true;
+        }
       }
       return false;
     });
