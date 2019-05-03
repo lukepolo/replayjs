@@ -21,7 +21,7 @@ export default class CaptureScrollEvents implements ListenInterface {
       window.requestAnimationFrame(() => {
         this.whisper({
           target: event.target,
-          timing: Date.now(),
+          timing: performance.now(),
           scrollPosition: document.documentElement.scrollTop,
         });
         this.ticking = false;

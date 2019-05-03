@@ -8,16 +8,25 @@ import StringMap from "./mutation-summary/interfaces/StringMap";
 import MutationSummary from "./../mirror/mutation-summary/MutationSummary";
 
 export default class DomSource {
-  protected mirror;
   protected knownNodes;
   protected target: Node;
+  protected changesCallback;
   protected mutationSummary;
   protected nextId: number = 1;
   protected domCompressor: DomCompressor;
 
-  constructor(target: Node, mirror) {
-    this.mirror = mirror;
+  constructor(
+    target: Node,
+    initializeCallback: (rootId: number, children: Array<HTMLElement>) => void,
+    changesCallback: (
+      removed: Array<NodeData>,
+      addedOrMoved: Array<NodeData>,
+      attributes: Array<NodeData>,
+      text: Array<NodeData>,
+    ) => void,
+  ) {
     this.target = target;
+    this.changesCallback = changesCallback;
     this.domCompressor = new DomCompressor();
     this.knownNodes = new NodeMap<NodeMap<number>>();
 
@@ -33,10 +42,7 @@ export default class DomSource {
       }
     }
 
-    this.mirror.initialize(
-      this.serializeNode(target)[NodeDataTypes.id],
-      children,
-    );
+    initializeCallback(this.serializeNode(target)[NodeDataTypes.id], children);
 
     this.mutationSummary = new MutationSummary({
       rootNode: target,
@@ -221,7 +227,7 @@ export default class DomSource {
       return data;
     });
 
-    this.mirror.applyChanged(removed, moved, attributes, text);
+    this.changesCallback.applyChanged(removed, moved, attributes, text);
 
     summary.removed.forEach((node) => {
       this.forgetNode(node);

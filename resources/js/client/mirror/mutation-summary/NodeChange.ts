@@ -55,8 +55,11 @@ export default class NodeChange {
   // it.
   removedFromParent(parent: Node) {
     this.childList = true;
-    if (this.added || this.oldParentNode) this.added = false;
-    else this.oldParentNode = parent;
+    if (this.added || this.oldParentNode) {
+      this.added = false;
+    } else {
+      this.oldParentNode = parent;
+    }
   }
 
   insertedIntoParent() {
@@ -71,8 +74,12 @@ export default class NodeChange {
   //      was a remove.
   getOldParent() {
     if (this.childList) {
-      if (this.oldParentNode) return this.oldParentNode;
-      if (this.added) return null;
+      if (this.oldParentNode) {
+        return this.oldParentNode;
+      }
+      if (this.added) {
+        return null;
+      }
     }
 
     return this.node.parentNode;

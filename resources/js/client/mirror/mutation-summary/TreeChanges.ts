@@ -51,12 +51,17 @@ export default class TreeChanges extends NodeMap<NodeChange> {
             mutation.oldValue,
           );
           break;
+        default:
+          console.info(`Missing mutation type change ${mutation.type}`);
+          break;
       }
     }
   }
 
   public getChange(node: Node): NodeChange {
     let cachedNode = this.get(node);
+
+    // TODO - can be simplified by returning just this.set()
     if (!cachedNode) {
       cachedNode = new NodeChange(node);
       this.set(node, cachedNode);
@@ -69,6 +74,8 @@ export default class TreeChanges extends NodeMap<NodeChange> {
     return change ? change.getOldParent() : node.parentNode;
   }
 
+  // TODO
+  // check to see if it is contained within the rootNode (my be  a better way)
   public getIsReachable(node: Node): boolean {
     if (node === this.rootNode) {
       return true;
