@@ -65,9 +65,15 @@ export default class MutationSummary {
         mutations,
         this.options.oldPreviousSibling, // TODO - we may not need this // https://github.com/rafaelw/mutation-summary/blob/master/APIReference.md
       );
-      // TODO - wont work
-      console.info(summary);
-      if (summary) {
+
+      if (
+        Object.values(summary).find((entry, index) => {
+          if (!Array.isArray(entry)) {
+            entry = Object.keys(entry);
+          }
+          return entry.length > 0;
+        })
+      ) {
         this.callback(summary);
       }
     }
