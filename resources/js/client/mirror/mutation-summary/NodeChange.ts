@@ -51,8 +51,7 @@ export default class NodeChange {
 
   // Note: is it possible to receive a removal followed by a removal. This
   // can occur if the removed node is added to an non-observed node, that
-  // node is added to the observed area, and then the node removed from
-  // it.
+  // node is added to the observed area, and then the node removed from it.
   removedFromParent(parent: Node) {
     this.childList = true;
     if (this.added || this.oldParentNode) {
@@ -70,8 +69,7 @@ export default class NodeChange {
   // An node's oldParent is
   //   -its present parent, if its parentNode was not changed.
   //   -null if the first thing that happened to it was an add.
-  //   -the node it was removed from if the first thing that happened to it
-  //      was a remove.
+  //   -the node it was removed from if the first thing that happened to it was a remove.
   getOldParent() {
     if (this.childList) {
       if (this.oldParentNode) {

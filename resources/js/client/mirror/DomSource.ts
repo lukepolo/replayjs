@@ -227,7 +227,7 @@ export default class DomSource {
       return data;
     });
 
-    this.changesCallback.applyChanged(removed, moved, attributes, text);
+    this.changesCallback(removed, moved, attributes, text);
 
     summary.removed.forEach((node) => {
       this.forgetNode(node);

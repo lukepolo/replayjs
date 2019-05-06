@@ -43,9 +43,12 @@ export default class NodeMap<T> {
     this.values[id] = undefined;
   }
 
+  // TODO - i dont think this is needed
+  // we should just loop through it like normal
   public keys(): Node[] {
     let nodes: Node[] = [];
     for (let id in this.nodes) {
+      // when would this happen?
       if (!this.isIndex(id)) continue;
       nodes.push(this.nodes[id]);
     }
