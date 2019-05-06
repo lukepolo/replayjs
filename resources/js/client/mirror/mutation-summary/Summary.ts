@@ -7,19 +7,11 @@ export default class Summary {
   public characterDataChanged: Node[];
   public attributeChanged: StringMap<Element[]>;
 
-  constructor(
-    rootNode: Node,
-    mutations: MutationRecord[],
-    calcOldPreviousSibling: boolean,
-  ) {
+  constructor(rootNode: Node, mutations: MutationRecord[]) {
     this.added = [];
     this.removed = [];
 
-    let projection = new MutationProjection(
-      rootNode,
-      mutations,
-      calcOldPreviousSibling,
-    );
+    let projection = new MutationProjection(rootNode, mutations);
     this.getChanged(projection);
   }
 

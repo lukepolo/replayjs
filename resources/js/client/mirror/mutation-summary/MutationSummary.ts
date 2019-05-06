@@ -47,11 +47,7 @@ export default class MutationSummary {
 
   private observerCallback(mutations: MutationRecord[]) {
     if (mutations && mutations.length) {
-      let summary = new Summary(
-        this.root,
-        mutations,
-        this.options.oldPreviousSibling, // TODO - we may not need this // https://github.com/rafaelw/mutation-summary/blob/master/APIReference.md
-      );
+      let summary = new Summary(this.root, mutations);
 
       if (
         Object.values(summary).find((entry) => {
