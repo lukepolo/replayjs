@@ -27,17 +27,14 @@ export default class Summary {
     );
 
     this.getChanged(projection);
+    this.added = projection.entered;
+    this.removed = projection.exited;
     this.attributeChanged = projection.attributeChangedNodes();
     this.characterDataChanged = projection.getCharacterDataChanged();
   }
 
   // TODO - really we dont need this.... summary should just be the projection...
-  // I get filtering but, we dont really need it that complex
   public getChanged(projection: MutationProjection) {
-    projection.entered.forEach((node) => {
-      this.added.push(node);
-    });
-
     projection.stayedIn.keys().forEach((node) => {
       let movement: NodeMovement = projection.stayedIn.get(node);
       if (this.reparented && movement === NodeMovement.REPARENTED) {
@@ -45,10 +42,6 @@ export default class Summary {
       } else if (this.reordered && movement === NodeMovement.REORDERED) {
         this.reordered.push(node);
       }
-    });
-
-    projection.exited.forEach((node) => {
-      this.removed.push(node);
     });
   }
 }

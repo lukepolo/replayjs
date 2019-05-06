@@ -27,14 +27,12 @@ export default class TreeChanges extends NodeMap<NodeChange> {
       switch (mutation.type) {
         case "childList":
           this.anyParentsChanged = true;
-          for (let i = 0; i < mutation.removedNodes.length; i++) {
-            let node = mutation.removedNodes[i];
-            this.getChange(node).removedFromParent(mutation.target);
-          }
-          for (let i = 0; i < mutation.addedNodes.length; i++) {
-            let node = mutation.addedNodes[i];
+          mutation.addedNodes.forEach((node) => {
             this.getChange(node).insertedIntoParent();
-          }
+          });
+          mutation.removedNodes.forEach((node) => {
+            this.getChange(node).removedFromParent(mutation.target);
+          });
           break;
 
         case "attributes":
@@ -58,25 +56,34 @@ export default class TreeChanges extends NodeMap<NodeChange> {
     }
   }
 
-  public getChange(node: Node): NodeChange {
-    let cachedNode = this.get(node);
+  public reachabilityChange(node: Node): NodeMovement {
+    if (this.getIsReachable(node)) {
+      return this.getWasReachable(node)
+        ? NodeMovement.STAYED_IN
+        : NodeMovement.ENTERED;
+    }
 
-    // TODO - can be simplified by returning just this.set()
+    return this.getWasReachable(node)
+      ? NodeMovement.EXITED
+      : NodeMovement.STAYED_OUT;
+  }
+
+  private getChange(node: Node): NodeChange {
+    let cachedNode = this.get(node);
     if (!cachedNode) {
-      cachedNode = new NodeChange(node);
-      this.set(node, cachedNode);
+      cachedNode = this.set(node, new NodeChange(node));
     }
     return cachedNode;
   }
 
-  public getOldParent(node: Node): Node {
+  private getOldParent(node: Node): Node {
     let change = this.get(node);
     return change ? change.getOldParent() : node.parentNode;
   }
 
   // TODO
   // check to see if it is contained within the rootNode (my be  a better way)
-  public getIsReachable(node: Node): boolean {
+  private getIsReachable(node: Node): boolean {
     if (node === this.rootNode) {
       return true;
     }
@@ -95,7 +102,7 @@ export default class TreeChanges extends NodeMap<NodeChange> {
   }
 
   // A node wasReachable if its oldParent wasReachable.
-  public getWasReachable(node: Node): boolean {
+  private getWasReachable(node: Node): boolean {
     if (node === this.rootNode) {
       return true;
     }
@@ -110,17 +117,5 @@ export default class TreeChanges extends NodeMap<NodeChange> {
       this.wasReachableCache.set(node, wasReachable);
     }
     return wasReachable;
-  }
-
-  public reachabilityChange(node: Node): NodeMovement {
-    if (this.getIsReachable(node)) {
-      return this.getWasReachable(node)
-        ? NodeMovement.STAYED_IN
-        : NodeMovement.ENTERED;
-    }
-
-    return this.getWasReachable(node)
-      ? NodeMovement.EXITED
-      : NodeMovement.STAYED_OUT;
   }
 }

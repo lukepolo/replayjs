@@ -26,6 +26,7 @@ export default class NodeMap<T> {
     let id = this.nodeId(node);
     this.nodes[id] = node;
     this.values[id] = value;
+    return value;
   }
 
   public get(node: Node): T {

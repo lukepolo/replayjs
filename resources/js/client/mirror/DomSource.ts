@@ -15,6 +15,7 @@ export default class DomSource {
   protected nextId: number = 1;
   protected domCompressor: DomCompressor;
 
+  // TODO - apply iframe / shadow dom here cause we can track the ID's of the nodes
   constructor(
     target: Node,
     initializeCallback: (rootId: number, children: Array<HTMLElement>) => void,
@@ -58,6 +59,34 @@ export default class DomSource {
       this.mutationSummary.disconnect();
       this.mutationSummary = undefined;
     }
+  }
+
+  protected applyChanged(summary: Summary) {
+    let removed = summary.removed.map((node) => {
+      return this.serializeNode(node);
+    });
+
+    let moved = this.serializeAddedAndMoved(
+      summary.added,
+      summary.reparented,
+      summary.reordered,
+    );
+
+    let attributes = this.serializeAttributeChanges(summary.attributeChanged);
+
+    let text = summary.characterDataChanged.map((node) => {
+      let data = this.serializeNode(node);
+      if (data !== null) {
+        data[NodeDataTypes.textContent] = node.textContent;
+      }
+      return data;
+    });
+
+    this.changesCallback(removed, moved, attributes, text);
+
+    summary.removed.forEach((node) => {
+      this.forgetNode(node);
+    });
   }
 
   protected serializeNode(node: Node, recursive?: boolean): NodeData {
@@ -203,34 +232,6 @@ export default class DomSource {
 
     return map.keys().map((node) => {
       return map.get(node);
-    });
-  }
-
-  protected applyChanged(summary: Summary) {
-    let removed = summary.removed.map((node) => {
-      return this.serializeNode(node);
-    });
-
-    let moved = this.serializeAddedAndMoved(
-      summary.added,
-      summary.reparented,
-      summary.reordered,
-    );
-
-    let attributes = this.serializeAttributeChanges(summary.attributeChanged);
-
-    let text = summary.characterDataChanged.map((node) => {
-      let data = this.serializeNode(node);
-      if (data !== null) {
-        data[NodeDataTypes.textContent] = node.textContent;
-      }
-      return data;
-    });
-
-    this.changesCallback(removed, moved, attributes, text);
-
-    summary.removed.forEach((node) => {
-      this.forgetNode(node);
     });
   }
 

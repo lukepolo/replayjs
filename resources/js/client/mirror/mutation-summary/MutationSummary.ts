@@ -8,15 +8,6 @@ export default class MutationSummary {
   protected observer: MutationObserver;
   protected callback: (summary: Summary) => any;
 
-  protected observerOptions = {
-    subtree: true,
-    childList: true,
-    attributes: true,
-    attributeOldValue: true,
-    characterData: true,
-    characterDataOldValue: true,
-  };
-
   constructor(options: Options) {
     if (MutationObserver === undefined) {
       throw Error("DOM Mutation Observers are required");
@@ -36,29 +27,26 @@ export default class MutationSummary {
     if (this.connected) {
       throw Error("Already connected");
     }
-    this.observer.observe(this.root, this.observerOptions);
+    this.observer.observe(this.root, {
+      subtree: true,
+      childList: true,
+      attributes: true,
+      attributeOldValue: true,
+      characterData: true,
+      characterDataOldValue: true,
+    });
 
     this.connected = true;
   }
 
   public disconnect() {
-    this.observer.disconnect();
-    this.connected = false;
-  }
-
-  private observerCallback(mutations: MutationRecord[]) {
-    // TODO - validate this
-    // We disconnect, as we dont want to hear about these changes again
-    this.observer.disconnect();
-
-    this.sendSummary(mutations);
-
     if (this.connected) {
-      this.observer.observe(this.root, this.observerOptions);
+      this.observer.disconnect();
+      this.connected = false;
     }
   }
 
-  private sendSummary(mutations: MutationRecord[]) {
+  private observerCallback(mutations: MutationRecord[]) {
     if (mutations && mutations.length) {
       let summary = new Summary(
         this.root,
@@ -67,13 +55,14 @@ export default class MutationSummary {
       );
 
       if (
-        Object.values(summary).find((entry, index) => {
+        Object.values(summary).find((entry) => {
           if (!Array.isArray(entry)) {
             entry = Object.keys(entry);
           }
           return entry.length > 0;
         })
       ) {
+        console.info(summary);
         this.callback(summary);
       }
     }
