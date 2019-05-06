@@ -66,11 +66,7 @@ export default class DomSource {
       return this.serializeNode(node);
     });
 
-    let moved = this.serializeAddedAndMoved(
-      summary.added,
-      summary.reparented,
-      summary.reordered,
-    );
+    let moved = this.serializeAddedAndMoved(summary.added);
 
     let attributes = this.serializeAttributeChanges(summary.attributeChanged);
 
@@ -157,15 +153,10 @@ export default class DomSource {
   }
 
   // TODO - no exactly sure what this is doing
-  protected serializeAddedAndMoved(
-    added: Array<Node>,
-    reparented: Array<Node>,
-    reordered: Array<Node>,
-  ): Array<PositionData> {
+  protected serializeAddedAndMoved(added: Array<Node>): Array<PositionData> {
     let parentMap = new NodeMap<NodeMap<boolean>>();
-    let all = added.concat(reparented).concat(reordered);
 
-    all.forEach((node) => {
+    added.forEach((node) => {
       let parent = node.parentNode;
       let children = parentMap.get(parent);
       if (!children) {

@@ -1,12 +1,9 @@
 import StringMap from "./interfaces/StringMap";
-import { NodeMovement } from "./enums/NodeMovement";
 import MutationProjection from "./MutationProjection";
 
 export default class Summary {
   public added: Node[];
   public removed: Node[];
-  public reordered: Node[];
-  public reparented: Node[];
   public characterDataChanged: Node[];
   public attributeChanged: StringMap<Element[]>;
 
@@ -17,8 +14,6 @@ export default class Summary {
   ) {
     this.added = [];
     this.removed = [];
-    this.reparented = [];
-    this.reordered = [];
 
     let projection = new MutationProjection(
       rootNode,
@@ -34,14 +29,5 @@ export default class Summary {
     this.removed = projection.exited;
     this.attributeChanged = projection.attributeChangedNodes();
     this.characterDataChanged = projection.getCharacterDataChanged();
-
-    projection.stayedIn.keys().forEach((node) => {
-      let movement: NodeMovement = projection.stayedIn.get(node);
-      if (this.reparented && movement === NodeMovement.REPARENTED) {
-        this.reparented.push(node);
-      } else if (this.reordered && movement === NodeMovement.REORDERED) {
-        this.reordered.push(node);
-      }
-    });
   }
 }

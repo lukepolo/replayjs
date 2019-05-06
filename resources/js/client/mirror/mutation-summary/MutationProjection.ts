@@ -7,7 +7,6 @@ import { NodeMovement } from "./enums/NodeMovement";
 export default class MutationProjection {
   public entered: Node[];
   public exited: Node[];
-  public stayedIn: NodeMap<NodeMovement>;
 
   protected treeChanges: TreeChanges;
   protected visitedNodes: NodeMap<boolean>;
@@ -21,7 +20,6 @@ export default class MutationProjection {
     this.exited = [];
     this.entered = [];
     this.childListChangeMap = undefined;
-    this.stayedIn = new NodeMap<NodeMovement>();
     this.visitedNodes = new NodeMap<boolean>();
     this.treeChanges = new TreeChanges(rootNode, mutations);
     this.processMutations();
@@ -55,32 +53,14 @@ export default class MutationProjection {
       reachable = this.treeChanges.reachabilityChange(node);
     }
 
-    if (reachable === NodeMovement.STAYED_OUT) {
-      return;
-    }
-
-    if (reachable === NodeMovement.ENTERED) {
+    if (
+      reachable === NodeMovement.ENTERED ||
+      reachable === NodeMovement.STAYED_IN
+    ) {
       this.entered.push(node);
     } else if (reachable === NodeMovement.EXITED) {
       this.exited.push(node);
       this.ensureHasOldPreviousSiblingIfNeeded(node);
-    } else if (reachable === NodeMovement.STAYED_IN) {
-      let movement = NodeMovement.STAYED_IN;
-
-      if (change && change.childList) {
-        if (change.oldParentNode !== node.parentNode) {
-          movement = NodeMovement.REPARENTED;
-          this.ensureHasOldPreviousSiblingIfNeeded(node);
-        } else if (this.wasReordered(node)) {
-          movement = NodeMovement.REORDERED;
-        }
-      }
-
-      this.stayedIn.set(node, movement);
-    }
-
-    if (reachable === NodeMovement.STAYED_IN) {
-      return;
     }
 
     for (let child = <Node>node.firstChild; child; child = child.nextSibling) {
@@ -208,8 +188,9 @@ export default class MutationProjection {
         this.treeChanges.reachabilityChange(mutation.target) !==
           NodeMovement.STAYED_IN &&
         !this.calcOldPreviousSibling
-      )
+      ) {
         continue;
+      }
 
       let change = this.getChildListChange(<Element>mutation.target);
 
@@ -259,84 +240,5 @@ export default class MutationProjection {
         }
       }
     }
-  }
-
-  protected wasReordered(node: Node) {
-    if (!this.treeChanges.anyParentsChanged) return false;
-
-    this.processChildListChanges();
-
-    let parentNode = <Node>node.parentNode;
-    let nodeChange = this.treeChanges.get(node);
-    if (nodeChange && nodeChange.oldParentNode) {
-      parentNode = nodeChange.oldParentNode;
-    }
-
-    let change = this.childListChangeMap.get(parentNode);
-    if (!change) return false;
-
-    if (change.moved) return change.moved.get(node);
-
-    change.moved = new NodeMap<boolean>();
-    let pendingMoveDecision = new NodeMap<boolean>();
-
-    function isMoved(node: Node) {
-      if (!node || !change.maybeMoved.has(node)) {
-        return false;
-      }
-
-      let didMove = change.moved.get(node);
-      if (didMove !== undefined) return didMove;
-
-      if (pendingMoveDecision.has(node)) {
-        didMove = true;
-      } else {
-        pendingMoveDecision.set(node, true);
-        didMove = getPrevious(node) !== getOldPrevious(node);
-      }
-
-      if (pendingMoveDecision.has(node)) {
-        pendingMoveDecision.delete(node);
-        change.moved.set(node, didMove);
-      } else {
-        didMove = change.moved.get(node);
-      }
-
-      return didMove;
-    }
-
-    let oldPreviousCache = new NodeMap<Node>();
-    function getOldPrevious(node: Node): Node {
-      let oldPrevious = oldPreviousCache.get(node);
-      if (oldPrevious !== undefined) return oldPrevious;
-
-      oldPrevious = change.oldPrevious.get(node);
-      while (
-        oldPrevious &&
-        (change.removed.has(oldPrevious) || isMoved(oldPrevious))
-      ) {
-        oldPrevious = getOldPrevious(oldPrevious);
-      }
-
-      if (oldPrevious === undefined) oldPrevious = node.previousSibling;
-      oldPreviousCache.set(node, oldPrevious);
-
-      return oldPrevious;
-    }
-
-    let previousCache = new NodeMap<Node>();
-    function getPrevious(node: Node): Node {
-      if (previousCache.has(node)) return previousCache.get(node);
-
-      let previous = node.previousSibling;
-      while (previous && (change.added.has(previous) || isMoved(previous)))
-        previous = previous.previousSibling;
-
-      previousCache.set(node, previous);
-      return previous;
-    }
-
-    change.maybeMoved.keys().forEach(isMoved);
-    return change.moved.get(node);
   }
 }

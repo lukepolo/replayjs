@@ -54,11 +54,12 @@ export default class TreeChanges extends NodeMap<NodeChange> {
   }
 
   public reachabilityChange(node: Node): NodeMovement {
-    let wasReachable = this.getWasReachable(node);
     if (node.getRootNode() === this.rootNode) {
-      return wasReachable ? NodeMovement.STAYED_IN : NodeMovement.ENTERED;
+      return this.getWasReachable(node)
+        ? NodeMovement.STAYED_IN
+        : NodeMovement.ENTERED;
     }
-    return wasReachable ? NodeMovement.EXITED : NodeMovement.STAYED_OUT;
+    return NodeMovement.EXITED;
   }
 
   private getChange(node: Node): NodeChange {
