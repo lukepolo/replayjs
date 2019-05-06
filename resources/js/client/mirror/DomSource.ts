@@ -47,7 +47,6 @@ export default class DomSource {
 
     this.mutationSummary = new MutationSummary({
       rootNode: target,
-      oldPreviousSibling: true,
       callback: (summary: Summary) => {
         this.applyChanged(summary);
       },
