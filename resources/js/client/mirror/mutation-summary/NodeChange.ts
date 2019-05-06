@@ -80,6 +80,6 @@ export default class NodeChange {
       }
     }
 
-    return this.node.parentNode;
+    return this.node.getRootNode();
   }
 }

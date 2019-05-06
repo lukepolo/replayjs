@@ -7,20 +7,17 @@ export default class TreeChanges extends NodeMap<NodeChange> {
   public anyAttributesChanged: boolean;
   public anyCharacterDataChanged: boolean;
 
-  private reachableCache: NodeMap<boolean>;
-  private wasReachableCache: NodeMap<boolean>;
-
   private rootNode: Node;
+  private wasReachableCache: NodeMap<boolean>;
 
   constructor(rootNode: Node, mutations: MutationRecord[]) {
     super();
 
     this.rootNode = rootNode;
-    this.reachableCache = undefined;
-    this.wasReachableCache = undefined;
     this.anyParentsChanged = false;
     this.anyAttributesChanged = false;
     this.anyCharacterDataChanged = false;
+    this.wasReachableCache = new NodeMap<boolean>();
 
     for (let m = 0; m < mutations.length; m++) {
       let mutation = mutations[m];
@@ -57,15 +54,11 @@ export default class TreeChanges extends NodeMap<NodeChange> {
   }
 
   public reachabilityChange(node: Node): NodeMovement {
-    if (this.getIsReachable(node)) {
-      return this.getWasReachable(node)
-        ? NodeMovement.STAYED_IN
-        : NodeMovement.ENTERED;
+    let wasReachable = this.getWasReachable(node);
+    if (node.getRootNode() === this.rootNode) {
+      return wasReachable ? NodeMovement.STAYED_IN : NodeMovement.ENTERED;
     }
-
-    return this.getWasReachable(node)
-      ? NodeMovement.EXITED
-      : NodeMovement.STAYED_OUT;
+    return wasReachable ? NodeMovement.EXITED : NodeMovement.STAYED_OUT;
   }
 
   private getChange(node: Node): NodeChange {
@@ -76,31 +69,6 @@ export default class TreeChanges extends NodeMap<NodeChange> {
     return cachedNode;
   }
 
-  private getOldParent(node: Node): Node {
-    let change = this.get(node);
-    return change ? change.getOldParent() : node.parentNode;
-  }
-
-  // TODO
-  // check to see if it is contained within the rootNode (my be  a better way)
-  private getIsReachable(node: Node): boolean {
-    if (node === this.rootNode) {
-      return true;
-    }
-
-    if (!node) {
-      return false;
-    }
-
-    this.reachableCache = this.reachableCache || new NodeMap<boolean>();
-    let isReachable = this.reachableCache.get(node);
-    if (isReachable === undefined) {
-      isReachable = this.getIsReachable(node.parentNode);
-      this.reachableCache.set(node, isReachable);
-    }
-    return isReachable;
-  }
-
   // A node wasReachable if its oldParent wasReachable.
   private getWasReachable(node: Node): boolean {
     if (node === this.rootNode) {
@@ -109,13 +77,16 @@ export default class TreeChanges extends NodeMap<NodeChange> {
     if (!node) {
       return false;
     }
-
-    this.wasReachableCache = this.wasReachableCache || new NodeMap<boolean>();
     let wasReachable: boolean = this.wasReachableCache.get(node);
     if (wasReachable === undefined) {
       wasReachable = this.getWasReachable(this.getOldParent(node));
       this.wasReachableCache.set(node, wasReachable);
     }
     return wasReachable;
+  }
+
+  private getOldParent(node: Node): Node {
+    let change = this.get(node);
+    return change ? change.getOldParent() : node.getRootNode();
   }
 }
