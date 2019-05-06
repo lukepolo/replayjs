@@ -35,7 +35,6 @@ export default class MutationSummary {
       characterData: true,
       characterDataOldValue: true,
     });
-
     this.connected = true;
   }
 

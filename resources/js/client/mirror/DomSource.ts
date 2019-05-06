@@ -156,14 +156,14 @@ export default class DomSource {
     return this.domCompressor.compressNode(data);
   }
 
+  // TODO - no exactly sure what this is doing
   protected serializeAddedAndMoved(
     added: Array<Node>,
     reparented: Array<Node>,
     reordered: Array<Node>,
   ): Array<PositionData> {
-    let all = added.concat(reparented).concat(reordered);
-
     let parentMap = new NodeMap<NodeMap<boolean>>();
+    let all = added.concat(reparented).concat(reordered);
 
     all.forEach((node) => {
       let parent = node.parentNode;
