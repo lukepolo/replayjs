@@ -37,13 +37,16 @@ export default class DomSource {
       child;
       child = child.nextSibling
     ) {
-      let node = this.serializeNode(child, true);
+      let node = this.collectNodeData(child, true);
       if (node !== null) {
         children.push(node);
       }
     }
 
-    initializeCallback(this.serializeNode(target)[NodeDataTypes.id], children);
+    initializeCallback(
+      this.collectNodeData(target)[NodeDataTypes.id],
+      children,
+    );
 
     this.mutationSummary = new MutationSummary({
       rootNode: target,
@@ -62,15 +65,15 @@ export default class DomSource {
 
   protected applyChanged(summary: Summary) {
     let removed = summary.removed.map((node) => {
-      return this.serializeNode(node);
+      return this.collectNodeData(node);
     });
 
-    let moved = this.serializeAddedAndMoved(summary.added);
+    let moved = this.collectNodePositionData(summary.added);
 
     let attributes = this.serializeAttributeChanges(summary.attributeChanged);
 
     let text = summary.characterDataChanged.map((node) => {
-      let data = this.serializeNode(node);
+      let data = this.collectNodeData(node);
       if (data !== null) {
         data[NodeDataTypes.textContent] = node.textContent;
       }
@@ -84,8 +87,10 @@ export default class DomSource {
     });
   }
 
-  protected serializeNode(node: Node, recursive?: boolean): NodeData {
-    if (node === null) return null;
+  protected collectNodeData(node: Node, recursive?: boolean): NodeData {
+    if (node === null) {
+      return null;
+    }
 
     let id = this.knownNodes.get(node);
     if (id !== undefined) {
@@ -124,9 +129,9 @@ export default class DomSource {
         }
 
         if (
+          elm.tagName == "CANVAS" ||
           elm.tagName == "SCRIPT" ||
-          elm.tagName == "NOSCRIPT" ||
-          elm.tagName == "CANVAS"
+          elm.tagName == "NOSCRIPT"
         ) {
           return null;
         }
@@ -139,7 +144,7 @@ export default class DomSource {
             child;
             child = child.nextSibling
           ) {
-            let nodeData = this.serializeNode(child, true);
+            let nodeData = this.collectNodeData(child, true);
             if (nodeData !== null) {
               data[NodeDataTypes.childNodes].push(nodeData);
             }
@@ -151,24 +156,32 @@ export default class DomSource {
     return this.domCompressor.compressNode(data);
   }
 
-  // TODO - no exactly sure what this is doing
-  protected serializeAddedAndMoved(added: Array<Node>): Array<PositionData> {
-    let parentMap = new NodeMap<NodeMap<boolean>>();
+  protected collectNodePositionData(added: Array<Node>): Array<PositionData> {
+    let parentNodeMap = new NodeMap<NodeMap<boolean>>();
 
+    /**
+     * We first need to generate a list of parents
+     * because we will have many nodes that share that parent
+     * then we will set the children that have that parent
+     */
     added.forEach((node) => {
       let parent = node.parentNode;
-      let children = parentMap.get(parent);
+      let children = parentNodeMap.get(parent);
       if (!children) {
         children = new NodeMap();
-        parentMap.set(parent, children);
+        parentNodeMap.set(parent, children);
       }
       children.set(node, true);
     });
 
     let moved = [];
 
-    parentMap.keys().forEach((parent) => {
-      let children = parentMap.get(parent);
+    /**
+     * Next we will loop through ach parent and
+     * serialize each of those nodes recursively
+     */
+    parentNodeMap.keys().forEach((parent: Node) => {
+      let children = parentNodeMap.get(parent);
 
       let keys = children.keys();
       while (keys.length) {
@@ -178,10 +191,20 @@ export default class DomSource {
         }
 
         while (node && children.has(node)) {
-          let data = <PositionData>this.serializeNode(node);
+          let data = <PositionData>this.collectNodeData(node);
           if (data !== null) {
-            data.previousSibling = this.serializeNode(node.previousSibling);
-            data.parentNode = this.serializeNode(node.parentNode);
+            /**
+             * To place the node where it belongs during replay
+             * we need to take note of where they
+             * are at in the sibling chain
+             */
+            data.previousSibling = this.collectNodeData(node.previousSibling);
+
+            /**
+             * We also need to serialize their parent all the way to the top
+             * that we can properly place them in the document
+             */
+            data.parentNode = this.collectNodeData(node.parentNode);
             moved.push(data);
             children.delete(node);
           }
@@ -194,24 +217,26 @@ export default class DomSource {
     return moved;
   }
 
+  // All were doing is mapping nodes to an node id so we can apply the attributes
   protected serializeAttributeChanges(
     attributeChanged: StringMap<Element[]>,
   ): Array<AttributeData> {
-    let map = new NodeMap<AttributeData>();
+    let nodeMap = new NodeMap<AttributeData>();
 
     Object.keys(attributeChanged).forEach((attrName) => {
       attributeChanged[attrName].forEach((element) => {
-        let record = map.get(element);
-        if (!record) {
-          record = <AttributeData>this.serializeNode(element);
-          if (record !== null) {
-            record[NodeDataTypes.attributes] = {};
-            map.set(element, record);
+        let node = nodeMap.get(element);
+
+        if (!node) {
+          node = <AttributeData>this.collectNodeData(element);
+          if (node !== null) {
+            node[NodeDataTypes.attributes] = {};
+            nodeMap.set(element, node);
           }
         }
 
-        if (record !== null) {
-          record[NodeDataTypes.attributes][
+        if (node !== null) {
+          node[NodeDataTypes.attributes][
             attrName
           ] = this.domCompressor.compressAttribute(
             element.getAttribute(attrName),
@@ -220,8 +245,8 @@ export default class DomSource {
       });
     });
 
-    return map.keys().map((node) => {
-      return map.get(node);
+    return nodeMap.keys().map((node) => {
+      return nodeMap.get(node);
     });
   }
 
