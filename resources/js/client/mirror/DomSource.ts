@@ -70,7 +70,7 @@ export default class DomSource {
 
     let moved = this.collectNodePositionData(summary.added);
 
-    let attributes = this.serializeAttributeChanges(summary.attributeChanged);
+    let attributes = this.collectNodeAttributes(summary.attributeChanged);
 
     let text = summary.characterDataChanged.map((node) => {
       let data = this.collectNodeData(node);
@@ -217,8 +217,7 @@ export default class DomSource {
     return moved;
   }
 
-  // All were doing is mapping nodes to an node id so we can apply the attributes
-  protected serializeAttributeChanges(
+  protected collectNodeAttributes(
     attributeChanged: StringMap<Element[]>,
   ): Array<AttributeData> {
     let nodeMap = new NodeMap<AttributeData>();
