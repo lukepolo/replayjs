@@ -1,21 +1,18 @@
 import NodeMap from "./NodeMap";
 import TreeChanges from "./TreeChanges";
 import StringMap from "./interfaces/StringMap";
-import ChildListChange from "./ChildListChange";
 import { NodeMovement } from "./enums/NodeMovement";
 
 export default class MutationProjection {
-  public entered: Node[];
-  public exited: Node[];
+  public addedNodes: Node[];
+  public removedNodes: Node[];
 
   protected treeChanges: TreeChanges;
   protected visitedNodes: NodeMap<boolean>;
-  protected childListChangeMap: NodeMap<ChildListChange>;
 
   constructor(public rootNode: Node, public mutations: MutationRecord[]) {
-    this.exited = [];
-    this.entered = [];
-    this.childListChangeMap = undefined;
+    this.addedNodes = [];
+    this.removedNodes = [];
     this.visitedNodes = new NodeMap<boolean>();
     this.treeChanges = new TreeChanges(rootNode, mutations);
     this.processMutations();
@@ -53,9 +50,9 @@ export default class MutationProjection {
       reachable === NodeMovement.ENTERED ||
       reachable === NodeMovement.STAYED_IN
     ) {
-      this.entered.push(node);
+      this.addedNodes.push(node);
     } else if (reachable === NodeMovement.EXITED) {
-      this.exited.push(node);
+      this.removedNodes.push(node);
     }
 
     for (let child = <Node>node.firstChild; child; child = child.nextSibling) {
@@ -63,7 +60,7 @@ export default class MutationProjection {
     }
   }
 
-  public attributeChangedNodes(): StringMap<Element[]> {
+  public getAttributeChanges(): StringMap<Element[]> {
     if (!this.treeChanges.anyAttributesChanged) {
       return {};
     }
@@ -113,7 +110,7 @@ export default class MutationProjection {
     return result;
   }
 
-  public getCharacterDataChanged(): Node[] {
+  public getTextChanges(): Node[] {
     if (!this.treeChanges.anyCharacterDataChanged) {
       return [];
     }

@@ -64,17 +64,15 @@ export default class DomSource {
   }
 
   protected collectChanges(summary: Summary) {
-    let removed = summary.removed.map((node) => {
+    let moved = this.collectNodePositionData(summary.addedNodes);
+    let removed = summary.removedNodes.map((node) => {
       return this.collectNodeData(node);
     });
-
-    let moved = this.collectNodePositionData(summary.added);
-
-    let attributes = this.collectNodeAttributes(summary.attributeChanged);
-
-    let text = summary.characterDataChanged.map((node) => {
+    let attributes = this.collectNodeAttributes(summary.attributeChanges);
+    let text = summary.textChanges.map((node) => {
       let data = this.collectNodeData(node);
       if (data !== null) {
+        // TODO - why isn't this captured in collectNodeData
         data[NodeDataTypes.textContent] = node.textContent;
       }
       return data;
@@ -82,7 +80,7 @@ export default class DomSource {
 
     this.changesCallback(removed, moved, attributes, text);
 
-    summary.removed.forEach((node) => {
+    summary.removedNodes.forEach((node) => {
       this.forgetNode(node);
     });
   }
