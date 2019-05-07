@@ -70,7 +70,6 @@ export default class TreeChanges extends NodeMap<NodeChange> {
     return cachedNode;
   }
 
-  // A node wasReachable if its oldParent wasReachable.
   private getWasReachable(node: Node): boolean {
     if (node === this.rootNode) {
       return true;
