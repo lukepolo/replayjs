@@ -2,7 +2,6 @@ import StringMap from "./interfaces/StringMap";
 
 export default class NodeChange {
   public node: Node;
-
   public added: boolean = false;
   public childList: boolean = false;
   public oldParentNode: Node = null;
