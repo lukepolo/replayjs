@@ -1,20 +1,20 @@
 export default class NodeMap<T> {
-  private static ID_PROP = "__mutation_summary_node_map_id__";
-  private static nextId_: number = 1;
+  protected static ID_PROP = "__mutation_summary_node_map_id__";
+  protected static nextId_: number = 1;
 
-  private values: T[];
-  private nodes: Node[];
+  protected values: T[];
+  protected nodes: Node[];
 
   constructor() {
     this.nodes = [];
     this.values = [];
   }
 
-  private isIndex(s: string): boolean {
+  protected isIndex(s: string): boolean {
     return +s === (<any>s) >>> 0;
   }
 
-  private nodeId(node: Node) {
+  protected nodeId(node: Node) {
     let id = node[NodeMap.ID_PROP];
     if (!id) {
       id = node[NodeMap.ID_PROP] = NodeMap.nextId_++;

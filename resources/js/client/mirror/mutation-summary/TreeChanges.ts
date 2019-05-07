@@ -7,8 +7,8 @@ export default class TreeChanges extends NodeMap<NodeChange> {
   public anyAttributesChanged: boolean;
   public anyCharacterDataChanged: boolean;
 
-  private rootNode: Node;
-  private wasReachableCache: NodeMap<boolean>;
+  protected rootNode: Node;
+  protected wasReachableCache: NodeMap<boolean>;
 
   constructor(rootNode: Node, mutations: MutationRecord[]) {
     super();
@@ -62,7 +62,7 @@ export default class TreeChanges extends NodeMap<NodeChange> {
     return NodeMovement.EXITED;
   }
 
-  private getChange(node: Node): NodeChange {
+  protected getChange(node: Node): NodeChange {
     let cachedNode = this.get(node);
     if (!cachedNode) {
       cachedNode = this.set(node, new NodeChange(node));
@@ -70,7 +70,7 @@ export default class TreeChanges extends NodeMap<NodeChange> {
     return cachedNode;
   }
 
-  private getWasReachable(node: Node): boolean {
+  protected getWasReachable(node: Node): boolean {
     if (node === this.rootNode) {
       return true;
     }
@@ -85,7 +85,7 @@ export default class TreeChanges extends NodeMap<NodeChange> {
     return wasReachable;
   }
 
-  private getOldParent(node: Node): Node {
+  protected getOldParent(node: Node): Node {
     let change = this.get(node);
     return change ? change.getOldParent() : node.getRootNode();
   }

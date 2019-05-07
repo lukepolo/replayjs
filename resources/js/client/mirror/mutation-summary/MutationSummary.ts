@@ -61,7 +61,7 @@ export default class MutationSummary {
    *
    * To avoid of duplicate counting added nodes, we disconnect and reconnect
    */
-  private observerCallback(mutations: MutationRecord[]) {
+  protected observerCallback(mutations: MutationRecord[]) {
     this.disconnect();
 
     if (mutations && mutations.length) {

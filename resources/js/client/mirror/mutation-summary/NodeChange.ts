@@ -9,7 +9,7 @@ export default class NodeChange {
   public characterData: boolean = false;
   public characterDataOldValue: string = null;
 
-  private attributeOldValues: StringMap<string> = null;
+  protected attributeOldValues: StringMap<string> = null;
 
   constructor(node: Node) {
     this.node = node;
