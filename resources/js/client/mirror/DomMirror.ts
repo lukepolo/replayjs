@@ -26,9 +26,9 @@ export default class DomMirror {
   public initialize(rootNodeId: number, children: Array<NodeData>) {
     this.nodeIdMap[rootNodeId] = this.rootNode;
 
-    for (let i = 0; i < children.length; i++) {
-      this.recreateNode(children[i], this.rootNode);
-    }
+    children.forEach((child) => {
+      this.recreateNode(child, this.rootNode);
+    });
   }
 
   public recreateNode(nodeData: NodeData, parent?: Node): Node {
@@ -93,6 +93,9 @@ export default class DomMirror {
         });
 
         break;
+      default:
+        console.warn("Missing Node Type", Node.TEXT_NODE);
+        break;
     }
 
     if (!node) {
@@ -106,9 +109,9 @@ export default class DomMirror {
     }
 
     if (nodeData[NodeDataTypes.childNodes]) {
-      for (let i = 0; i < nodeData[NodeDataTypes.childNodes].length; i++) {
-        this.recreateNode(nodeData[NodeDataTypes.childNodes][i], node);
-      }
+      nodeData[NodeDataTypes.childNodes].forEach((child) => {
+        this.recreateNode(child, node);
+      });
     }
 
     return node;
@@ -120,10 +123,12 @@ export default class DomMirror {
     attributes: Array<AttributeData>,
     text: Array<TextData>,
   ) {
-    // NOTE: Applying the changes can result in an attempting to add a child
-    // to a parent which is presently an ancestor of the parent. This can occur
-    // based on random ordering of moves. The way we handle this is to first
-    // remove all changed nodes from their parents, then apply.
+    /**
+     * Applying the changes can result in an attempting to add a child
+     * to a parent which is presently an ancestor of the parent. This can occur
+     * based on random ordering of moves. The way we handle this is to first
+     * remove all changed nodes from their parents, then apply.
+     */
     addedOrMoved.forEach((data) => {
       let node = this.recreateNode(data);
       if (node) {
@@ -152,6 +157,7 @@ export default class DomMirror {
             previous ? previous.nextSibling : parent.firstChild,
           );
         } catch (e) {
+          console.warn("Node is gone", parent, node);
           // Node is gone
         }
       }
@@ -178,6 +184,7 @@ export default class DomMirror {
               }
             } catch (e) {
               // cant set attribute
+              console.info("This should never happen");
             }
           }
         });
@@ -186,7 +193,6 @@ export default class DomMirror {
 
     text.forEach((data) => {
       let node = this.recreateNode(data);
-
       if (node) {
         node[NodeDataTypes.textContent] = data[NodeDataTypes.textContent];
       }
