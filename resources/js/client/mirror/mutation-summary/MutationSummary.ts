@@ -65,8 +65,7 @@ export default class MutationSummary {
     this.disconnect();
 
     if (mutations && mutations.length) {
-      let projection = new MutationProjection(this.root, mutations);
-      let summary = projection.summary();
+      let summary = new MutationProjection(this.root, mutations).summary();
 
       if (
         Object.values(summary).find((entry) => {
