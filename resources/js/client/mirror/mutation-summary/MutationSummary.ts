@@ -55,7 +55,7 @@ export default class MutationSummary {
    *
    * Generally we need trace child nodes of newly added node, but in this
    * case if we count el_2 as el_1's child node in the first mutation record,
-   * then we will count el_2 again in the secoond mutation record which was
+   * then we will count el_2 again in the second mutation record which was
    * duplicated.
    *
    * To avoid of duplicate counting added nodes, we disconnect and reconnect
