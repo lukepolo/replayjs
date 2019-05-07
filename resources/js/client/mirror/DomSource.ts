@@ -51,7 +51,7 @@ export default class DomSource {
     this.mutationSummary = new MutationSummary({
       rootNode: target,
       callback: (summary: Summary) => {
-        this.applyChanged(summary);
+        this.collectChanges(summary);
       },
     });
   }
@@ -63,7 +63,7 @@ export default class DomSource {
     }
   }
 
-  protected applyChanged(summary: Summary) {
+  protected collectChanges(summary: Summary) {
     let removed = summary.removed.map((node) => {
       return this.collectNodeData(node);
     });
