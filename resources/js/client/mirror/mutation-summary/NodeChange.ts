@@ -1,16 +1,20 @@
 import StringMap from "./interfaces/StringMap";
 
 export default class NodeChange {
-  constructor(
-    public node: Node,
-    public childList: boolean = false,
-    public attributes: boolean = false,
-    public characterData: boolean = false,
-    public oldParentNode: Node = null,
-    public added: boolean = false,
-    private attributeOldValues: StringMap<string> = null,
-    public characterDataOldValue: string = null,
-  ) {}
+  public node: Node;
+
+  public added: boolean = false;
+  public childList: boolean = false;
+  public oldParentNode: Node = null;
+  public attributes: boolean = false;
+  public characterData: boolean = false;
+  public characterDataOldValue: string = null;
+
+  private attributeOldValues: StringMap<string> = null;
+
+  constructor(node: Node) {
+    this.node = node;
+  }
 
   getAttributeOldValue(name: string): string {
     if (!this.attributeOldValues) {
@@ -32,13 +36,17 @@ export default class NodeChange {
     this.attributes = true;
     this.attributeOldValues = this.attributeOldValues || {};
 
-    if (name in this.attributeOldValues) return;
+    if (name in this.attributeOldValues) {
+      return;
+    }
 
     this.attributeOldValues[name] = oldValue;
   }
 
   characterDataMutated(oldValue: string) {
-    if (this.characterData) return;
+    if (this.characterData) {
+      return;
+    }
     this.characterData = true;
     this.characterDataOldValue = oldValue;
   }

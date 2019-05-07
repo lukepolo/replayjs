@@ -82,9 +82,10 @@ export default class MutationProjection {
       let changedAttrNames = change.getAttributeNamesMutated();
       for (let j = 0; j < changedAttrNames.length; j++) {
         let attrName = changedAttrNames[j];
-        let oldValue = change.getAttributeOldValue(attrName);
 
-        if (oldValue === node.getAttribute(attrName)) {
+        if (
+          change.getAttributeOldValue(attrName) === node.getAttribute(attrName)
+        ) {
           continue;
         }
 
