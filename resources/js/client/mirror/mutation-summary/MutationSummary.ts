@@ -45,7 +45,24 @@ export default class MutationSummary {
     }
   }
 
+  /**
+   * Mutation observer will merge several mutations into an array and pass
+   * it to the callback function.
+   *
+   * For example, if we append an element el_1 into body, and then append
+   * another element el_2 into el_1, these two mutations may be passed to the
+   * callback function together when the two operations were done.
+   *
+   * Generally we need trace child nodes of newly added node, but in this
+   * case if we count el_2 as el_1's child node in the first mutation record,
+   * then we will count el_2 again in the secoond mutation record which was
+   * duplicated.
+   *
+   * To avoid of duplicate counting added nodes, we disconnect and reconnect
+   */
   private observerCallback(mutations: MutationRecord[]) {
+    this.disconnect();
+
     if (mutations && mutations.length) {
       let summary = new Summary(this.root, mutations);
 
@@ -61,5 +78,7 @@ export default class MutationSummary {
         this.callback(summary);
       }
     }
+
+    this.connect();
   }
 }
