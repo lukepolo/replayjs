@@ -1,5 +1,6 @@
-import Summary from "./Summary";
+import Summary from "./interfaces/Summary";
 import Options from "./interfaces/Options";
+import MutationProjection from "./MutationProjection";
 
 export default class MutationSummary {
   protected root: Node;
@@ -64,7 +65,8 @@ export default class MutationSummary {
     this.disconnect();
 
     if (mutations && mutations.length) {
-      let summary = new Summary(this.root, mutations);
+      let projection = new MutationProjection(this.root, mutations);
+      let summary = projection.summary();
 
       if (
         Object.values(summary).find((entry) => {

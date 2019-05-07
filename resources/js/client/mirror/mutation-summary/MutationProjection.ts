@@ -2,11 +2,11 @@ import NodeMap from "./NodeMap";
 import TreeChanges from "./TreeChanges";
 import StringMap from "./interfaces/StringMap";
 import { NodeMovement } from "./enums/NodeMovement";
+import Summary from "./interfaces/Summary";
 
 export default class MutationProjection {
-  public addedNodes: Node[];
-  public removedNodes: Node[];
-
+  protected addedNodes: Node[];
+  protected removedNodes: Node[];
   protected treeChanges: TreeChanges;
   protected visitedNodes: NodeMap<boolean>;
 
@@ -16,6 +16,15 @@ export default class MutationProjection {
     this.visitedNodes = new NodeMap<boolean>();
     this.treeChanges = new TreeChanges(rootNode, mutations);
     this.processMutations();
+  }
+
+  public summary(): Summary {
+    return {
+      addedNodes: this.addedNodes,
+      removedNodes: this.removedNodes,
+      textChanges: this.getTextChanges(),
+      attributeChanges: this.getAttributeChanges(),
+    };
   }
 
   protected processMutations() {

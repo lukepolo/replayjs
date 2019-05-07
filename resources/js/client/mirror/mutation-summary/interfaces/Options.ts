@@ -1,4 +1,4 @@
-import Summary from "../Summary";
+import Summary from "./Summary";
 
 export default interface Options {
   rootNode: Node;
