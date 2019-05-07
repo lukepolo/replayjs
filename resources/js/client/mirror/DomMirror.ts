@@ -5,48 +5,48 @@ import AttributeData from "./interfaces/AttributeData";
 import NodeData, { NodeDataTypes } from "./interfaces/NodeData";
 
 export default class DomMirror {
-  protected root;
+  protected rootNode;
   protected delegate;
-  protected idMap = {};
+  protected nodeIdMap = {};
   protected domCompressor: DomCompressor;
 
   constructor(
-    root: Node,
+    rootNode: Node,
     delegate: {
       setAttribute: () => void;
       createElement: () => void;
     },
   ) {
-    this.idMap = {};
-    this.root = root;
+    this.nodeIdMap = {};
+    this.rootNode = rootNode;
     this.delegate = delegate;
     this.domCompressor = new DomCompressor();
   }
 
-  public initialize(rootId: number, children: Array<NodeData>) {
-    this.idMap[rootId] = this.root;
+  public initialize(rootNodeId: number, children: Array<NodeData>) {
+    this.nodeIdMap[rootNodeId] = this.rootNode;
 
-    for (let i = 0; i < children.length; i++) {
-      this.deserializeNode(children[i], this.root);
-    }
+    children.forEach((child) => {
+      this.recreateNode(child, this.rootNode);
+    });
   }
 
-  public deserializeNode(nodeData: NodeData, parent?: Node): Node {
+  public recreateNode(nodeData: NodeData, parent?: Node): Node {
     if (nodeData === null) {
       return;
     }
 
     nodeData = this.domCompressor.decompressNode(nodeData);
 
-    let node = this.idMap[nodeData[NodeDataTypes.id]];
+    let node = this.nodeIdMap[nodeData[NodeDataTypes.id]];
 
     if (node) {
       return node;
     }
 
-    let doc = this.root.ownerDocument;
+    let doc = this.rootNode.ownerDocument;
     if (doc === null) {
-      doc = this.root;
+      doc = this.rootNode;
     }
 
     switch (nodeData[NodeDataTypes.nodeType]) {
@@ -86,10 +86,15 @@ export default class DomMirror {
               node.setAttribute(name, attribute);
             }
           } catch (e) {
+            // TODO - this should never happen is not needed
+            console.info(e);
             // cant set attribute
           }
         });
 
+        break;
+      default:
+        console.warn("Missing Node Type", Node.TEXT_NODE);
         break;
     }
 
@@ -97,16 +102,16 @@ export default class DomMirror {
       return;
     }
 
-    this.idMap[nodeData[NodeDataTypes.id]] = node;
+    this.nodeIdMap[nodeData[NodeDataTypes.id]] = node;
 
     if (parent) {
       parent.appendChild(node);
     }
 
     if (nodeData[NodeDataTypes.childNodes]) {
-      for (let i = 0; i < nodeData[NodeDataTypes.childNodes].length; i++) {
-        this.deserializeNode(nodeData[NodeDataTypes.childNodes][i], node);
-      }
+      nodeData[NodeDataTypes.childNodes].forEach((child) => {
+        this.recreateNode(child, node);
+      });
     }
 
     return node;
@@ -118,12 +123,14 @@ export default class DomMirror {
     attributes: Array<AttributeData>,
     text: Array<TextData>,
   ) {
-    // NOTE: Applying the changes can result in an attempting to add a child
-    // to a parent which is presently an ancestor of the parent. This can occur
-    // based on random ordering of moves. The way we handle this is to first
-    // remove all changed nodes from their parents, then apply.
+    /**
+     * Applying the changes can result in an attempting to add a child
+     * to a parent which is presently an ancestor of the parent. This can occur
+     * based on random ordering of moves. The way we handle this is to first
+     * remove all changed nodes from their parents, then apply.
+     */
     addedOrMoved.forEach((data) => {
-      let node = this.deserializeNode(data);
+      let node = this.recreateNode(data);
       if (node) {
         if (node.parentNode) {
           node.parentNode.removeChild(node);
@@ -132,17 +139,17 @@ export default class DomMirror {
     });
 
     removed.forEach((data) => {
-      let node = this.deserializeNode(data);
+      let node = this.recreateNode(data);
       if (node) {
         if (node.parentNode) node.parentNode.removeChild(node);
       }
     });
 
     addedOrMoved.forEach((data) => {
-      let node = this.deserializeNode(data);
+      let node = this.recreateNode(data);
       if (node) {
-        let parent = this.deserializeNode(data.parentNode);
-        let previous = this.deserializeNode(data.previousSibling);
+        let parent = this.recreateNode(data.parentNode);
+        let previous = this.recreateNode(data.previousSibling);
 
         try {
           parent.insertBefore(
@@ -150,13 +157,14 @@ export default class DomMirror {
             previous ? previous.nextSibling : parent.firstChild,
           );
         } catch (e) {
+          console.warn("Node is gone", parent, node);
           // Node is gone
         }
       }
     });
 
     attributes.forEach((data: AttributeData) => {
-      let node = <Element>this.deserializeNode(data);
+      let node = <Element>this.recreateNode(data);
 
       if (node) {
         Object.keys(data[NodeDataTypes.attributes]).forEach((attrName) => {
@@ -176,6 +184,7 @@ export default class DomMirror {
               }
             } catch (e) {
               // cant set attribute
+              console.info("This should never happen");
             }
           }
         });
@@ -183,15 +192,14 @@ export default class DomMirror {
     });
 
     text.forEach((data) => {
-      let node = this.deserializeNode(data);
-
+      let node = this.recreateNode(data);
       if (node) {
         node[NodeDataTypes.textContent] = data[NodeDataTypes.textContent];
       }
     });
 
     removed.forEach((node) => {
-      delete this.idMap[node[NodeDataTypes.id]];
+      delete this.nodeIdMap[node[NodeDataTypes.id]];
     });
   }
 }

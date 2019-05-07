@@ -1,25 +1,35 @@
 import DomCompressor from "./DomCompressor";
+import NodeMap from "./mutation-summary/NodeMap";
 import PositionData from "./interfaces/PositionData";
 import AttributeData from "./interfaces/AttributeData";
-import NodeMap from "./mutation-summary/NodeMap";
-import Summary from "./mutation-summary/Summary";
+import Summary from "./mutation-summary/interfaces/Summary";
 import NodeData, { NodeDataTypes } from "./interfaces/NodeData";
 import StringMap from "./mutation-summary/interfaces/StringMap";
 import MutationSummary from "./../mirror/mutation-summary/MutationSummary";
 
 export default class DomSource {
-  protected mirror;
   protected knownNodes;
   protected target: Node;
+  protected changesCallback;
   protected mutationSummary;
   protected nextId: number = 1;
   protected domCompressor: DomCompressor;
 
-  constructor(target: Node, mirror) {
-    this.mirror = mirror;
+  // TODO - apply iframe / shadow dom here cause we can track the ID's of the nodes
+  constructor(
+    target: Node,
+    initializeCallback: (rootId: number, children: Array<HTMLElement>) => void,
+    changesCallback: (
+      removed: Array<NodeData>,
+      addedOrMoved: Array<NodeData>,
+      attributes: Array<NodeData>,
+      text: Array<NodeData>,
+    ) => void,
+  ) {
     this.target = target;
+    this.changesCallback = changesCallback;
     this.domCompressor = new DomCompressor();
-    this.knownNodes = new MutationSummary.NodeMap<NodeMap<number>>();
+    this.knownNodes = new NodeMap<NodeMap<number>>();
 
     let children = [];
     for (
@@ -27,23 +37,21 @@ export default class DomSource {
       child;
       child = child.nextSibling
     ) {
-      let node = this.serializeNode(child, true);
+      let node = this.collectNodeData(child, true);
       if (node !== null) {
         children.push(node);
       }
     }
 
-    this.mirror.initialize(
-      this.serializeNode(target)[NodeDataTypes.id],
+    initializeCallback(
+      this.collectNodeData(target)[NodeDataTypes.id],
       children,
     );
 
     this.mutationSummary = new MutationSummary({
       rootNode: target,
-      queries: [{ all: true }],
-      oldPreviousSibling: true,
-      callback: (summaries: Array<Summary>) => {
-        this.applyChanged(summaries);
+      callback: (summary: Summary) => {
+        this.collectChanges(summary);
       },
     });
   }
@@ -55,8 +63,32 @@ export default class DomSource {
     }
   }
 
-  protected serializeNode(node: Node, recursive?: boolean): NodeData {
-    if (node === null) return null;
+  protected collectChanges(summary: Summary) {
+    let movedNodes = this.collectNodePositionData(summary.addedNodes);
+    let attributeChanges = this.collectNodeAttributes(summary.attributeChanges);
+    let textChanges = summary.textChanges.map((node) =>
+      this.collectNodeData(node),
+    );
+    let removedNodes = summary.removedNodes.map((node) =>
+      this.collectNodeData(node),
+    );
+
+    this.changesCallback(
+      removedNodes,
+      movedNodes,
+      attributeChanges,
+      textChanges,
+    );
+
+    summary.removedNodes.forEach((node) => {
+      this.forgetNode(node);
+    });
+  }
+
+  protected collectNodeData(node: Node, recursive?: boolean): NodeData {
+    if (node === null) {
+      return null;
+    }
 
     let id = this.knownNodes.get(node);
     if (id !== undefined) {
@@ -95,9 +127,9 @@ export default class DomSource {
         }
 
         if (
+          elm.tagName == "CANVAS" ||
           elm.tagName == "SCRIPT" ||
-          elm.tagName == "NOSCRIPT" ||
-          elm.tagName == "CANVAS"
+          elm.tagName == "NOSCRIPT"
         ) {
           return null;
         }
@@ -110,7 +142,7 @@ export default class DomSource {
             child;
             child = child.nextSibling
           ) {
-            let nodeData = this.serializeNode(child, true);
+            let nodeData = this.collectNodeData(child, true);
             if (nodeData !== null) {
               data[NodeDataTypes.childNodes].push(nodeData);
             }
@@ -122,29 +154,32 @@ export default class DomSource {
     return this.domCompressor.compressNode(data);
   }
 
-  protected serializeAddedAndMoved(
-    added: Array<Node>,
-    reparented: Array<Node>,
-    reordered: Array<Node>,
-  ): Array<PositionData> {
-    let all = added.concat(reparented).concat(reordered);
+  protected collectNodePositionData(added: Array<Node>): Array<PositionData> {
+    let parentNodeMap = new NodeMap<NodeMap<boolean>>();
 
-    let parentMap = new MutationSummary.NodeMap<NodeMap<boolean>>();
-
-    all.forEach((node) => {
+    /**
+     * We first need to generate a list of parents
+     * because we will have many nodes that share that parent
+     * then we will set the children that have that parent
+     */
+    added.forEach((node) => {
       let parent = node.parentNode;
-      let children = parentMap.get(parent);
+      let children = parentNodeMap.get(parent);
       if (!children) {
-        children = new MutationSummary.NodeMap();
-        parentMap.set(parent, children);
+        children = new NodeMap();
+        parentNodeMap.set(parent, children);
       }
       children.set(node, true);
     });
 
     let moved = [];
 
-    parentMap.keys().forEach((parent) => {
-      let children = parentMap.get(parent);
+    /**
+     * Next we will loop through ach parent and
+     * serialize each of those nodes recursively
+     */
+    parentNodeMap.keys().forEach((parent: Node) => {
+      let children = parentNodeMap.get(parent);
 
       let keys = children.keys();
       while (keys.length) {
@@ -154,10 +189,20 @@ export default class DomSource {
         }
 
         while (node && children.has(node)) {
-          let data = <PositionData>this.serializeNode(node);
+          let data = <PositionData>this.collectNodeData(node);
           if (data !== null) {
-            data.previousSibling = this.serializeNode(node.previousSibling);
-            data.parentNode = this.serializeNode(node.parentNode);
+            /**
+             * To place the node where it belongs during replay
+             * we need to take note of where they
+             * are at in the sibling chain
+             */
+            data.previousSibling = this.collectNodeData(node.previousSibling);
+
+            /**
+             * We also need to serialize their parent all the way to the top
+             * that we can properly place them in the document
+             */
+            data.parentNode = this.collectNodeData(node.parentNode);
             moved.push(data);
             children.delete(node);
           }
@@ -170,24 +215,25 @@ export default class DomSource {
     return moved;
   }
 
-  protected serializeAttributeChanges(
+  protected collectNodeAttributes(
     attributeChanged: StringMap<Element[]>,
   ): Array<AttributeData> {
-    let map = new MutationSummary.NodeMap<AttributeData>();
+    let nodeMap = new NodeMap<AttributeData>();
 
     Object.keys(attributeChanged).forEach((attrName) => {
       attributeChanged[attrName].forEach((element) => {
-        let record = map.get(element);
-        if (!record) {
-          record = <AttributeData>this.serializeNode(element);
-          if (record !== null) {
-            record[NodeDataTypes.attributes] = {};
-            map.set(element, record);
+        let node = nodeMap.get(element);
+
+        if (!node) {
+          node = <AttributeData>this.collectNodeData(element);
+          if (node !== null) {
+            node[NodeDataTypes.attributes] = {};
+            nodeMap.set(element, node);
           }
         }
 
-        if (record !== null) {
-          record[NodeDataTypes.attributes][
+        if (node !== null) {
+          node[NodeDataTypes.attributes][
             attrName
           ] = this.domCompressor.compressAttribute(
             element.getAttribute(attrName),
@@ -196,38 +242,8 @@ export default class DomSource {
       });
     });
 
-    return map.keys().map((node) => {
-      return map.get(node);
-    });
-  }
-
-  protected applyChanged(summaries) {
-    let summary = summaries[0];
-
-    let removed = summary.removed.map((node) => {
-      return this.serializeNode(node);
-    });
-
-    let moved = this.serializeAddedAndMoved(
-      summary.added,
-      summary.reparented,
-      summary.reordered,
-    );
-
-    let attributes = this.serializeAttributeChanges(summary.attributeChanged);
-
-    let text = summary.characterDataChanged.map((node) => {
-      let data = this.serializeNode(node);
-      if (data !== null) {
-        data[NodeDataTypes.textContent] = node.textContent;
-      }
-      return data;
-    });
-
-    this.mirror.applyChanged(removed, moved, attributes, text);
-
-    summary.removed.forEach((node) => {
-      this.forgetNode(node);
+    return nodeMap.keys().map((node) => {
+      return nodeMap.get(node);
     });
   }
 

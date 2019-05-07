@@ -1,22 +1,24 @@
 export default class NodeMap<T> {
-  private static ID_PROP = "__mutation_summary_node_map_id__";
-  private static nextId_: number = 1;
+  protected static ID_PROP = "__mutation_summary_node_map_id__";
+  protected static nextId_: number = 1;
 
-  private values: T[];
-  private nodes: Node[];
+  protected values: T[];
+  protected nodes: Node[];
 
   constructor() {
     this.nodes = [];
     this.values = [];
   }
 
-  private isIndex(s: string): boolean {
+  protected isIndex(s: string): boolean {
     return +s === (<any>s) >>> 0;
   }
 
-  private nodeId(node: Node) {
+  protected nodeId(node: Node) {
     let id = node[NodeMap.ID_PROP];
-    if (!id) id = node[NodeMap.ID_PROP] = NodeMap.nextId_++;
+    if (!id) {
+      id = node[NodeMap.ID_PROP] = NodeMap.nextId_++;
+    }
     return id;
   }
 
@@ -24,6 +26,7 @@ export default class NodeMap<T> {
     let id = this.nodeId(node);
     this.nodes[id] = node;
     this.values[id] = value;
+    return value;
   }
 
   public get(node: Node): T {
@@ -41,9 +44,12 @@ export default class NodeMap<T> {
     this.values[id] = undefined;
   }
 
+  // TODO - i dont think this is needed
+  // we should just loop through it like normal
   public keys(): Node[] {
     let nodes: Node[] = [];
     for (let id in this.nodes) {
+      // when would this happen?
       if (!this.isIndex(id)) continue;
       nodes.push(this.nodes[id]);
     }

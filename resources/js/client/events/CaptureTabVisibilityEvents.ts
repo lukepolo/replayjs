@@ -24,7 +24,7 @@ export default class CaptureTabVisibilityEvents implements ListenInterface {
   private visibilityChanged() {
     this.whisper({
       visible: document.hidden,
-      timing: Date.now(),
+      timing: performance.now(),
     });
   }
 

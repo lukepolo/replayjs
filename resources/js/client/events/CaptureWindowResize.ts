@@ -20,7 +20,7 @@ export default class CaptureWindowResize implements ListenInterface {
     this.whisper({
       width: window.innerWidth,
       height: window.innerHeight,
-      timing: Date.now(),
+      timing: performance.now(),
     });
   }
 

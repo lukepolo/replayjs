@@ -83,6 +83,9 @@ class GuestService
         foreach (new Iterator\Keyspace($this->redis->client(), "replayjs_cache:$sha:*") as $key) {
             $data[] = unserialize($this->redis->get($key));
         }
-        return collect($data)->sortBy('timing');
+        return collect($data)->sortBy('timing')->map(function ($value) {
+            $value->timing = (string)$value->timing;
+            return $value;
+        });
     }
 }

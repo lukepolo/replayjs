@@ -52,35 +52,36 @@ export default class MirrorClient implements ListenInterface {
       this.disconnect();
     }
     this.channel.whisper("focus-activity", {
-      timing: Date.now(),
+      timing: performance.now(),
       tabHasFocus: tabHasFocus,
     });
   }
 
   private initialize() {
     this.disconnect();
-    this.domSource = new DomSource(document, {
-      initialize: (rootId, children) => {
+    this.domSource = new DomSource(
+      document,
+      (rootId, children) => {
         this.whisperInitialized({
           rootId,
           children,
-          timing: Date.now(),
+          timing: performance.now(),
           baseHref: this.baseHref,
         });
         this.inputEvents.setup();
       },
-      applyChanged: (removed, addedOrMoved, attributes, text) => {
+      (removed, addedOrMoved, attributes, text) => {
         this.whisperChanges({
           text,
           removed,
           attributes,
           addedOrMoved,
-          timing: Date.now(),
+          timing: performance.now(),
         });
         if (addedOrMoved.length) {
           this.inputEvents.setup();
         }
       },
-    });
+    );
   }
 }
