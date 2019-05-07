@@ -75,7 +75,6 @@ export default class MutationSummary {
           return entry.length > 0;
         })
       ) {
-        console.info(summary);
         this.callback(summary);
       }
     }
