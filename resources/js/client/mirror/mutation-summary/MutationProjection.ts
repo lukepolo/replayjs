@@ -65,45 +65,31 @@ export default class MutationProjection {
       return {};
     }
 
-    let attributeFilter: StringMap<boolean>;
-    let caseInsensitiveFilter: StringMap<string>;
-
     let result: StringMap<Element[]> = {};
     let nodes = this.treeChanges.keys();
 
     for (let i = 0; i < nodes.length; i++) {
-      let node = nodes[i];
-
+      let node = <Element>nodes[i];
       let change = this.treeChanges.get(node);
-      if (!change.attributes) continue;
 
       if (
+        !change.attributes ||
         NodeMovement.STAYED_IN !== this.treeChanges.reachabilityChange(node)
       ) {
         continue;
       }
 
-      let element = <Element>node;
       let changedAttrNames = change.getAttributeNamesMutated();
       for (let j = 0; j < changedAttrNames.length; j++) {
         let attrName = changedAttrNames[j];
+        let oldValue = change.getAttributeOldValue(attrName);
 
-        if (
-          attributeFilter &&
-          !attributeFilter[attrName] &&
-          !(change.isCaseInsensitive && caseInsensitiveFilter[attrName])
-        ) {
+        if (oldValue === node.getAttribute(attrName)) {
           continue;
         }
 
-        let oldValue = change.getAttributeOldValue(attrName);
-        if (oldValue === element.getAttribute(attrName)) continue;
-
-        if (caseInsensitiveFilter && change.isCaseInsensitive)
-          attrName = caseInsensitiveFilter[attrName];
-
         result[attrName] = result[attrName] || [];
-        result[attrName].push(element);
+        result[attrName].push(node);
       }
     }
 
@@ -123,6 +109,7 @@ export default class MutationProjection {
       ) {
         return;
       }
+
       let change = this.treeChanges.get(node);
       if (
         !change.characterData ||
@@ -130,8 +117,17 @@ export default class MutationProjection {
       ) {
         return;
       }
+
+      // TODO - we removed text changes from dom source cause I believe
+      // we dont need it cause all text changes come from text nodes
+      console.info(
+        `TEXT CHANGE : IS TEXT_NODE`,
+        node.nodeType,
+        node.nodeType === Node.TEXT_NODE,
+      );
       result.push(node);
     });
+
     return result;
   }
 }

@@ -64,21 +64,21 @@ export default class DomSource {
   }
 
   protected collectChanges(summary: Summary) {
-    let moved = this.collectNodePositionData(summary.addedNodes);
-    let removed = summary.removedNodes.map((node) => {
-      return this.collectNodeData(node);
-    });
-    let attributes = this.collectNodeAttributes(summary.attributeChanges);
-    let text = summary.textChanges.map((node) => {
-      let data = this.collectNodeData(node);
-      if (data !== null) {
-        // TODO - why isn't this captured in collectNodeData
-        data[NodeDataTypes.textContent] = node.textContent;
-      }
-      return data;
-    });
+    let movedNodes = this.collectNodePositionData(summary.addedNodes);
+    let attributeChanges = this.collectNodeAttributes(summary.attributeChanges);
+    let textChanges = summary.textChanges.map((node) =>
+      this.collectNodeData(node),
+    );
+    let removedNodes = summary.removedNodes.map((node) =>
+      this.collectNodeData(node),
+    );
 
-    this.changesCallback(removed, moved, attributes, text);
+    this.changesCallback(
+      removedNodes,
+      movedNodes,
+      attributeChanges,
+      textChanges,
+    );
 
     summary.removedNodes.forEach((node) => {
       this.forgetNode(node);

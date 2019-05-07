@@ -1,8 +1,6 @@
 import StringMap from "./interfaces/StringMap";
 
 export default class NodeChange {
-  public isCaseInsensitive: boolean;
-
   constructor(
     public node: Node,
     public childList: boolean = false,
@@ -12,16 +10,12 @@ export default class NodeChange {
     public added: boolean = false,
     private attributeOldValues: StringMap<string> = null,
     public characterDataOldValue: string = null,
-  ) {
-    this.isCaseInsensitive =
-      this.node.nodeType === Node.ELEMENT_NODE &&
-      this.node instanceof HTMLElement &&
-      this.node.ownerDocument instanceof HTMLDocument;
-  }
+  ) {}
 
   getAttributeOldValue(name: string): string {
-    if (!this.attributeOldValues) return undefined;
-    if (this.isCaseInsensitive) name = name.toLowerCase();
+    if (!this.attributeOldValues) {
+      return undefined;
+    }
     return this.attributeOldValues[name];
   }
 
