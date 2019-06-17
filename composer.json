@@ -1,0 +1,86 @@
+{
+    "name": "laravel/laravel",
+    "type": "project",
+    "description": "The Laravel Framework.",
+    "keywords": [
+        "framework",
+        "laravel"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": "^7.3.0",
+        "ext-json": "*",
+        "barryvdh/laravel-cors": "^0.11.3",
+        "beyondcode/laravel-websockets": "^1.1",
+        "fideloper/proxy": "^4.0",
+        "laravel/framework": "5.8.*",
+        "laravel/horizon": "^3.0",
+        "laravel/socialite": "^4.1",
+        "laravel/tinker": "^1.0",
+        "league/csv": "^9.2",
+        "predis/predis": "^1.1",
+        "pusher/pusher-php-server": "~3.0",
+        "spatie/laravel-newsletter": "^4.3",
+        "tymon/jwt-auth": "1.0.0-rc.4.1",
+        "vinkla/hashids": "^5.2"
+    },
+    "require-dev": {
+        "barryvdh/laravel-ide-helper": "^2.6",
+        "beyondcode/laravel-dump-server": "^1.0",
+        "filp/whoops": "^2.0",
+        "friendsofphp/php-cs-fixer": "^2.14",
+        "fzaninotto/faker": "^1.4",
+        "mockery/mockery": "^1.0",
+        "nunomaduro/collision": "^2.0",
+        "phpunit/phpunit": "^7.5"
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "dont-discover": []
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        },
+        "classmap": [
+            "database/seeds",
+            "database/factories"
+        ],
+        "files": [
+          "app/helpers.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "scripts": {
+      "formatAll": [
+        "vendor/bin/php-cs-fixer fix"
+      ],
+      "format": [
+        "STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACMRTUXB | grep '\\.php$') && [ ! -z \"$STAGED_FILES\" ] && (vendor/bin/php-cs-fixer fix -- $(echo $STAGED_FILES) && git add $(echo $STAGED_FILES)) || echo \"PHP CS : OK\""
+      ],
+        "post-autoload-dump": [
+            "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+            "@php artisan package:discover --ansi",
+            "php artisan ide-helper:generate",
+            "php artisan ide-helper:meta"
+        ],
+        "post-root-package-install": [
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+        ],
+        "post-create-project-cmd": [
+            "@php artisan key:generate --ansi"
+        ]
+    }
+}

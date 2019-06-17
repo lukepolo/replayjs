@@ -1,0 +1,15 @@
+/node_modules
+/public/js
+/public/css
+/public/img
+/public/storage
+/storage/*.key
+/vendor
+.env
+.phpunit.result.cache
+npm-debug.log
+/resources/views/layouts/app.blade.php
+.php_cs.cache
+laravel-echo-server.lock
+.phpstorm.meta.php
+_ide_helper.php
