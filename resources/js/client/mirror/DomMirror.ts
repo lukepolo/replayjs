@@ -86,9 +86,7 @@ export default class DomMirror {
               node.setAttribute(name, attribute);
             }
           } catch (e) {
-            // TODO - this should never happen is not needed
-            console.info(e);
-            // cant set attribute
+            console.warn(`Cant set attribute`, e);
           }
         });
 
@@ -183,8 +181,7 @@ export default class DomMirror {
                 node.setAttribute(attrName, newVal);
               }
             } catch (e) {
-              // cant set attribute
-              console.info("This should never happen");
+              console.warn(`Cant set attribute`, e);
             }
           }
         });

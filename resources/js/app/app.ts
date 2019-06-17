@@ -1,3 +1,5 @@
+import "@fortawesome/fontawesome-pro/js/all.js";
+
 /*
 |--------------------------------------------------------------------------
 | App Entry

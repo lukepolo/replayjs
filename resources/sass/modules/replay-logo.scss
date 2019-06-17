@@ -1,0 +1,31 @@
+.replay-logo {
+  display: flex;
+
+  .fa-stack {
+    color: $color-text-accent;
+
+    .fa-undo {
+      transform: rotate(-90deg);
+    }
+    .fa-spinner-third {
+      transform: rotate(60deg);
+    }
+
+    font-size: 1.5rem;
+    &-1x {
+      left: 5px;
+      font-size: 1rem;
+    }
+  }
+  i {
+    vertical-align: middle;
+  }
+
+  &__text {
+    display: flex;
+    font-size: 1.2rem;
+    align-items: center;
+    margin-left: $site-margin;
+    color: $color-text-accent;
+  }
+}
