@@ -1,3 +1,4 @@
+import timing from "../helpers/timing";
 import ListenInterface from "../interfaces/ListenInterface";
 import { NullPresenceChannel } from "laravel-echo/dist/channel";
 import MouseMovementDataInterface from "../interfaces/MouseMovementDataInterface";
@@ -19,7 +20,7 @@ export default class CaptureMouseMovements implements ListenInterface {
     this.whisper({
       x: event.pageX,
       y: event.pageY,
-      timing: performance.now(),
+      timing: timing(),
     });
   }
 

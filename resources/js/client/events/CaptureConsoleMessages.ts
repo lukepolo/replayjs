@@ -1,3 +1,4 @@
+import timing from "../helpers/timing";
 import ListenInterface from "../interfaces/ListenInterface";
 import { NullPresenceChannel } from "laravel-echo/dist/channel";
 import ConsoleDataInterface from "../interfaces/ConsoleDataInterface";
@@ -38,7 +39,7 @@ export default class CaptureConsoleMessages implements ListenInterface {
       whisper({
         type,
         messages,
-        timing: performance.now(),
+        timing: timing(),
       });
       return originalFunction.apply(this, arguments);
     };

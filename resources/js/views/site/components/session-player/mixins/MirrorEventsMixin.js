@@ -5,7 +5,7 @@ export default {
     };
   },
   methods: {
-    queueChanges(changes, event, shouldPlayImmediately = false) {
+    queueChanges(changes, event, shouldPlayImmediately = true) {
       for (let timing in changes) {
         let change = changes[timing];
         if (!this.watchingLive && timing >= this.currentTime) {

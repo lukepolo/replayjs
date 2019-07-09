@@ -7,7 +7,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use App\Models\Site\Guest\Session\GuestSessionRecording;
+use App\Models\Site\Guest\Session\GuestSession;
 
 class RecordSessionDetails implements ShouldQueue
 {
@@ -35,17 +35,6 @@ class RecordSessionDetails implements ShouldQueue
      */
     public function handle()
     {
-        if (!empty($site)) {
-            $recording = GuestSessionRecording::firstOrNew([
-                'site_id' => $site->id,
-                'guest_sessionId_id' => $this->sessionId,
-            ]);
 
-//            $recording->fill([
-//                'user_agent' => $this->data->userAgent
-//            ]);
-
-            $recording->save();
-        }
     }
 }
