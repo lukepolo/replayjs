@@ -14,7 +14,7 @@ export default {
   },
   watch: {
     startingTime(startingTime) {
-      this.currentTime = startingTime;
+      this.currentTime = parseFloat(startingTime);
     },
   },
   methods: {
@@ -38,19 +38,19 @@ export default {
     },
     queueEvents() {
       this.queuedEvents = {};
-      this.queueChanges(this.domChanges, "updateDom", true);
-      this.queueChanges(this.mouseClicks, "addMouseClick");
-      this.queueChanges(this.scrollEvents, "updateScrollPosition", true);
-      this.queueChanges(this.windowSizeChanges, "updateWindowSize", true);
-      this.queueChanges(this.mouseMovements, "updateMouseMovement", true);
+      this.queueChanges(this.domChanges, "updateDom");
+      this.queueChanges(this.scrollEvents, "updateScrollPosition");
+      this.queueChanges(this.windowSizeChanges, "updateWindowSize");
+      this.queueChanges(this.mouseMovements, "updateMouseMovement");
+      this.queueChanges(this.mouseClicks, "addMouseClick", false);
     },
     seek(seekTo) {
       let wasPlaying = this.isPlaying;
       if (this.isPlaying) {
         this.stop();
       }
-      this.currentTime = seekTo;
-      this.initializePlayer(seekTo);
+      this.currentTime = parseFloat(seekTo);
+      this.initializePlayer();
       if (wasPlaying) {
         this.play();
       }
@@ -143,7 +143,7 @@ export default {
       return this.session && this.session.network_requests;
     },
     startingTime() {
-      return this.rootDom && this.rootDom.timing;
+      return this.rootDom && parseFloat(this.rootDom.timing);
     },
     endingTime() {
       if (this.startingTime) {

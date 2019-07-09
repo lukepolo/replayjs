@@ -1,3 +1,4 @@
+import timing from "../helpers/timing";
 import ListenInterface from "../interfaces/ListenInterface";
 import { NullPresenceChannel } from "laravel-echo/dist/channel";
 import TabVisibilityChangeInterface from "../interfaces/TabVisibilityChangeInterface";
@@ -23,8 +24,8 @@ export default class CaptureTabVisibilityEvents implements ListenInterface {
 
   private visibilityChanged() {
     this.whisper({
+      timing: timing(),
       visible: document.hidden,
-      timing: performance.now(),
     });
   }
 

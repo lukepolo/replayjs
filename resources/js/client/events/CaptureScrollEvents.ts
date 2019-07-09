@@ -1,3 +1,4 @@
+import timing from "../helpers/timing";
 import ListenInterface from "../interfaces/ListenInterface";
 import { NullPresenceChannel } from "laravel-echo/dist/channel";
 import ScrollDataInterface from "../interfaces/ScrollDataInterface";
@@ -20,8 +21,8 @@ export default class CaptureScrollEvents implements ListenInterface {
     if (!this.ticking) {
       window.requestAnimationFrame(() => {
         this.whisper({
+          timing: timing(),
           target: event.target,
-          timing: performance.now(),
           scrollPosition: document.documentElement.scrollTop,
         });
         this.ticking = false;

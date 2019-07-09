@@ -61,6 +61,7 @@ class GuestService
 
         $session->root = $domChanges->shift();
         $session->dom_changes = $domChanges->groupBy('timing');
+        $session->start_timing = $session->created_at->valueOf();
         $session->mouse_clicks = $this->getFromCache($session->id, 'mouse_clicks')->groupBy('timing');
         $session->network_requests = $this->getFromCache($session->id, 'network_requests')->groupBy('timing');
         $session->console_messages = $this->getFromCache($session->id, 'console_messages')->groupBy('timing');

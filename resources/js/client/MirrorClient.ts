@@ -1,3 +1,4 @@
+import timing from "./helpers/timing";
 import DomSource from "./mirror/DomSource";
 import InputEvents from "./events/InputEvents";
 import ListenInterface from "./interfaces/ListenInterface";
@@ -52,7 +53,7 @@ export default class MirrorClient implements ListenInterface {
       this.disconnect();
     }
     this.channel.whisper("focus-activity", {
-      timing: performance.now(),
+      timing: timing(),
       tabHasFocus: tabHasFocus,
     });
   }
@@ -65,7 +66,7 @@ export default class MirrorClient implements ListenInterface {
         this.whisperInitialized({
           rootId,
           children,
-          timing: performance.now(),
+          timing: timing(),
           baseHref: this.baseHref,
         });
         this.inputEvents.setup();
@@ -76,7 +77,7 @@ export default class MirrorClient implements ListenInterface {
           removed,
           attributes,
           addedOrMoved,
-          timing: performance.now(),
+          timing: timing(),
         });
         if (addedOrMoved.length) {
           this.inputEvents.setup();

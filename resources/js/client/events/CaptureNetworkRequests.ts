@@ -1,3 +1,4 @@
+import timing from "../helpers/timing";
 import ListenInterface from "../interfaces/ListenInterface";
 import { NullPresenceChannel } from "laravel-echo/dist/channel";
 import NetworkRequestDataInterface from "../interfaces/NetworkRequestDataInterface";
@@ -115,7 +116,7 @@ export default class CaptureNetworkRequests implements ListenInterface {
   }
 
   public whisper(data: NetworkRequestDataInterface) {
-    data.timing = performance.now();
+    data.timing = timing();
     if (data.url.indexOf(__ENV_VARIABLES__.app.APP_URL) === -1) {
       this.channel.whisper(this.event, data);
     }
