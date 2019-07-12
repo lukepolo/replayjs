@@ -93,7 +93,7 @@ export default {
             this.queueEvents();
             this.play();
             this.skipping = false;
-          }, this.skipThreshold);
+          }, this.skipThreshold / 2);
         }
       }, 100);
     },
@@ -113,7 +113,11 @@ export default {
   computed: {
     nextEventTime() {
       let queuedEvents = this.queuedEvents;
-      return Object.keys(queuedEvents)[0];
+      return parseFloat(
+        Object.keys(queuedEvents).sort(function(a, b) {
+          return a - b;
+        })[0],
+      );
     },
     rootDom() {
       return this.session && this.session.root;
