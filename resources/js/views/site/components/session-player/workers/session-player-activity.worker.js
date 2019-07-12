@@ -20,7 +20,7 @@ function getActivityRanges() {
   for (let timingIndex in timings.sort(function(a, b) {
     return a - b;
   })) {
-    let timing = timings[timingIndex];
+    let timing = parseFloat(timings[timingIndex]);
 
     if (startActivityTiming === null) {
       startActivityTiming = timing;
@@ -33,12 +33,16 @@ function getActivityRanges() {
       continue;
     }
 
+    let start = playerTimingConverter(startingTime, startActivityTiming);
+    let end = playerTimingConverter(startingTime, previousTiming);
+
+    if (start === end) {
+      end = end + skipThreshold / 1000;
+    }
+
     activityRanges.push({
-      start: playerTimingConverter(startingTime, startActivityTiming),
-      end: playerTimingConverter(
-        startingTime,
-        parseFloat(previousTiming) + skipThreshold,
-      ),
+      start,
+      end,
     });
 
     previousTiming = null;
