@@ -9,18 +9,18 @@ let activityRanges = [];
 let types = [
   playerEventTypes.Scroll,
   playerEventTypes.MouseClick,
-  playerEventTypes.DomChange,
   playerEventTypes.MouseMovement,
-  playerEventTypes.NetworkRequest,
 ];
 
 function getActivityRanges() {
-  let lastTiming = null;
+  let previousTiming = null;
   let startActivityTimingIndex;
   let startActivityTiming = null;
 
-  for (let timingIndex in timings.sort()) {
-    let timing = timings[timingIndex];
+  for (let timingIndex in timings.sort(function(a, b) {
+    return a - b;
+  })) {
+    let timing = parseFloat(timings[timingIndex]);
 
     if (startActivityTiming === null) {
       startActivityTiming = timing;
@@ -28,17 +28,24 @@ function getActivityRanges() {
       continue;
     }
 
-    if (lastTiming === null || timing - lastTiming < skipThreshold) {
-      lastTiming = timing;
+    if (previousTiming === null || timing - previousTiming < skipThreshold) {
+      previousTiming = timing;
       continue;
     }
 
+    let start = playerTimingConverter(startingTime, startActivityTiming);
+    let end = playerTimingConverter(startingTime, previousTiming);
+
+    if (start === end) {
+      end = end + skipThreshold / 1000;
+    }
+
     activityRanges.push({
-      start: playerTimingConverter(startingTime, startActivityTiming),
-      end: playerTimingConverter(startingTime, lastTiming),
+      start,
+      end,
     });
 
-    lastTiming = null;
+    previousTiming = null;
     startActivityTiming = null;
     startActivityTimingIndex = null;
   }
@@ -69,12 +76,13 @@ onmessage = ({ data }) => {
       skipThreshold = eventData.skipThreshold;
 
       for (let type in types) {
-        timings = Object.values(
-          Object.assign(timings, Object.keys(eventData.session[types[type]])),
-        );
+        timings = [
+          ...new Set(
+            timings.concat(Object.keys(eventData.session[types[type]])),
+          ),
+        ];
       }
       break;
   }
-
   postMessage(getActivityRanges());
 };

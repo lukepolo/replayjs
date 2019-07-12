@@ -13,6 +13,9 @@
 
     <h1>Skip Inactivity</h1>
     <pre>{{ skipInactivity }}</pre>
+    <button @click="skipInactivity = !skipInactivity">
+      Toggle Skip Activity
+    </button>
 
     <h1>Speed</h1>
     <pre>{{ playbackSpeed }}x</pre>
@@ -23,7 +26,7 @@
     <button @click="changePlaybackSpeed(2)">x2</button>
 
     <h1>Next Event</h1>
-    <pre>{{ nextEventTime }}</pre>
+    <pre>{{ nextEventTime - currentTime }}</pre>
 
     <session-progress-bar
       v-if="session"
