@@ -40,7 +40,7 @@ export default {
         },
       });
 
-      this.sessionPlayerActivityWorker.postMessage({
+      this.sessionPlayerActivityTimingsWorker.postMessage({
         event: "addActivity",
         data: {
           timing: changes.timing,
