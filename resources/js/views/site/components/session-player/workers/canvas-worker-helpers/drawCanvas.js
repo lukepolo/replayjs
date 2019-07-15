@@ -31,7 +31,7 @@ export default function drawCanvas(data, callback) {
     callback(ctx, () => {
       if (!isTransferable) {
         // TODO - define all target origins
-        postMessage({ bitmap: offscreenCanvas.transferToImageBitmap() }, "*");
+        postMessage({ bitmap: offscreenCanvas.transferToImageBitmap() });
       }
     });
   }

@@ -25,12 +25,12 @@ export default {
     this.canvas.style.width = "100%";
     this.canvas.style.height = "20px";
 
-    if (this.canvas.transferControlToOffscreen) {
-      this.provider.isTransferable = true;
-      this.provider.canvas = this.canvas.transferControlToOffscreen();
-    } else {
-      this.provider.canvas = this.canvas.getContext("bitmaprenderer");
-    }
+    // if (this.canvas.transferControlToOffscreen) {
+    //   this.provider.isTransferable = true;
+    //   this.provider.canvas = this.canvas.transferControlToOffscreen();
+    // } else {
+    this.provider.canvas = this.canvas.getContext("bitmaprenderer");
+    // }
 
     window.addEventListener("resize", this.setCanvasWidth);
 
