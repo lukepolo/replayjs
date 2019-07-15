@@ -1,3 +1,4 @@
+import finder from "@medv/finder";
 import timing from "../helpers/timing";
 import ListenInterface from "../interfaces/ListenInterface";
 import { NullPresenceChannel } from "laravel-echo/dist/channel";
@@ -10,11 +11,11 @@ export default class CaptureScrollEvents implements ListenInterface {
 
   public setup(channel: NullPresenceChannel) {
     this.channel = channel;
-    window.addEventListener("scroll", this.scrolled.bind(this));
+    document.addEventListener("scroll", this.scrolled.bind(this), true);
   }
 
   public teardown() {
-    window.removeEventListener("scroll", this.scrolled.bind(this));
+    document.removeEventListener("scroll", this.scrolled.bind(this), true);
   }
 
   private scrolled(event) {
@@ -22,8 +23,10 @@ export default class CaptureScrollEvents implements ListenInterface {
       window.requestAnimationFrame(() => {
         this.whisper({
           timing: timing(),
-          target: event.target,
-          scrollPosition: document.documentElement.scrollTop,
+          target: finder(event.target, {
+            idName: (name) => false,
+          }),
+          scrollPosition: event.target.scrollTop,
         });
         this.ticking = false;
       });
