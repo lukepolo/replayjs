@@ -1,7 +1,7 @@
 let ctx;
 let canvas;
-let isTransferable = false;
 let offscreenCanvas;
+let isTransferable = false;
 
 export default function drawCanvas(data, callback) {
   if (data.msg === "init") {
@@ -14,11 +14,9 @@ export default function drawCanvas(data, callback) {
   } else {
     let { canvasWidth } = data;
     if (!isTransferable) {
-      // @ts-ignore
       offscreenCanvas = new OffscreenCanvas(canvasWidth, 20);
       ctx = offscreenCanvas.getContext("2d");
     } else {
-      // Use the identity matrix while clearing the canvas
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
