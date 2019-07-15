@@ -1,6 +1,9 @@
 <script>
 import CanvasHelpers from "./mixins/CanvasHelpers";
+import SessionPlayerTicksWorker from "./../../workers/session-player-ticks.worker";
 import CalculateCanvasPlayerPosition from "./mixins/CalculateCanvasPlayerPosition";
+
+const sessionPlayerTicksWorker = new SessionPlayerTicksWorker();
 
 export default {
   mixins: [CanvasHelpers, CalculateCanvasPlayerPosition],
@@ -8,6 +11,11 @@ export default {
     events: {
       required: true,
     },
+  },
+  data() {
+    return {
+      init: false,
+    };
   },
   watch: {
     canvasWidth: {
@@ -18,18 +26,22 @@ export default {
   },
   methods: {
     draw() {
-      for (let index in this.events) {
-        let event = this.events[index];
-
-        let x = this.calculatePosition(event.timing);
-
-        this.context.beginPath();
-        this.context.strokeStyle = event.color;
-        this.context.lineWidth = 1;
-        this.context.moveTo(x, 0);
-        this.context.lineTo(x, 20);
-        this.context.stroke();
+      if (this.init === false && this.canvas) {
+        this.init = true;
+        sessionPlayerTicksWorker.postMessage(
+          {
+            msg: "init",
+            canvas: this.canvas,
+          },
+          [this.canvas],
+        );
       }
+      sessionPlayerTicksWorker.postMessage({
+        events: this.events,
+        endingTime: this.endingTime,
+        canvasWidth: this.canvasWidth,
+        startingTime: this.startingTime,
+      });
     },
   },
   render() {
