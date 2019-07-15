@@ -9,7 +9,6 @@ onmessage = ({ data }) => {
       let event = data.events[index];
 
       let x = calculatePosition(event.timing, maxTiming, data.canvasWidth);
-
       ctx.beginPath();
       ctx.strokeStyle = event.color;
       ctx.lineWidth = 1;
