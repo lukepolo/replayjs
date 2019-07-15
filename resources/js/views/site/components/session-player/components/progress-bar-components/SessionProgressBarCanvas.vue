@@ -21,13 +21,16 @@ export default {
     },
   },
   mounted() {
-    this.provider.canvas = this.canvas;
-    this.provider.context = this.canvas.getContext("2d");
-
     // This is dictated by the sass
-    this.canvas.height = 20;
     this.canvas.style.width = "100%";
     this.canvas.style.height = "20px";
+
+    if (this.canvas.transferControlToOffscreen) {
+      this.provider.isTransferable = true;
+      this.provider.canvas = this.canvas.transferControlToOffscreen();
+    } else {
+      this.provider.canvas = this.canvas.getContext("bitmaprenderer");
+    }
 
     window.addEventListener("resize", this.setCanvasWidth);
 
@@ -37,8 +40,8 @@ export default {
     return {
       provider: {
         canvas: null,
-        context: null,
         canvasWidth: null,
+        isTransferable: false,
       },
     };
   },
@@ -55,9 +58,13 @@ export default {
         let width = Math.ceil(
           (parseInt(this.endingTime) - parseInt(this.startingTime)) / 1000,
         );
-        this.canvas.width =
-          width < window.innerWidth ? window.innerWidth : width;
-        this.provider.canvasWidth = this.canvas.width;
+
+        let canvasWidth = width < window.innerWidth ? window.innerWidth : width;
+
+        if (!this.provider.isTransferable) {
+          this.canvas.width = canvasWidth;
+        }
+        this.provider.canvasWidth = canvasWidth;
       }
     },
   },

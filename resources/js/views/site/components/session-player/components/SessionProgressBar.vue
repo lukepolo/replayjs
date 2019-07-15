@@ -52,11 +52,11 @@ import SessionProgressBarCanvas from "./progress-bar-components/SessionProgressB
 import SessionProgressBarActivity from "./progress-bar-components/SessionProgressBarActivity";
 
 export default {
-  inject: ["sessionPlayerEventsWorker", "sessionPlayerActivityWorker"],
+  inject: ["sessionPlayerEventsWorker", "sessionPlayerActivityTimingsWorker"],
   components: {
-    SessionProgressBarActivity,
     SessionProgressBarTick,
     SessionProgressBarCanvas,
+    SessionProgressBarActivity,
   },
   props: {
     currentTime: {
@@ -86,7 +86,7 @@ export default {
     this.sessionPlayerEventsWorker.onmessage = ({ data }) => {
       this.events = data;
     };
-    this.sessionPlayerActivityWorker.onmessage = ({ data }) => {
+    this.sessionPlayerActivityTimingsWorker.onmessage = ({ data }) => {
       this.activityRanges = data;
     };
   },

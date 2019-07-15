@@ -1,6 +1,9 @@
 <script>
 import CanvasHelpers from "./mixins/CanvasHelpers";
 import CalculateCanvasPlayerPosition from "./mixins/CalculateCanvasPlayerPosition";
+import SessionPlayerActivityCanvasWorker from "../../workers/session-player-activity-canvas.worker";
+
+const sessionPlayerActivityCanvasWorker = new SessionPlayerActivityCanvasWorker();
 
 export default {
   mixins: [CanvasHelpers, CalculateCanvasPlayerPosition],
@@ -8,6 +11,11 @@ export default {
     activityRanges: {
       required: true,
     },
+  },
+  data() {
+    return {
+      init: false,
+    };
   },
   watch: {
     canvasWidth: {
@@ -18,18 +26,29 @@ export default {
   },
   methods: {
     draw() {
-      for (let index in this.activityRanges) {
-        let activityRange = this.activityRanges[index];
+      if (this.canvas) {
+        if (this.init === false && this.isTransferable) {
+          this.init = true;
+          sessionPlayerActivityCanvasWorker.postMessage(
+            {
+              msg: "init",
+              canvas: this.canvas,
+            },
+            [this.canvas],
+          );
+        } else {
+          sessionPlayerActivityCanvasWorker.onmessage = ({ data }) => {
+            this.canvas.transferFromImageBitmap(data.bitmap);
+          };
+        }
 
-        let start = this.calculatePosition(activityRange.start);
-        let end = this.calculatePosition(activityRange.end || this.maxTiming);
-
-        this.context.beginPath();
-        this.context.lineWidth = 1;
-        this.context.fillStyle = "rgba(244,235,66,.8)";
-        this.context.moveTo(start, 0);
-        this.context.fillRect(start, 0, end - start, 100);
-        this.context.stroke();
+        sessionPlayerActivityCanvasWorker.postMessage({
+          maxTiming: this.maxTiming,
+          endingTime: this.endingTime,
+          canvasWidth: this.canvasWidth,
+          startingTime: this.startingTime,
+          activityRanges: this.activityRanges,
+        });
       }
     },
   },

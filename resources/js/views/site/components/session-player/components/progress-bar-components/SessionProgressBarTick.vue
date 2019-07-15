@@ -1,6 +1,9 @@
 <script>
 import CanvasHelpers from "./mixins/CanvasHelpers";
 import CalculateCanvasPlayerPosition from "./mixins/CalculateCanvasPlayerPosition";
+import SessionPlayerTicksCanvasWorker from "../../workers/session-player-ticks-canvas.worker";
+
+const sessionPlayerTicksCanvasWorker = new SessionPlayerTicksCanvasWorker();
 
 export default {
   mixins: [CanvasHelpers, CalculateCanvasPlayerPosition],
@@ -8,6 +11,11 @@ export default {
     events: {
       required: true,
     },
+  },
+  data() {
+    return {
+      init: false,
+    };
   },
   watch: {
     canvasWidth: {
@@ -18,17 +26,28 @@ export default {
   },
   methods: {
     draw() {
-      for (let index in this.events) {
-        let event = this.events[index];
-
-        let x = this.calculatePosition(event.timing);
-
-        this.context.beginPath();
-        this.context.strokeStyle = event.color;
-        this.context.lineWidth = 1;
-        this.context.moveTo(x, 0);
-        this.context.lineTo(x, 20);
-        this.context.stroke();
+      if (this.canvas) {
+        if (this.init === false && this.isTransferable) {
+          this.init = true;
+          sessionPlayerTicksCanvasWorker.postMessage(
+            {
+              msg: "init",
+              canvas: this.canvas,
+            },
+            [this.canvas],
+          );
+        } else {
+          sessionPlayerTicksCanvasWorker.onmessage = ({ data }) => {
+            this.canvas.transferFromImageBitmap(data.bitmap);
+          };
+        }
+        sessionPlayerTicksCanvasWorker.postMessage({
+          events: this.events,
+          maxTiming: this.maxTiming,
+          endingTime: this.endingTime,
+          canvasWidth: this.canvasWidth,
+          startingTime: this.startingTime,
+        });
       }
     },
   },
