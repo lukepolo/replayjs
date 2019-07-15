@@ -26,22 +26,29 @@ export default {
   },
   methods: {
     draw() {
-      if (this.init === false && this.canvas) {
-        this.init = true;
-        sessionPlayerTicksWorker.postMessage(
-          {
-            msg: "init",
-            canvas: this.canvas,
-          },
-          [this.canvas],
-        );
+      if (this.canvas) {
+        if (this.init === false && this.isTransferable) {
+          this.init = true;
+          sessionPlayerTicksWorker.postMessage(
+            {
+              msg: "init",
+              canvas: this.canvas,
+            },
+            [this.canvas],
+          );
+        } else {
+          sessionPlayerTicksWorker.onmessage = ({ data }) => {
+            console.info("Attach TICKS", data);
+            this.canvas.transferFromImageBitmap(data.bitmap);
+          };
+        }
+        sessionPlayerTicksWorker.postMessage({
+          events: this.events,
+          endingTime: this.endingTime,
+          canvasWidth: this.canvasWidth,
+          startingTime: this.startingTime,
+        });
       }
-      sessionPlayerTicksWorker.postMessage({
-        events: this.events,
-        endingTime: this.endingTime,
-        canvasWidth: this.canvasWidth,
-        startingTime: this.startingTime,
-      });
     },
   },
   render() {

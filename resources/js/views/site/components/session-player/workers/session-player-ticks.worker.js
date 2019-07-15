@@ -10,6 +10,8 @@ function getMaxTiming(startingTime, endingTime) {
 
 let ctx;
 let canvas;
+let isTransferable = false;
+let offscreenCanvas;
 
 onmessage = ({ data }) => {
   if (data.msg === "init") {
@@ -17,8 +19,12 @@ onmessage = ({ data }) => {
     canvas.height = 20;
     ctx = canvas.getContext("2d");
     ctx.save();
+    isTransferable = true;
   } else {
-    if (ctx) {
+    if (!isTransferable) {
+      offscreenCanvas = new OffscreenCanvas(data.canvasWidth, 20);
+      ctx = offscreenCanvas.getContext("2d");
+    } else {
       canvas.width = data.canvasWidth;
 
       // Use the identity matrix while clearing the canvas
@@ -28,21 +34,26 @@ onmessage = ({ data }) => {
       ctx.restore();
 
       ctx.width = data.canvasWidth;
+    }
 
-      let maxTiming = getMaxTiming(data.startingTime, data.endingTime);
+    let maxTiming = getMaxTiming(data.startingTime, data.endingTime);
 
-      for (let index in data.events) {
-        let event = data.events[index];
+    for (let index in data.events) {
+      let event = data.events[index];
 
-        let x = calculatePosition(event.timing, maxTiming, data.canvasWidth);
+      let x = calculatePosition(event.timing, maxTiming, data.canvasWidth);
 
-        ctx.beginPath();
-        ctx.strokeStyle = event.color;
-        ctx.lineWidth = 1;
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x, 20);
-        ctx.stroke();
-      }
+      ctx.beginPath();
+      ctx.strokeStyle = event.color;
+      ctx.lineWidth = 1;
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, 20);
+      ctx.stroke();
+    }
+
+    if (!isTransferable) {
+      console.info("SEND TICKS");
+      postMessage({ bitmap: offscreenCanvas.transferToImageBitmap() });
     }
   }
 };

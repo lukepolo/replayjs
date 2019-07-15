@@ -10,5 +10,8 @@ export default {
     canvasWidth() {
       return this.provider && this.provider.canvasWidth;
     },
+    isTransferable() {
+      return this.provider && this.provider.isTransferable;
+    },
   },
 };
