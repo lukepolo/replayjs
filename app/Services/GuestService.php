@@ -27,7 +27,7 @@ class GuestService
         $this->guestSessionModel = $guestSessionModel;
         /** @var Client $redis */
         $this->redis = Cache::getRedis();
-        $this->redis->select(1);
+        $this->redis->select(config('database.redis.cache.database'));
     }
 
     public function getGuest($apiKeyHash, $ipAddress) : Guest
