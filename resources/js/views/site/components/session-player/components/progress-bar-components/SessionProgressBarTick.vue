@@ -1,9 +1,9 @@
 <script>
 import CanvasHelpers from "./mixins/CanvasHelpers";
-import SessionPlayerTicksWorker from "./../../workers/session-player-ticks.worker";
 import CalculateCanvasPlayerPosition from "./mixins/CalculateCanvasPlayerPosition";
+import SessionPlayerTicksCanvasWorker from "../../workers/session-player-ticks-canvas.worker";
 
-const sessionPlayerTicksWorker = new SessionPlayerTicksWorker();
+const sessionPlayerTicksCanvasWorker = new SessionPlayerTicksCanvasWorker();
 
 export default {
   mixins: [CanvasHelpers, CalculateCanvasPlayerPosition],
@@ -29,7 +29,7 @@ export default {
       if (this.canvas) {
         if (this.init === false && this.isTransferable) {
           this.init = true;
-          sessionPlayerTicksWorker.postMessage(
+          sessionPlayerTicksCanvasWorker.postMessage(
             {
               msg: "init",
               canvas: this.canvas,
@@ -37,13 +37,13 @@ export default {
             [this.canvas],
           );
         } else {
-          sessionPlayerTicksWorker.onmessage = ({ data }) => {
-            console.info("Attach TICKS", data);
+          sessionPlayerTicksCanvasWorker.onmessage = ({ data }) => {
             this.canvas.transferFromImageBitmap(data.bitmap);
           };
         }
-        sessionPlayerTicksWorker.postMessage({
+        sessionPlayerTicksCanvasWorker.postMessage({
           events: this.events,
+          maxTiming: this.maxTiming,
           endingTime: this.endingTime,
           canvasWidth: this.canvasWidth,
           startingTime: this.startingTime,

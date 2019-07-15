@@ -1,9 +1,9 @@
 <script>
 import CanvasHelpers from "./mixins/CanvasHelpers";
-import SessionPlayerBarWorker from "./../../workers/session-player-bar.worker";
 import CalculateCanvasPlayerPosition from "./mixins/CalculateCanvasPlayerPosition";
+import SessionPlayerActivityCanvasWorker from "../../workers/session-player-activity-canvas.worker";
 
-const sessionPlayerBarWorker = new SessionPlayerBarWorker();
+const sessionPlayerActivityCanvasWorker = new SessionPlayerActivityCanvasWorker();
 
 export default {
   mixins: [CanvasHelpers, CalculateCanvasPlayerPosition],
@@ -29,7 +29,7 @@ export default {
       if (this.canvas) {
         if (this.init === false && this.isTransferable) {
           this.init = true;
-          sessionPlayerBarWorker.postMessage(
+          sessionPlayerActivityCanvasWorker.postMessage(
             {
               msg: "init",
               canvas: this.canvas,
@@ -37,13 +37,13 @@ export default {
             [this.canvas],
           );
         } else {
-          sessionPlayerBarWorker.onmessage = ({ data }) => {
-            console.info("Attach Activity", data);
+          sessionPlayerActivityCanvasWorker.onmessage = ({ data }) => {
             this.canvas.transferFromImageBitmap(data.bitmap);
           };
         }
 
-        sessionPlayerBarWorker.postMessage({
+        sessionPlayerActivityCanvasWorker.postMessage({
+          maxTiming: this.maxTiming,
           endingTime: this.endingTime,
           canvasWidth: this.canvasWidth,
           startingTime: this.startingTime,

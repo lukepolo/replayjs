@@ -63,16 +63,17 @@ import StreamMixin from "./mixins/StreamMixin";
 import MirrorEventsMixin from "./mixins/MirrorEventsMixin";
 import SessionProgressBar from "./components/SessionProgressBar";
 import SessionPlayerEventsWorker from "./workers/session-player-events.worker";
-import SessionPlayerActivityWorker from "./workers/session-player-activity.worker";
+import SessionPlayerActivityTimingsWorker from "./workers/session-player-activity-timings.worker";
 
 const sessionPlayerEventsWorker = new SessionPlayerEventsWorker();
-const sessionPlayerActivityWorker = new SessionPlayerActivityWorker();
+const sessionPlayerActivityTimingsWorker = new SessionPlayerActivityTimingsWorker();
 
 export default {
   provide() {
     return {
       sessionPlayerEventsWorker: this.sessionPlayerEventsWorker,
-      sessionPlayerActivityWorker: this.sessionPlayerActivityWorker,
+      sessionPlayerActivityTimingsWorker: this
+        .sessionPlayerActivityTimingsWorker,
     };
   },
   mixins: [MirrorMixin, PlayerMixin, StreamMixin, MirrorEventsMixin],
@@ -108,7 +109,7 @@ export default {
             },
           });
 
-          this.sessionPlayerActivityWorker.postMessage({
+          this.sessionPlayerActivityTimingsWorker.postMessage({
             event: "addAllActivity",
             data: {
               session,
@@ -124,8 +125,8 @@ export default {
     sessionPlayerEventsWorker() {
       return sessionPlayerEventsWorker;
     },
-    sessionPlayerActivityWorker() {
-      return sessionPlayerActivityWorker;
+    sessionPlayerActivityTimingsWorker() {
+      return sessionPlayerActivityTimingsWorker;
     },
   },
 };

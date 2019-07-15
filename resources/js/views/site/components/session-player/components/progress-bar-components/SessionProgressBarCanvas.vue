@@ -40,7 +40,6 @@ export default {
     return {
       provider: {
         canvas: null,
-        context: null,
         canvasWidth: null,
         isTransferable: false,
       },
