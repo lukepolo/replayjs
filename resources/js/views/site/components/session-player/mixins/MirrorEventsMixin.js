@@ -58,8 +58,11 @@ export default {
 
       this.getScale();
     },
-    updateScrollPosition(scrollPosition) {
-      window.scrollTo(0, scrollPosition);
+    updateScrollPosition({ target, scrollPosition }) {
+      let element = this.previewDocument.querySelector(target);
+      if (element) {
+        element.scrollTo(0, scrollPosition);
+      }
     },
     updateMouseMovement({ x, y }) {
       this.$refs.cursor.style.top = y + "px";
