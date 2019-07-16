@@ -3,19 +3,19 @@ import calculatePosition from "./canvas-worker-helpers/calculatePosition";
 
 onmessage = ({ data }) => {
   drawCanvas(data, (ctx, callback) => {
-    let { maxTiming } = data;
+    let { color, events, maxTiming } = data;
 
-    for (let index in data.events) {
-      let event = data.events[index];
+    ctx.beginPath();
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = color;
 
-      let x = calculatePosition(event.timing, maxTiming, data.canvasWidth);
-      ctx.beginPath();
-      ctx.strokeStyle = event.color;
-      ctx.lineWidth = 1;
+    for (let index in events) {
+      let event = events[index];
+      let x = calculatePosition(event, maxTiming, data.canvasWidth);
       ctx.moveTo(x, 0);
       ctx.lineTo(x, 20);
-      ctx.stroke();
     }
+    ctx.stroke();
 
     callback();
   });

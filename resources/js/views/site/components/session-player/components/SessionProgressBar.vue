@@ -31,15 +31,19 @@
           :activity-ranges="activityRanges"
         ></session-progress-bar-activity>
       </session-progress-bar-canvas>
+
       <session-progress-bar-canvas
+        :key="zIndex"
+        v-for="(playerEventTickType, zIndex) in playerEventTickTypes"
+        :style="{ zIndex: parseInt(zIndex + 2) }"
         :starting-time="startingTime"
         :ending-time="endingTime"
       >
         <session-progress-bar-tick
-          style="z-index:2"
-          :events="events"
-          :starting-time="startingTime"
           :ending-time="endingTime"
+          :starting-time="startingTime"
+          :events="events[playerEventTickType]"
+          :color="playerEventColors[playerEventTickType]"
         ></session-progress-bar-tick>
       </session-progress-bar-canvas>
     </div>
@@ -47,9 +51,12 @@
 </template>
 
 <script>
+import playerEventColors from "@app/constants/playerEventColors";
+import { playerEventTypes } from "@app/constants/playerEventTypes";
 import SessionProgressBarTick from "./progress-bar-components/SessionProgressBarTick";
 import SessionProgressBarCanvas from "./progress-bar-components/SessionProgressBarCanvas";
 import SessionProgressBarActivity from "./progress-bar-components/SessionProgressBarActivity";
+import playerEventTickTypes from "@app/constants/playerEventTickTypes";
 
 export default {
   inject: ["sessionPlayerEventsWorker", "sessionPlayerActivityTimingsWorker"],
@@ -80,6 +87,9 @@ export default {
     return {
       events: [],
       activityRanges: [],
+      playerEventTypes,
+      playerEventColors,
+      playerEventTickTypes,
     };
   },
   mounted() {

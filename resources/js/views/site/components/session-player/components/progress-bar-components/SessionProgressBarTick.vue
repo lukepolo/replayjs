@@ -3,11 +3,12 @@ import CanvasHelpers from "./mixins/CanvasHelpers";
 import CalculateCanvasPlayerPosition from "./mixins/CalculateCanvasPlayerPosition";
 import SessionPlayerTicksCanvasWorker from "../../workers/session-player-ticks-canvas.worker";
 
-const sessionPlayerTicksCanvasWorker = new SessionPlayerTicksCanvasWorker();
-
 export default {
   mixins: [CanvasHelpers, CalculateCanvasPlayerPosition],
   props: {
+    color: {
+      required: true,
+    },
     events: {
       required: true,
     },
@@ -15,6 +16,7 @@ export default {
   data() {
     return {
       init: false,
+      worker: null,
     };
   },
   watch: {
@@ -24,12 +26,15 @@ export default {
       },
     },
   },
+  created() {
+    this.worker = new SessionPlayerTicksCanvasWorker();
+  },
   methods: {
     draw() {
       if (this.canvas) {
         if (this.init === false && this.isTransferable) {
           this.init = true;
-          sessionPlayerTicksCanvasWorker.postMessage(
+          this.worker.postMessage(
             {
               msg: "init",
               canvas: this.canvas,
@@ -37,11 +42,12 @@ export default {
             [this.canvas],
           );
         } else {
-          sessionPlayerTicksCanvasWorker.onmessage = ({ data }) => {
+          this.worker.onmessage = ({ data }) => {
             this.canvas.transferFromImageBitmap(data.bitmap);
           };
         }
-        sessionPlayerTicksCanvasWorker.postMessage({
+        this.worker.postMessage({
+          color: this.color,
           events: this.events,
           maxTiming: this.maxTiming,
           endingTime: this.endingTime,
