@@ -4,7 +4,9 @@ import calculatePosition from "./canvas-worker-helpers/calculatePosition";
 onmessage = ({ data }) => {
   drawCanvas(data, (ctx, callback) => {
     let { maxTiming, canvasWidth, activityRanges } = data;
-    ctx.beginPath();
+
+    ctx.lineWidth = 1;
+    ctx.fillStyle = "rgba(244,235,66,.8)";
 
     for (let index in activityRanges) {
       let activityRange = activityRanges[index];
@@ -22,9 +24,6 @@ onmessage = ({ data }) => {
       );
 
       if (start) {
-        ctx.lineWidth = 1;
-        ctx.fillStyle = "rgba(244,235,66,.8)";
-
         ctx.moveTo(start, 0);
         ctx.fillRect(start, 0, end - start, 100);
       }

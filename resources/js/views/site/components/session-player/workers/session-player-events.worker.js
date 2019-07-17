@@ -17,7 +17,7 @@ onmessage = ({ data }) => {
   switch (data.event) {
     case "addEvent":
       if (playerEventTickTypes.indexOf(eventData.type) > -1) {
-        this.addEvent(eventData.type, eventData.timing);
+        addEvent(eventData.type, eventData.timing);
       }
       break;
     case "addEvents":

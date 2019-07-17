@@ -10,7 +10,7 @@
       />
       <label for="playAndPause"></label>
     </div>
-    <pre>EVENTS : {{ events.length }}</pre>
+    <pre>EVENTS : {{ numberOfEvents }}</pre>
     <pre>Current Time : {{ currentTimeDisplay }}</pre>
     <pre>End Time : {{ endingTimeDisplay }}</pre>
     <div class="progress" @click="playAtPosition">
@@ -149,6 +149,13 @@ export default {
     currentTimePercentage() {
       return `${(this.currentTimeNormalized / this.endingTimeNormalized) *
         100}%`;
+    },
+    numberOfEvents() {
+      let total = 0;
+      for (let eventType in this.events) {
+        total = total + this.events[eventType].length;
+      }
+      return total;
     },
   },
 };

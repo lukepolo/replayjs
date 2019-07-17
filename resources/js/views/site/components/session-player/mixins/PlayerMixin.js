@@ -59,18 +59,18 @@ export default {
       this.queuedEvents = Object.assign({}, this.queuedEvents);
 
       for (let timing in this.queuedEvents) {
-        let queuedEvents = this.queuedEvents[timing];
         this.timeoutUpdates.push(
           setTimeout(() => {
-            queuedEvents.forEach(({ event, change }) => {
+            this.queuedEvents[timing].forEach(({ event, change }) => {
               this[event](change);
-              this.$delete(this.queuedEvents, timing);
             });
+            this.$delete(this.queuedEvents, timing);
           }, (timing - this.currentTime) * (1 / this.playbackSpeed)),
         );
       }
 
-      let playbackSpeed = 100 * this.playbackSpeed;
+      let delay = 13;
+      let playbackSpeed = delay * this.playbackSpeed;
       this.timeInterval = this.requestAnimationInterval(() => {
         this.currentTime = this.currentTime + playbackSpeed;
         if (this.currentTime > this.endTiming) {
@@ -95,7 +95,7 @@ export default {
             this.skipping = false;
           }, this.skipThreshold / 2);
         }
-      }, 100);
+      }, delay);
     },
     stop() {
       this.watchingLive = false;

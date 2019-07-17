@@ -4,17 +4,13 @@ Vue.mixin({
   methods: {
     requestAnimationInterval(fn, delay = 10) {
       let stop;
-      let start = Date.now();
+      let start = performance.now();
 
-      function loop() {
-        let current = Date.now();
-        let delta = current - start;
-
-        if (delta >= delay) {
+      function loop(time) {
+        if (time - start >= delay) {
           fn.call();
-          start = Date.now();
+          start = time;
         }
-
         if (!stop) {
           requestAnimationFrame(loop);
         }
