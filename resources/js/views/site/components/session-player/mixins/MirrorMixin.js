@@ -14,10 +14,12 @@ export default {
   },
   methods: {
     clearIframe() {
-      while (this.previewDocument.firstChild) {
-        this.previewDocument.removeChild(this.previewDocument.firstChild);
+      if (this.previewDocument) {
+        while (this.previewDocument.firstChild) {
+          this.previewDocument.removeChild(this.previewDocument.firstChild);
+        }
+        this.previewDocument.innerHtml = "";
       }
-      this.previewDocument.innerHtml = "";
     },
     setupIframe({ rootId, children, baseHref }) {
       this.clearIframe();

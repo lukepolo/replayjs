@@ -59,7 +59,7 @@ import SessionProgressBarActivity from "./progress-bar-components/SessionProgres
 import playerEventTickTypes from "@app/constants/playerEventTickTypes";
 
 export default {
-  inject: ["sessionPlayerEventsWorker", "sessionPlayerActivityTimingsWorker"],
+  inject: ["sessionPlayerEventsWorker"],
   components: {
     SessionProgressBarTick,
     SessionProgressBarCanvas,
@@ -82,11 +82,13 @@ export default {
     session: {
       required: true,
     },
+    activityRanges: {
+      required: true,
+    },
   },
   data() {
     return {
       events: [],
-      activityRanges: [],
       playerEventTypes,
       playerEventColors,
       playerEventTickTypes,
@@ -95,9 +97,6 @@ export default {
   mounted() {
     this.sessionPlayerEventsWorker.onmessage = ({ data }) => {
       this.events = data;
-    };
-    this.sessionPlayerActivityTimingsWorker.onmessage = ({ data }) => {
-      this.activityRanges = data;
     };
   },
   methods: {
