@@ -80,20 +80,21 @@ export default {
         }
 
         for (let timing in this.queuedEvents) {
-          if (timing <= this.currentTime + playbackSpeed) {
+          // https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/setTimeout#Reasons_for_delays_longer_than_specified
+          if (timing <= this.currentTime + playbackSpeed + 4) {
             let timeout = (timing - this.currentTime) * (1 / playbackSpeed);
-            console.info(`PLAY IN`, timeout);
             this.timeoutUpdates.push(
               setTimeout(
-                () => {
-                  this.queuedEvents[timing].forEach(({ event, change }) => {
+                (events) => {
+                  events.forEach(({ event, change }) => {
                     this[event](change);
                   });
-                  this.$delete(this.queuedEvents, timing);
                 },
                 timeout >= 0 ? timeout : 0,
+                this.queuedEvents[timing],
               ),
             );
+            this.$delete(this.queuedEvents, timing);
           }
         }
 
