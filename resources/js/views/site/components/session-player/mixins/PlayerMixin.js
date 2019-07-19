@@ -62,7 +62,11 @@ export default {
       let skipping = false;
       let delay = 13;
       let playbackSpeed = delay * this.playbackSpeed;
+      let timeOrigin = performance.now();
       this.timeInterval = this.requestAnimationInterval(() => {
+        let clockDelay = performance.now() - timeOrigin - delay;
+        timeOrigin = performance.now();
+
         if (
           !skipping &&
           this.skipInactivity &&
@@ -78,6 +82,8 @@ export default {
           skipping = false;
           playbackSpeed = delay * this.playbackSpeed;
         }
+
+        this.currentTime = this.currentTime + playbackSpeed + clockDelay;
 
         for (let timing in this.queuedEvents) {
           // https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/setTimeout#Reasons_for_delays_longer_than_specified
@@ -98,8 +104,7 @@ export default {
           }
         }
 
-        this.currentTime = this.currentTime + playbackSpeed;
-        if (this.currentTime > this.endTiming) {
+        if (this.currentTime > this.endingTime) {
           this.stop();
         }
       }, delay);
