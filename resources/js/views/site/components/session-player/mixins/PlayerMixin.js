@@ -63,6 +63,7 @@ export default {
       let delay = 13;
       let playbackSpeed = delay * this.playbackSpeed;
       let timeOrigin = performance.now();
+
       this.timeInterval = this.requestAnimationInterval(() => {
         let clockDelay = performance.now() - timeOrigin - delay;
         timeOrigin = performance.now();
@@ -75,7 +76,9 @@ export default {
           skipping = true;
           playbackSpeed =
             delay *
-            (this.activityRanges[this.previousActivityRange + 1].start /
+            (Math.floor(
+              this.activityRanges[this.previousActivityRange + 1].start,
+            ) /
               this.currentTimeInSeconds) *
             5;
         } else if (this.currentActivityRange !== -1) {
@@ -197,11 +200,12 @@ export default {
       let currentActivityRange = this.activityRanges.findIndex(
         (activityRange) => {
           if (!activityRange.end) {
-            return this.currentTimeInSeconds >= activityRange.start;
+            return this.currentTimeInSeconds >= Math.floor(activityRange.start);
           }
+
           return (
-            this.currentTimeInSeconds >= activityRange.start &&
-            this.currentTimeInSeconds <= activityRange.end
+            this.currentTimeInSeconds >= Math.floor(activityRange.start) &&
+            this.currentTimeInSeconds <= Math.floor(activityRange.end)
           );
         },
       );
@@ -209,6 +213,7 @@ export default {
       if (currentActivityRange > -1) {
         this.previousActivityRange = currentActivityRange;
       }
+
       return currentActivityRange;
     },
   },

@@ -1,3 +1,3 @@
 export default {
-  skipThreshold: 250,
+  skipThreshold: 1000,
 };

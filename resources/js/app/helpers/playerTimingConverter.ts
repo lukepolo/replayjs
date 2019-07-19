@@ -5,7 +5,7 @@ export default function playerTimingConverter(
 ) {
   let seconds = (parseInt(timing) - parseInt(startingTime)) / 1000;
   if (floor) {
-    return Math.floor(seconds);
+    // return Math.floor(seconds);
   }
   return seconds;
 }
