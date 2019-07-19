@@ -1,7 +1,7 @@
 import timing from "./helpers/timing";
 import DomSource from "./mirror/DomSource";
-import InputEvents from "./events/InputEvents";
 import ListenInterface from "./interfaces/ListenInterface";
+import CaptureInputEvents from "./events/CaptureInputEvents";
 import { NullPresenceChannel } from "laravel-echo/dist/channel";
 import InitializeDataInterface from "./interfaces/InitializeDataInterface";
 import DomChangesDataInterface from "./interfaces/DomChangesDataInterface";
@@ -9,12 +9,12 @@ import DomChangesDataInterface from "./interfaces/DomChangesDataInterface";
 export default class MirrorClient implements ListenInterface {
   protected baseHref: string;
   protected domSource: DomSource;
-  protected inputEvents: InputEvents;
+  protected inputEvents: CaptureInputEvents;
   protected channel: NullPresenceChannel;
 
   constructor(baseHref: string) {
     this.baseHref = baseHref;
-    this.inputEvents = new InputEvents();
+    this.inputEvents = new CaptureInputEvents();
   }
 
   public setup(channel: NullPresenceChannel) {
