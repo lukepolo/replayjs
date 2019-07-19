@@ -1,9 +1,7 @@
 export default class CaptureInputEvents {
   public setup() {
     ["input", "change"].map((eventName) => {
-      return () => {
-        document.addEventListener(eventName, this.captureInput);
-      };
+      document.addEventListener(eventName, this.captureInput.bind(this));
     });
   }
 
@@ -41,8 +39,6 @@ export default class CaptureInputEvents {
   }
 
   private updateVnode(target: HTMLInputElement) {
-    // TODO - test
-    // force dom mutation record it
     switch (target.type) {
       case "select":
         let selectedIndex = ((target as unknown) as HTMLSelectElement)

@@ -20,6 +20,7 @@ export default class MirrorClient implements ListenInterface {
   public setup(channel: NullPresenceChannel) {
     this.channel = channel;
     this.initialize();
+    this.inputEvents.setup();
     window.addEventListener("focus", this.tabFocusActivity.bind(this));
     window.addEventListener("blur", this.tabFocusActivity.bind(this));
   }
