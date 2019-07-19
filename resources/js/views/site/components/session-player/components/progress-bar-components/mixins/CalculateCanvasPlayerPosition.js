@@ -11,7 +11,7 @@ export default {
   },
   computed: {
     maxTiming() {
-      return playerTimingConverter(this.startingTime, this.endingTime, false);
+      return playerTimingConverter(this.startingTime, this.endingTime);
     },
   },
 };
