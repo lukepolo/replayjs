@@ -131,6 +131,7 @@ export default class MutationProjection {
       // TODO - we removed text changes from dom source cause I believe
       // we dont need it cause all text changes come from text nodes
       console.info(
+        change,
         `TEXT CHANGE : IS TEXT_NODE`,
         node.nodeType,
         node.nodeType === Node.TEXT_NODE,

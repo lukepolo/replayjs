@@ -70,7 +70,6 @@ export default class MirrorClient implements ListenInterface {
           timing: timing(),
           baseHref: this.baseHref,
         });
-        this.inputEvents.setup();
       },
       (removed, addedOrMoved, attributes, text) => {
         this.whisperChanges({
@@ -80,9 +79,6 @@ export default class MirrorClient implements ListenInterface {
           addedOrMoved,
           timing: timing(),
         });
-        if (addedOrMoved.length) {
-          this.inputEvents.setup();
-        }
       },
     );
   }

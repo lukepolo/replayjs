@@ -1,11 +1,13 @@
 export default class CaptureInputEvents {
   public setup() {
-    ["input", "change"].map((eventName) => {
+    ["input", "change"].forEach((eventName) => {
+      console.info("setup............", eventName);
       document.addEventListener(eventName, this.captureInput.bind(this));
     });
   }
 
   private captureInput({ target }) {
+    console.info("capture input.....");
     let {
       tagName,
       name: inputName,
@@ -43,14 +45,19 @@ export default class CaptureInputEvents {
       case "select":
         let selectedIndex = ((target as unknown) as HTMLSelectElement)
           .selectedIndex;
-        target.setAttribute("selected-option", String(selectedIndex));
+        this.setAttribute(target, "selected-option", String(selectedIndex));
         break;
       case "radio":
       case "checkbox":
-        target.setAttribute("checked", String(target.checked));
+        this.setAttribute(target, "checked", String(target.checked));
         break;
       default:
-        target.setAttribute("value", target.value);
+        this.setAttribute(target, "value", target.value);
     }
+  }
+
+  private setAttribute(target, attribute, value) {
+    console.info("here?");
+    target.setAttribute(attribute, value);
   }
 }

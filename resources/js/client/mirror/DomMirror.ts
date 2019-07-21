@@ -191,7 +191,8 @@ export default class DomMirror {
     text.forEach((data) => {
       let node = this.recreateNode(data);
       if (node) {
-        node[NodeDataTypes.textContent] = data[NodeDataTypes.textContent];
+        console.info(`text update......`, node);
+        // node[NodeDataTypes.textContent] = data[NodeDataTypes.textContent];
       }
     });
 
