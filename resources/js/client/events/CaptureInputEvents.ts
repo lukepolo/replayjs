@@ -50,7 +50,6 @@ export default class CaptureInputEvents {
         // this.setAttribute(target, "checked", String(target.checked));
         break;
       default:
-        console.info("update the target...?");
         this.setAttribute(target, "value", target.value);
     }
   }

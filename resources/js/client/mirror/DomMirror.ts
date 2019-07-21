@@ -166,9 +166,7 @@ export default class DomMirror {
 
       if (node) {
         Object.keys(data[NodeDataTypes.attributes]).forEach((attrName) => {
-          let newVal = this.domCompressor.decompressAttribute(
-            data[NodeDataTypes.attributes][attrName],
-          );
+          let newVal = data[NodeDataTypes.attributes][attrName];
           if (newVal === null) {
             node.removeAttribute(attrName);
           } else {
