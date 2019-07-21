@@ -91,11 +91,6 @@ export default class DomSource {
     }
 
     let id = this.knownNodes.get(node);
-    // if (id !== undefined) {
-    //   return {
-    //     [NodeDataTypes.id]: id,
-    //   };
-    // }
 
     let data: NodeData = {
       [NodeDataTypes.nodeType]: node.nodeType,

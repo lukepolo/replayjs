@@ -1,8 +1,8 @@
 import NodeMap from "./NodeMap";
 import TreeChanges from "./TreeChanges";
+import Summary from "./interfaces/Summary";
 import StringMap from "./interfaces/StringMap";
 import { NodeMovement } from "./enums/NodeMovement";
-import Summary from "./interfaces/Summary";
 
 export default class MutationProjection {
   protected addedNodes: Node[];
@@ -128,14 +128,6 @@ export default class MutationProjection {
         return;
       }
 
-      // TODO - we removed text changes from dom source cause I believe
-      // we dont need it cause all text changes come from text nodes
-      console.info(
-        change,
-        `TEXT CHANGE : IS TEXT_NODE`,
-        node.nodeType,
-        node.nodeType === Node.TEXT_NODE,
-      );
       result.push(node);
     });
 

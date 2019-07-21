@@ -138,8 +138,8 @@ export default class DomMirror {
 
     removed.forEach((data) => {
       let node = this.recreateNode(data);
-      if (node) {
-        if (node.parentNode) node.parentNode.removeChild(node);
+      if (node && node.parentNode) {
+        node.parentNode.removeChild(node);
       }
     });
 
@@ -191,8 +191,7 @@ export default class DomMirror {
     text.forEach((data) => {
       let node = this.recreateNode(data);
       if (node) {
-        console.info(`text update......`, node);
-        // node[NodeDataTypes.textContent] = data[NodeDataTypes.textContent];
+        node.textContent = data[NodeDataTypes.textContent];
       }
     });
 
