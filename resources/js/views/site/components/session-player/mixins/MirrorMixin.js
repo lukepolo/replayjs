@@ -71,10 +71,6 @@ export default {
                 }
                 node.setAttribute(attrName, value);
               }
-            } else if (node.tagName === "SELECT") {
-              console.info("SELECT IT", value);
-              console.info(node);
-              node.value = parseInt(value);
             } else {
               node.setAttribute(attrName, value);
             }
