@@ -72,7 +72,13 @@ export default {
                 node.setAttribute(attrName, value);
               }
             } else {
-              node.setAttribute(attrName, value);
+              if (attrName === "value") {
+                node.value = value;
+              } else if (attrName === "checked") {
+                node.checked = value;
+              } else {
+                node.setAttribute(attrName, value);
+              }
             }
           }
           return node;

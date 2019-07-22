@@ -6,6 +6,7 @@ import Summary from "./mutation-summary/interfaces/Summary";
 import NodeData, { NodeDataTypes } from "./interfaces/NodeData";
 import StringMap from "./mutation-summary/interfaces/StringMap";
 import MutationSummary from "./../mirror/mutation-summary/MutationSummary";
+import CaptureInputEvents from "../events/CaptureInputEvents";
 
 export default class DomSource {
   protected knownNodes;
@@ -30,6 +31,8 @@ export default class DomSource {
     this.changesCallback = changesCallback;
     this.domCompressor = new DomCompressor();
     this.knownNodes = new NodeMap<NodeMap<number>>();
+
+    new CaptureInputEvents().setup(this.knownNodes, this.changesCallback);
 
     let children = [];
     for (
