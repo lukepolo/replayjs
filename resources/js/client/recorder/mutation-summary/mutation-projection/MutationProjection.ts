@@ -1,8 +1,8 @@
-import NodeMap from "./NodeMap";
+import NodeMap from "../../NodeMap";
 import TreeChanges from "./TreeChanges";
-import StringMap from "./interfaces/StringMap";
-import { NodeMovement } from "./enums/NodeMovement";
-import Summary from "./interfaces/Summary";
+import Summary from "../interfaces/Summary";
+import StringMap from "../interfaces/StringMap";
+import { NodeMovement } from "../enums/NodeMovement";
 
 export default class MutationProjection {
   protected addedNodes: Node[];
@@ -18,7 +18,7 @@ export default class MutationProjection {
     this.processMutations();
   }
 
-  public summary(): Summary {
+  public getSummary(): Summary {
     return {
       addedNodes: this.addedNodes,
       removedNodes: this.removedNodes,
@@ -49,8 +49,7 @@ export default class MutationProjection {
     let reachable = parentReachable;
     let change = this.treeChanges.get(node);
 
-    // node inherits its parent's reachability change unless
-    // its parentNode was mutated.
+    // node inherits its parent's reachability change unless its parentNode was mutated.
     if ((change && change.childList) || reachable == undefined) {
       reachable = this.treeChanges.reachabilityChange(node);
     }
@@ -128,13 +127,6 @@ export default class MutationProjection {
         return;
       }
 
-      // TODO - we removed text changes from dom source cause I believe
-      // we dont need it cause all text changes come from text nodes
-      console.info(
-        `TEXT CHANGE : IS TEXT_NODE`,
-        node.nodeType,
-        node.nodeType === Node.TEXT_NODE,
-      );
       result.push(node);
     });
 

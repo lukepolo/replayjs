@@ -1,8 +1,11 @@
-import NodeMap from "./NodeMap";
-import NodeChange from "./NodeChange";
-import { NodeMovement } from "./enums/NodeMovement";
+import NodeMap from "../../NodeMap";
+import NodeMetaChanges from "./NodeMetaChanges";
+import { NodeMovement } from "../enums/NodeMovement";
 
-export default class TreeChanges extends NodeMap<NodeChange> {
+/**
+ * We first collect the trees that have changed, and record their old values.
+ */
+export default class TreeChanges extends NodeMap<NodeMetaChanges> {
   public anyParentsChanged: boolean;
   public anyAttributesChanged: boolean;
   public anyCharacterDataChanged: boolean;
@@ -19,22 +22,21 @@ export default class TreeChanges extends NodeMap<NodeChange> {
     this.anyCharacterDataChanged = false;
     this.wasReachableCache = new NodeMap<boolean>();
 
-    for (let m = 0; m < mutations.length; m++) {
-      let mutation = mutations[m];
+    mutations.forEach((mutation) => {
       switch (mutation.type) {
         case "childList":
           this.anyParentsChanged = true;
           mutation.addedNodes.forEach((node) => {
-            this.getChange(node).insertedIntoParent();
+            this.getCachedNode(node).insertedIntoParent();
           });
           mutation.removedNodes.forEach((node) => {
-            this.getChange(node).removedFromParent(mutation.target);
+            this.getCachedNode(node).removedFromParent(mutation.target);
           });
           break;
 
         case "attributes":
           this.anyAttributesChanged = true;
-          this.getChange(mutation.target).attributeMutated(
+          this.getCachedNode(mutation.target).attributeMutated(
             mutation.attributeName,
             mutation.oldValue,
           );
@@ -42,7 +44,7 @@ export default class TreeChanges extends NodeMap<NodeChange> {
 
         case "characterData":
           this.anyCharacterDataChanged = true;
-          this.getChange(mutation.target).characterDataMutated(
+          this.getCachedNode(mutation.target).characterDataMutated(
             mutation.oldValue,
           );
           break;
@@ -50,7 +52,7 @@ export default class TreeChanges extends NodeMap<NodeChange> {
           console.info(`Missing mutation type change ${mutation.type}`);
           break;
       }
-    }
+    });
   }
 
   public reachabilityChange(node: Node): NodeMovement {
@@ -62,10 +64,10 @@ export default class TreeChanges extends NodeMap<NodeChange> {
     return NodeMovement.EXITED;
   }
 
-  protected getChange(node: Node): NodeChange {
+  protected getCachedNode(node: Node): NodeMetaChanges {
     let cachedNode = this.get(node);
     if (!cachedNode) {
-      cachedNode = this.set(node, new NodeChange(node));
+      cachedNode = this.set(node, new NodeMetaChanges(node));
     }
     return cachedNode;
   }

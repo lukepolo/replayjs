@@ -1,5 +1,5 @@
 import ChatService from "./services/ChatService";
-import StreamService from "./services/StreamService";
+import RecordService from "./services/RecordService";
 import WebSocketService from "./services/WebSocketService";
 import ChatOptionsInterface from "./interfaces/ChatOptionsInterface";
 import StreamOptionsInterface from "./interfaces/StreamOptionsInterface";
@@ -13,13 +13,13 @@ declare global {
 
 class Client {
   protected chatService: ChatService;
-  protected streamService: StreamService;
+  protected recordService: RecordService;
   protected websocketService: WebSocketService;
 
   constructor() {
     this.websocketService = new WebSocketService();
     this.chatService = new ChatService(this.websocketService);
-    this.streamService = new StreamService(this.websocketService);
+    this.recordService = new RecordService(this.websocketService);
 
     this.runQueued().then(() => {
       this.setupQueue();
@@ -52,8 +52,8 @@ class Client {
     this.websocketService.auth(apiKey);
   }
 
-  protected stream(options: StreamOptionsInterface = {}) {
-    this.streamService.connect(options);
+  protected record(options: StreamOptionsInterface = {}) {
+    this.recordService.connect(options);
   }
 
   protected chat(options: ChatOptionsInterface = {}) {

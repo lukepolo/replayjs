@@ -25,8 +25,10 @@
     <button @click="changePlaybackSpeed(1.5)">x1.5</button>
     <button @click="changePlaybackSpeed(2)">x2</button>
 
-    <h1>Next Event</h1>
-    <pre>{{ nextEventTime - currentTime }}</pre>
+    <h1>Current Activity Range</h1>
+    >>
+    <pre>{{ currentActivityRange }}</pre>
+    <<
 
     <session-progress-bar
       v-if="session"
@@ -38,6 +40,7 @@
       :starting-time="startingTime"
       :ending-time="endingTime"
       :session="session"
+      :activity-ranges="activityRanges"
     ></session-progress-bar>
     <div>
       <pre>IS LOADING : {{ isLoading }}</pre>
@@ -72,8 +75,6 @@ export default {
   provide() {
     return {
       sessionPlayerEventsWorker: this.sessionPlayerEventsWorker,
-      sessionPlayerActivityTimingsWorker: this
-        .sessionPlayerActivityTimingsWorker,
     };
   },
   mixins: [MirrorMixin, PlayerMixin, StreamMixin, MirrorEventsMixin],
@@ -88,6 +89,11 @@ export default {
   data() {
     return {
       initialized: false,
+    };
+  },
+  created() {
+    this.sessionPlayerActivityTimingsWorker.onmessage = ({ data }) => {
+      this.activityRanges = data;
     };
   },
   mounted() {

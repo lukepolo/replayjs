@@ -1,6 +1,6 @@
 import Summary from "./interfaces/Summary";
 import Options from "./interfaces/Options";
-import MutationProjection from "./MutationProjection";
+import MutationProjection from "./mutation-projection/MutationProjection";
 
 export default class MutationSummary {
   protected root: Node;
@@ -25,18 +25,17 @@ export default class MutationSummary {
   }
 
   public connect() {
-    if (this.connected) {
-      throw Error("Already connected");
+    if (!this.connected) {
+      this.observer.observe(this.root, {
+        subtree: true,
+        childList: true,
+        attributes: true,
+        characterData: true,
+        attributeOldValue: true,
+        characterDataOldValue: true,
+      });
+      this.connected = true;
     }
-    this.observer.observe(this.root, {
-      subtree: true,
-      childList: true,
-      attributes: true,
-      attributeOldValue: true,
-      characterData: true,
-      characterDataOldValue: true,
-    });
-    this.connected = true;
   }
 
   public disconnect() {
@@ -65,8 +64,9 @@ export default class MutationSummary {
     this.disconnect();
 
     if (mutations && mutations.length) {
-      let summary = new MutationProjection(this.root, mutations).summary();
+      let summary = new MutationProjection(this.root, mutations).getSummary();
 
+      // make sure we have a summary to send
       if (
         Object.values(summary).find((entry) => {
           if (!Array.isArray(entry)) {

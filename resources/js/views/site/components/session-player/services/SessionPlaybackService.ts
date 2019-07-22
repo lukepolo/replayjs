@@ -1,14 +1,16 @@
-import DomCompressor from "./DomCompressor";
-import TextData from "./interfaces/TextData";
-import PositionData from "./interfaces/PositionData";
-import AttributeData from "./interfaces/AttributeData";
-import NodeData, { NodeDataTypes } from "./interfaces/NodeData";
+import TextData from "../../../../../client/recorder/interfaces/TextData";
+import PositionData from "../../../../../client/recorder/interfaces/PositionData";
+import AttributeData from "../../../../../client/recorder/interfaces/AttributeData";
+import NodeData, {
+  NodeDataTypes,
+} from "../../../../../client/recorder/interfaces/NodeData";
+import NodeDataCompressorService from "../../../../../client/recorder/services/NodeDataCompressorService";
 
-export default class DomMirror {
+export default class SessionPlaybackService {
   protected rootNode;
   protected delegate;
   protected nodeIdMap = {};
-  protected domCompressor: DomCompressor;
+  protected nodeDataCompressorService: NodeDataCompressorService;
 
   constructor(
     rootNode: Node,
@@ -20,7 +22,7 @@ export default class DomMirror {
     this.nodeIdMap = {};
     this.rootNode = rootNode;
     this.delegate = delegate;
-    this.domCompressor = new DomCompressor();
+    this.nodeDataCompressorService = new NodeDataCompressorService();
   }
 
   public initialize(rootNodeId: number, children: Array<NodeData>) {
@@ -36,7 +38,7 @@ export default class DomMirror {
       return;
     }
 
-    nodeData = this.domCompressor.decompressNode(nodeData);
+    nodeData = this.nodeDataCompressorService.decompressNode(nodeData);
 
     let node = this.nodeIdMap[nodeData[NodeDataTypes.id]];
 
@@ -75,19 +77,13 @@ export default class DomMirror {
         }
 
         Object.keys(nodeData[NodeDataTypes.attributes]).forEach((name) => {
-          let attribute = nodeData[NodeDataTypes.attributes][name];
-
-          try {
-            if (
-              this.delegate &&
-              this.delegate.setAttribute &&
-              this.delegate.setAttribute(node, name, attribute)
-            ) {
-              node.setAttribute(name, attribute);
-            }
-          } catch (e) {
-            console.warn(`Cant set attribute`, e);
-          }
+          setTimeout(() => {
+            this.delegate.setAttribute(
+              node,
+              name,
+              nodeData[NodeDataTypes.attributes][name],
+            );
+          }, 0);
         });
 
         break;
@@ -138,8 +134,8 @@ export default class DomMirror {
 
     removed.forEach((data) => {
       let node = this.recreateNode(data);
-      if (node) {
-        if (node.parentNode) node.parentNode.removeChild(node);
+      if (node && node.parentNode) {
+        node.parentNode.removeChild(node);
       }
     });
 
@@ -161,42 +157,37 @@ export default class DomMirror {
       }
     });
 
-    attributes.forEach((data: AttributeData) => {
-      let node = <Element>this.recreateNode(data);
+    setTimeout(() => {
+      attributes.forEach((data: AttributeData) => {
+        let node = <Element>this.recreateNode(data);
 
-      if (node) {
-        Object.keys(data[NodeDataTypes.attributes]).forEach((attrName) => {
-          let newVal = this.domCompressor.decompressAttribute(
-            data[NodeDataTypes.attributes][attrName],
-          );
-          if (newVal === null) {
-            node.removeAttribute(attrName);
-          } else {
-            try {
-              if (
-                !this.delegate ||
-                !this.delegate.setAttribute ||
-                !this.delegate.setAttribute(node, attrName, newVal)
-              ) {
-                node.setAttribute(attrName, newVal);
+        if (node) {
+          Object.keys(data[NodeDataTypes.attributes]).forEach((attrName) => {
+            let newVal = data[NodeDataTypes.attributes][attrName];
+            if (newVal === null) {
+              node.removeAttribute(attrName);
+            } else {
+              try {
+                // TODO - id rather just use this internally but need baseURL some how....
+                this.delegate.setAttribute(node, attrName, newVal);
+              } catch (e) {
+                console.warn(`Cant set attribute`, e);
               }
-            } catch (e) {
-              console.warn(`Cant set attribute`, e);
             }
-          }
-        });
-      }
-    });
+          });
+        }
+      });
 
-    text.forEach((data) => {
-      let node = this.recreateNode(data);
-      if (node) {
-        node[NodeDataTypes.textContent] = data[NodeDataTypes.textContent];
-      }
-    });
+      text.forEach((data) => {
+        let node = this.recreateNode(data);
+        if (node) {
+          node.textContent = data[NodeDataTypes.textContent];
+        }
+      });
 
-    removed.forEach((node) => {
-      delete this.nodeIdMap[node[NodeDataTypes.id]];
-    });
+      removed.forEach((node) => {
+        delete this.nodeIdMap[node[NodeDataTypes.id]];
+      });
+    }, 0);
   }
 }

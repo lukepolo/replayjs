@@ -68,7 +68,6 @@ export default {
           // TODO - they may already be here
         })
         .joining((user) => {
-          console.info(user);
           if (user.guest) {
             this.userIsLive = true;
           }

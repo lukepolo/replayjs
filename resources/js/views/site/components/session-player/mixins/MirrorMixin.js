@@ -1,4 +1,4 @@
-import DomMirror from "@app/../client/mirror/DomMirror";
+import SessionPlaybackService from "@views/site/components/session-player/services/SessionPlaybackService";
 
 export default {
   created() {
@@ -14,10 +14,12 @@ export default {
   },
   methods: {
     clearIframe() {
-      while (this.previewDocument.firstChild) {
-        this.previewDocument.removeChild(this.previewDocument.firstChild);
+      if (this.previewDocument) {
+        while (this.previewDocument.firstChild) {
+          this.previewDocument.removeChild(this.previewDocument.firstChild);
+        }
+        this.previewDocument.innerHtml = "";
       }
-      this.previewDocument.innerHtml = "";
     },
     setupIframe({ rootId, children, baseHref }) {
       this.clearIframe();
@@ -43,7 +45,7 @@ export default {
       });
     },
     _setupMirror(baseHref) {
-      this.mirror = new DomMirror(this.previewDocument, {
+      this.mirror = new SessionPlaybackService(this.previewDocument, {
         createElement: (tagName) => {
           if (tagName === "HEAD") {
             let node = document.createElement("HEAD");
@@ -53,6 +55,10 @@ export default {
           }
         },
         setAttribute: (node, attrName, value) => {
+          // TODO - add compression
+          // let service = new NodeDataCompressorService()
+          // attrName = service.decompressData(service.decompressData(attrName))
+          // value = service.decompressData(service.decompressData(value))
           node.setAttribute(attrName, value);
           if (
             !["test", "http://localhost"].includes(
@@ -71,6 +77,13 @@ export default {
               }
             }
           }
+
+          if (attrName === "value") {
+            node.value = value;
+          } else if (attrName === "checked") {
+            node.checked = value;
+          }
+
           return node;
         },
       });

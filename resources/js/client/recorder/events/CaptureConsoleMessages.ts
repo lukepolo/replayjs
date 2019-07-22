@@ -1,7 +1,7 @@
-import timing from "../helpers/timing";
-import ListenInterface from "../interfaces/ListenInterface";
+import timing from "../../helpers/timing";
+import ListenInterface from "../../interfaces/ListenInterface";
 import { NullPresenceChannel } from "laravel-echo/dist/channel";
-import ConsoleDataInterface from "../interfaces/ConsoleDataInterface";
+import ConsoleDataInterface from "../../interfaces/ConsoleDataInterface";
 
 export default class CaptureConsoleMessages implements ListenInterface {
   protected channel: NullPresenceChannel;

@@ -1,7 +1,7 @@
-import timing from "../helpers/timing";
-import ListenInterface from "../interfaces/ListenInterface";
+import timing from "../../helpers/timing";
+import ListenInterface from "../../interfaces/ListenInterface";
 import { NullPresenceChannel } from "laravel-echo/dist/channel";
-import NetworkRequestDataInterface from "../interfaces/NetworkRequestDataInterface";
+import NetworkRequestDataInterface from "../../interfaces/NetworkRequestDataInterface";
 
 export default class CaptureNetworkRequests implements ListenInterface {
   protected channel: NullPresenceChannel;

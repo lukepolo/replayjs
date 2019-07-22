@@ -8,8 +8,12 @@ let activityRanges = [];
 
 let types = [
   playerEventTypes.Scroll,
+  playerEventTypes.DomChange,
+  playerEventTypes.WindowSize,
   playerEventTypes.MouseClick,
   playerEventTypes.MouseMovement,
+  playerEventTypes.FocusActivity,
+  playerEventTypes.TabVisibility,
 ];
 
 function getActivityRanges() {

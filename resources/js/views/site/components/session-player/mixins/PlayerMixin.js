@@ -1,7 +1,6 @@
 export default {
   data() {
     return {
-      skipping: false,
       isLoading: true,
       playbackSpeed: 1,
       queuedEvents: {},
@@ -9,7 +8,9 @@ export default {
       timeInterval: null,
       timeoutUpdates: [],
       skipInactivity: true,
+      activityRanges: [],
       skipThreshold: $config.get("player.skipThreshold", 1000),
+      previousActivityRange: null,
     };
   },
   watch: {
@@ -58,42 +59,56 @@ export default {
     play() {
       this.queuedEvents = Object.assign({}, this.queuedEvents);
 
-      for (let timing in this.queuedEvents) {
-        this.timeoutUpdates.push(
-          setTimeout(() => {
-            this.queuedEvents[timing].forEach(({ event, change }) => {
-              this[event](change);
-            });
-            this.$delete(this.queuedEvents, timing);
-          }, (timing - this.currentTime) * (1 / this.playbackSpeed)),
-        );
-      }
-
+      let skipping = false;
       let delay = 13;
       let playbackSpeed = delay * this.playbackSpeed;
+      let timeOrigin = performance.now();
+
       this.timeInterval = this.requestAnimationInterval(() => {
-        this.currentTime = this.currentTime + playbackSpeed;
-        if (this.currentTime > this.endTiming) {
-          this.stop();
-        }
+        let clockDelay = performance.now() - timeOrigin - delay;
+        timeOrigin = performance.now();
 
         if (
-          !this.skipping &&
+          !skipping &&
           this.skipInactivity &&
-          !this.watchingLive &&
-          this.nextEventTime - this.currentTime > this.skipThreshold
+          this.currentActivityRange === -1
         ) {
-          this.skipping = true;
-          setTimeout(() => {
-            this.stop();
-            let newTiming = this.nextEventTime - this.skipThreshold;
-            if (this.currentTime < newTiming) {
-              this.currentTime = newTiming;
-            }
-            this.queueEvents();
-            this.play();
-            this.skipping = false;
-          }, this.skipThreshold / 2);
+          skipping = true;
+          playbackSpeed =
+            delay *
+            (Math.floor(
+              this.activityRanges[this.previousActivityRange + 1].start,
+            ) /
+              this.currentTimeInSeconds) *
+            5;
+        } else if (this.currentActivityRange !== -1) {
+          skipping = false;
+          playbackSpeed = delay * this.playbackSpeed;
+        }
+
+        this.currentTime = this.currentTime + playbackSpeed + clockDelay;
+
+        for (let timing in this.queuedEvents) {
+          // https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/setTimeout#Reasons_for_delays_longer_than_specified
+          if (timing <= this.currentTime + playbackSpeed + 4) {
+            let timeout = (timing - this.currentTime) * (1 / playbackSpeed);
+            this.timeoutUpdates.push(
+              setTimeout(
+                (events) => {
+                  events.forEach(({ event, change }) => {
+                    this[event](change);
+                  });
+                },
+                timeout >= 0 ? timeout : 0,
+                this.queuedEvents[timing],
+              ),
+            );
+            this.$delete(this.queuedEvents, timing);
+          }
+        }
+
+        if (this.currentTime > this.endingTime) {
+          this.stop();
         }
       }, delay);
     },
@@ -111,14 +126,6 @@ export default {
     },
   },
   computed: {
-    nextEventTime() {
-      let queuedEvents = this.queuedEvents;
-      return parseFloat(
-        Object.keys(queuedEvents).sort(function(a, b) {
-          return a - b;
-        })[0],
-      );
-    },
     rootDom() {
       return this.session && this.session.root;
     },
@@ -184,6 +191,30 @@ export default {
     },
     isPlaying() {
       return this.timeInterval !== null;
+    },
+    currentTimeInSeconds() {
+      let seconds = parseInt((this.currentTime - this.startingTime) / 1000);
+      return seconds >= 0 ? seconds : 0;
+    },
+    currentActivityRange() {
+      let currentActivityRange = this.activityRanges.findIndex(
+        (activityRange) => {
+          if (!activityRange.end) {
+            return this.currentTimeInSeconds >= Math.floor(activityRange.start);
+          }
+
+          return (
+            this.currentTimeInSeconds >= Math.floor(activityRange.start) &&
+            this.currentTimeInSeconds <= Math.floor(activityRange.end)
+          );
+        },
+      );
+
+      if (currentActivityRange > -1) {
+        this.previousActivityRange = currentActivityRange;
+      }
+
+      return currentActivityRange;
     },
   },
 };
