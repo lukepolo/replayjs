@@ -6,8 +6,7 @@ import NodeData, {
 } from "../../../../../client/recorder/interfaces/NodeData";
 import NodeDataCompressorService from "../../../../../client/recorder/services/NodeDataCompressorService";
 
-// Should convert this to a service not a controller
-export default class SessionPlaybackController {
+export default class SessionPlaybackService {
   protected rootNode;
   protected delegate;
   protected nodeIdMap = {};

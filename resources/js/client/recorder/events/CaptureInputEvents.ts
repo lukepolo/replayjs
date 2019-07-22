@@ -39,7 +39,7 @@ export default class CaptureInputEvents implements ListenInterface {
   }
 
   private updateVnode(target: HTMLInputElement) {
-    // TODO - we should be compressing these
+    // TODO - add compression
     // let compressor = new NodeDataCompressorService();
     let id = this.knownNodes.get(target);
 

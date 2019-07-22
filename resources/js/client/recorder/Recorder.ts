@@ -140,22 +140,6 @@ export default class Recorder {
           data[NodeDataTypes.attributes][attr.name] = attr.value;
         }
 
-        // @ts-ignore
-        if (elm.value) {
-          // @ts-ignore
-          switch (elm.type) {
-            case "radio":
-            case "checkbox":
-              // @ts-ignore
-              // elm.setAttribute('checked', elm.checked)
-              break;
-            default:
-              // @ts-ignore
-              // elm.setAttribute('value', elm.value)
-              break;
-          }
-        }
-
         if (
           elm.tagName == "CANVAS" ||
           elm.tagName == "SCRIPT" ||
@@ -206,7 +190,7 @@ export default class Recorder {
     let moved = [];
 
     /**
-     * Next we will loop through ach parent and
+     * Next we will loop through each parent and
      * serialize each of those nodes recursively
      */
     parentNodeMap.keys().forEach((parent: Node) => {
@@ -239,7 +223,6 @@ export default class Recorder {
           }
           node = node.nextSibling;
         }
-        keys = children.keys();
       }
     });
 

@@ -4,6 +4,7 @@ import ListenInterface from "../../interfaces/ListenInterface";
 import { NullPresenceChannel } from "laravel-echo/dist/channel";
 import ScrollDataInterface from "../../interfaces/ScrollDataInterface";
 
+// TODO - capture x scroll
 export default class CaptureScrollEvents implements ListenInterface {
   protected readonly event = "scroll";
   protected channel: NullPresenceChannel;

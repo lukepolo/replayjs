@@ -1,5 +1,4 @@
-import SessionPlaybackController from "./SessionPlaybackController";
-import NodeDataCompressorService from "../../../../../client/recorder/services/NodeDataCompressorService";
+import SessionPlaybackService from "@views/site/components/session-player/services/SessionPlaybackService";
 
 export default {
   created() {
@@ -46,7 +45,7 @@ export default {
       });
     },
     _setupMirror(baseHref) {
-      this.mirror = new SessionPlaybackController(this.previewDocument, {
+      this.mirror = new SessionPlaybackService(this.previewDocument, {
         createElement: (tagName) => {
           if (tagName === "HEAD") {
             let node = document.createElement("HEAD");
@@ -56,10 +55,10 @@ export default {
           }
         },
         setAttribute: (node, attrName, value) => {
+          // TODO - add compression
           // let service = new NodeDataCompressorService()
           // attrName = service.decompressData(service.decompressData(attrName))
           // value = service.decompressData(service.decompressData(value))
-          console.info(attrName, value);
           node.setAttribute(attrName, value);
           if (
             !["test", "http://localhost"].includes(
