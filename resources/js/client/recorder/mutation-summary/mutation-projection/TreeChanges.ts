@@ -1,11 +1,11 @@
-import NodeMap from "./NodeMap";
-import NodeChange from "./NodeChange";
-import { NodeMovement } from "./enums/NodeMovement";
+import NodeMap from "../../NodeMap";
+import NodeMetaChanges from "./NodeMetaChanges";
+import { NodeMovement } from "../enums/NodeMovement";
 
 /**
  * We first collect the trees that have changed, and record their old values.
  */
-export default class TreeChanges extends NodeMap<NodeChange> {
+export default class TreeChanges extends NodeMap<NodeMetaChanges> {
   public anyParentsChanged: boolean;
   public anyAttributesChanged: boolean;
   public anyCharacterDataChanged: boolean;
@@ -64,10 +64,10 @@ export default class TreeChanges extends NodeMap<NodeChange> {
     return NodeMovement.EXITED;
   }
 
-  protected getCachedNode(node: Node): NodeChange {
+  protected getCachedNode(node: Node): NodeMetaChanges {
     let cachedNode = this.get(node);
     if (!cachedNode) {
-      cachedNode = this.set(node, new NodeChange(node));
+      cachedNode = this.set(node, new NodeMetaChanges(node));
     }
     return cachedNode;
   }

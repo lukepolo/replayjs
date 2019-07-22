@@ -1,7 +1,7 @@
-import timing from "../helpers/timing";
-import ListenInterface from "../interfaces/ListenInterface";
+import timing from "../../helpers/timing";
+import ListenInterface from "../../interfaces/ListenInterface";
 import { NullPresenceChannel } from "laravel-echo/dist/channel";
-import TabVisibilityChangeInterface from "../interfaces/TabVisibilityChangeInterface";
+import TabVisibilityChangeInterface from "../../interfaces/TabVisibilityChangeInterface";
 
 export default class CaptureTabVisibilityEvents implements ListenInterface {
   protected readonly event = "tab-visibility";

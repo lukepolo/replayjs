@@ -1,23 +1,22 @@
-import NodeMap from "../mirror/mutation-summary/NodeMap";
-import NodeData, { NodeDataTypes } from "../mirror/interfaces/NodeData";
-import DomCompressor from "../mirror/DomCompressor";
+import NodeMap from "../NodeMap";
+import NodeData, { NodeDataTypes } from "../interfaces/NodeData";
+import NodeDataCompressorService from "../services/NodeDataCompressorService";
 
 export default class CaptureInputEvents {
   protected knownNodes: NodeMap<number>;
-  protected changesCallback;
+  protected changesCallback: (
+    removed: Array<NodeData>,
+    addedOrMoved: Array<NodeData>,
+    attributes: Array<NodeData>,
+    text: Array<NodeData>,
+  ) => void;
 
-  public setup(
-    knownNodes,
-    changesCallback: (
-      removed: Array<NodeData>,
-      addedOrMoved: Array<NodeData>,
-      attributes: Array<NodeData>,
-      text: Array<NodeData>,
-    ) => void,
-  ) {
+  constructor(knownNodes: NodeMap<number>, changesCallback) {
     this.knownNodes = knownNodes;
     this.changesCallback = changesCallback;
+  }
 
+  public setup() {
     ["input", "change"].forEach((eventName) => {
       document.addEventListener(eventName, this.captureInput.bind(this));
     });
@@ -39,7 +38,8 @@ export default class CaptureInputEvents {
   }
 
   private updateVnode(target: HTMLInputElement) {
-    let compressor = new DomCompressor();
+    // TODO - we should be compressing these
+    // let compressor = new NodeDataCompressorService();
     let id = this.knownNodes.get(target);
 
     // TODO - need to check if the value is the same, but at least its working
@@ -59,8 +59,13 @@ export default class CaptureInputEvents {
           ],
           [],
         );
+        // @ts-ignore
+        console.info(target.checked);
+        // @ts-ignore
+        target.setAttribute("checked", target.checked);
         break;
       default:
+        target.setAttribute("value", target.value);
         this.changesCallback(
           [],
           [],

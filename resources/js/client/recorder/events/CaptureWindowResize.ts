@@ -1,7 +1,7 @@
-import timing from "../helpers/timing";
-import ListenInterface from "../interfaces/ListenInterface";
+import timing from "../../helpers/timing";
+import ListenInterface from "../../interfaces/ListenInterface";
 import { NullPresenceChannel } from "laravel-echo/dist/channel";
-import WindowResizeDataInterface from "../interfaces/WindowResizeDataInterface";
+import WindowResizeDataInterface from "../../interfaces/WindowResizeDataInterface";
 
 export default class CaptureWindowResize implements ListenInterface {
   protected channel: NullPresenceChannel;

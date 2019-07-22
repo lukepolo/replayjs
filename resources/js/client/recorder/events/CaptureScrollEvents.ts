@@ -1,8 +1,8 @@
 import finder from "@medv/finder";
-import timing from "../helpers/timing";
-import ListenInterface from "../interfaces/ListenInterface";
+import timing from "../../helpers/timing";
+import ListenInterface from "../../interfaces/ListenInterface";
 import { NullPresenceChannel } from "laravel-echo/dist/channel";
-import ScrollDataInterface from "../interfaces/ScrollDataInterface";
+import ScrollDataInterface from "../../interfaces/ScrollDataInterface";
 
 export default class CaptureScrollEvents implements ListenInterface {
   protected readonly event = "scroll";

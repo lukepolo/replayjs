@@ -1,7 +1,7 @@
-import timing from "../helpers/timing";
-import ListenInterface from "../interfaces/ListenInterface";
+import timing from "../../helpers/timing";
+import ListenInterface from "../../interfaces/ListenInterface";
 import { NullPresenceChannel } from "laravel-echo/dist/channel";
-import ClickDataInterface from "../interfaces/ClickDataInterface";
+import ClickDataInterface from "../../interfaces/ClickDataInterface";
 
 export default class CaptureClicks implements ListenInterface {
   protected readonly event = "click";

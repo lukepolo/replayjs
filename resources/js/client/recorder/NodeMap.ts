@@ -2,12 +2,12 @@ export default class NodeMap<T> {
   protected static ID_PROP = "__mutation_summary_node_map_id__";
   protected static nextId_: number = 1;
 
-  protected values: T[];
+  protected _values: T[];
   protected nodes: Node[];
 
   constructor() {
     this.nodes = [];
-    this.values = [];
+    this._values = [];
   }
 
   protected isIndex(s: string): boolean {
@@ -25,13 +25,13 @@ export default class NodeMap<T> {
   public set(node: Node, value: T) {
     let id = this.nodeId(node);
     this.nodes[id] = node;
-    this.values[id] = value;
+    this._values[id] = value;
     return value;
   }
 
   public get(node: Node): T {
     let id = this.nodeId(node);
-    return this.values[id];
+    return this._values[id];
   }
 
   public has(node: Node): boolean {
@@ -41,7 +41,7 @@ export default class NodeMap<T> {
   public delete(node: Node) {
     let id = this.nodeId(node);
     delete this.nodes[id];
-    this.values[id] = undefined;
+    this._values[id] = undefined;
   }
 
   // TODO - i dont think this is needed
@@ -49,11 +49,15 @@ export default class NodeMap<T> {
   public keys(): Node[] {
     let nodes: Node[] = [];
     for (let id in this.nodes) {
-      // when would this happen?
-      if (!this.isIndex(id)) continue;
+      if (!this.isIndex(id)) {
+        alert("when would this happen.....never?");
+      }
       nodes.push(this.nodes[id]);
     }
-
     return nodes;
+  }
+
+  public values() {
+    return this._values;
   }
 }

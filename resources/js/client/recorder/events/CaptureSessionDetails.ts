@@ -1,5 +1,5 @@
 import { NullPresenceChannel } from "laravel-echo/dist/channel";
-import SessionDetailsDataInterface from "../interfaces/SessionDetailsDataInterface";
+import SessionDetailsDataInterface from "../../interfaces/SessionDetailsDataInterface";
 
 export default class CaptureSessionDetails {
   protected userData: object = {};

@@ -55,7 +55,7 @@ export default Vue.extend({
         window.replayjsQueue = window.replayjsQueue || [];
         function replayjs(){replayjsQueue.push(arguments);}
         replayjs('auth', "${this.site.api_key}");
-        replayjs('stream');
+        replayjs('record');
       <\/script>
       `;
     },

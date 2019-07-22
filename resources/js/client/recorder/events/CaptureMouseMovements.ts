@@ -1,7 +1,7 @@
-import timing from "../helpers/timing";
-import ListenInterface from "../interfaces/ListenInterface";
+import timing from "../../helpers/timing";
+import ListenInterface from "../../interfaces/ListenInterface";
 import { NullPresenceChannel } from "laravel-echo/dist/channel";
-import MouseMovementDataInterface from "../interfaces/MouseMovementDataInterface";
+import MouseMovementDataInterface from "../../interfaces/MouseMovementDataInterface";
 
 export default class CaptureMouseMovements implements ListenInterface {
   protected channel: NullPresenceChannel;

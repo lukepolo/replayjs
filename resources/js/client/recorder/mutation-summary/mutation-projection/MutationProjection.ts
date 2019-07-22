@@ -1,8 +1,8 @@
-import NodeMap from "./NodeMap";
+import NodeMap from "../../NodeMap";
 import TreeChanges from "./TreeChanges";
-import Summary from "./interfaces/Summary";
-import StringMap from "./interfaces/StringMap";
-import { NodeMovement } from "./enums/NodeMovement";
+import Summary from "../interfaces/Summary";
+import StringMap from "../interfaces/StringMap";
+import { NodeMovement } from "../enums/NodeMovement";
 
 export default class MutationProjection {
   protected addedNodes: Node[];
@@ -18,7 +18,7 @@ export default class MutationProjection {
     this.processMutations();
   }
 
-  public summary(): Summary {
+  public getSummary(): Summary {
     return {
       addedNodes: this.addedNodes,
       removedNodes: this.removedNodes,
@@ -49,8 +49,7 @@ export default class MutationProjection {
     let reachable = parentReachable;
     let change = this.treeChanges.get(node);
 
-    // node inherits its parent's reachability change unless
-    // its parentNode was mutated.
+    // node inherits its parent's reachability change unless its parentNode was mutated.
     if ((change && change.childList) || reachable == undefined) {
       reachable = this.treeChanges.reachabilityChange(node);
     }

@@ -1,6 +1,6 @@
-import StringMap from "./interfaces/StringMap";
+import StringMap from "../interfaces/StringMap";
 
-export default class NodeChange {
+export default class NodeMetaChanges {
   public node: Node;
   public added: boolean = false;
   public childList: boolean = false;

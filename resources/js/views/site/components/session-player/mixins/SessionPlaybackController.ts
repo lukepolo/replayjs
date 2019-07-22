@@ -1,14 +1,17 @@
-import DomCompressor from "./DomCompressor";
-import TextData from "./interfaces/TextData";
-import PositionData from "./interfaces/PositionData";
-import AttributeData from "./interfaces/AttributeData";
-import NodeData, { NodeDataTypes } from "./interfaces/NodeData";
+import NodeDataCompressorService from "../../../../../client/recorder/services/NodeDataCompressorService";
+import TextData from "../../../../../client/recorder/interfaces/TextData";
+import PositionData from "../../../../../client/recorder/interfaces/PositionData";
+import AttributeData from "../../../../../client/recorder/interfaces/AttributeData";
+import NodeData, {
+  NodeDataTypes,
+} from "../../../../../client/recorder/interfaces/NodeData";
 
-export default class DomMirror {
+// Should convert this to a service not a controller
+export default class SessionPlaybackController {
   protected rootNode;
   protected delegate;
   protected nodeIdMap = {};
-  protected domCompressor: DomCompressor;
+  protected nodeDataCompressor: NodeDataCompressorService;
 
   constructor(
     rootNode: Node,
@@ -20,7 +23,7 @@ export default class DomMirror {
     this.nodeIdMap = {};
     this.rootNode = rootNode;
     this.delegate = delegate;
-    this.domCompressor = new DomCompressor();
+    this.nodeDataCompressor = new NodeDataCompressorService();
   }
 
   public initialize(rootNodeId: number, children: Array<NodeData>) {
@@ -36,7 +39,7 @@ export default class DomMirror {
       return;
     }
 
-    nodeData = this.domCompressor.decompressNode(nodeData);
+    nodeData = this.nodeDataCompressor.decompressNode(nodeData);
 
     let node = this.nodeIdMap[nodeData[NodeDataTypes.id]];
 
@@ -75,19 +78,13 @@ export default class DomMirror {
         }
 
         Object.keys(nodeData[NodeDataTypes.attributes]).forEach((name) => {
-          let attribute = nodeData[NodeDataTypes.attributes][name];
-
-          try {
-            if (
-              this.delegate &&
-              this.delegate.setAttribute &&
-              this.delegate.setAttribute(node, name, attribute)
-            ) {
-              node.setAttribute(name, attribute);
-            }
-          } catch (e) {
-            console.warn(`Cant set attribute`, e);
-          }
+          setTimeout(() => {
+            this.delegate.setAttribute(
+              node,
+              name,
+              nodeData[NodeDataTypes.attributes][name],
+            );
+          }, 0);
         });
 
         break;

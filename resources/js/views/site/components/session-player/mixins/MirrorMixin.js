@@ -1,4 +1,5 @@
-import DomMirror from "@app/../client/mirror/DomMirror";
+import SessionPlaybackController from "./SessionPlaybackController";
+import NodeDataCompressorService from "../../../../../client/recorder/services/NodeDataCompressorService";
 
 export default {
   created() {
@@ -45,7 +46,7 @@ export default {
       });
     },
     _setupMirror(baseHref) {
-      this.mirror = new DomMirror(this.previewDocument, {
+      this.mirror = new SessionPlaybackController(this.previewDocument, {
         createElement: (tagName) => {
           if (tagName === "HEAD") {
             let node = document.createElement("HEAD");
@@ -55,7 +56,10 @@ export default {
           }
         },
         setAttribute: (node, attrName, value) => {
-          node.setAttribute(attrName, value);
+          // let service = new NodeDataCompressorService()
+          // attrName = service.decompressData(service.decompressData(attrName))
+          // value = service.decompressData(service.decompressData(value))
+          console.info(attrName, value);
           if (
             !["test", "http://localhost"].includes(
               new URL(baseHref).origin.split(".").pop(),
@@ -71,16 +75,17 @@ export default {
                 }
                 node.setAttribute(attrName, value);
               }
-            } else {
-              if (attrName === "value") {
-                node.value = value;
-              } else if (attrName === "checked") {
-                node.checked = value;
-              } else {
-                node.setAttribute(attrName, value);
-              }
             }
           }
+
+          if (attrName === "value") {
+            node.value = value;
+          } else if (attrName === "checked") {
+            node.checked = value;
+          } else {
+            node.setAttribute(attrName, value);
+          }
+
           return node;
         },
       });

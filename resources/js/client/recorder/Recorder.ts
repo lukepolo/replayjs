@@ -1,26 +1,30 @@
-import DomCompressor from "./DomCompressor";
-import NodeMap from "./mutation-summary/NodeMap";
+import NodeMap from "./NodeMap";
 import PositionData from "./interfaces/PositionData";
 import AttributeData from "./interfaces/AttributeData";
 import Summary from "./mutation-summary/interfaces/Summary";
+import CaptureInputEvents from "./events/CaptureInputEvents";
 import NodeData, { NodeDataTypes } from "./interfaces/NodeData";
 import StringMap from "./mutation-summary/interfaces/StringMap";
-import MutationSummary from "./../mirror/mutation-summary/MutationSummary";
-import CaptureInputEvents from "../events/CaptureInputEvents";
+import MutationSummary from ".//mutation-summary/MutationSummary";
+import NodeDataCompressorService from "./services/NodeDataCompressorService";
 
-export default class DomSource {
-  protected knownNodes;
+export default class Recorder {
   protected target: Node;
-  protected changesCallback;
   protected mutationSummary;
   protected nextId: number = 1;
-  protected domCompressor: DomCompressor;
+  protected fullSnapshotCallback;
+  protected partialSnapshotCallback;
+  protected knownNodes = new NodeMap<number>();
+  protected nodeDataCompressor: NodeDataCompressorService;
 
   // TODO - apply iframe / shadow dom here cause we can track the ID's of the nodes
   constructor(
     target: Node,
-    initializeCallback: (rootId: number, children: Array<HTMLElement>) => void,
-    changesCallback: (
+    fullSnapshotCallback: (
+      rootId: number,
+      children: Array<HTMLElement>,
+    ) => void,
+    partialSnapshotCallback: (
       removed: Array<NodeData>,
       addedOrMoved: Array<NodeData>,
       attributes: Array<NodeData>,
@@ -28,28 +32,16 @@ export default class DomSource {
     ) => void,
   ) {
     this.target = target;
-    this.changesCallback = changesCallback;
-    this.domCompressor = new DomCompressor();
-    this.knownNodes = new NodeMap<NodeMap<number>>();
+    this.fullSnapshotCallback = fullSnapshotCallback;
+    this.partialSnapshotCallback = partialSnapshotCallback;
+    this.nodeDataCompressor = new NodeDataCompressorService();
 
-    new CaptureInputEvents().setup(this.knownNodes, this.changesCallback);
+    new CaptureInputEvents(
+      this.knownNodes,
+      this.partialSnapshotCallback,
+    ).setup();
 
-    let children = [];
-    for (
-      let child = <Node>target.firstChild;
-      child;
-      child = child.nextSibling
-    ) {
-      let node = this.collectNodeData(child, true);
-      if (node !== null) {
-        children.push(node);
-      }
-    }
-
-    initializeCallback(
-      this.collectNodeData(target)[NodeDataTypes.id],
-      children,
-    );
+    this.connect();
 
     this.mutationSummary = new MutationSummary({
       rootNode: target,
@@ -59,10 +51,33 @@ export default class DomSource {
     });
   }
 
+  public connect() {
+    let children = [];
+    for (
+      let child = this.target.firstChild;
+      child;
+      // @ts-ignore
+      child = child.nextSibling
+    ) {
+      let node = this.collectNodeData(child, true);
+      if (node !== null) {
+        children.push(node);
+      }
+    }
+
+    this.fullSnapshotCallback(
+      this.collectNodeData(this.target)[NodeDataTypes.id],
+      children,
+    );
+
+    if (this.mutationSummary) {
+      this.mutationSummary.connect();
+    }
+  }
+
   public disconnect() {
     if (this.mutationSummary) {
       this.mutationSummary.disconnect();
-      this.mutationSummary = undefined;
     }
   }
 
@@ -76,7 +91,7 @@ export default class DomSource {
       this.collectNodeData(node),
     );
 
-    this.changesCallback(
+    this.partialSnapshotCallback(
       removedNodes,
       movedNodes,
       attributeChanges,
@@ -149,9 +164,10 @@ export default class DomSource {
         break;
     }
 
-    return this.domCompressor.compressNode(data);
+    return this.nodeDataCompressor.compressNode(data);
   }
 
+  // TODO - do more research on this
   protected collectNodePositionData(added: Array<Node>): Array<PositionData> {
     let parentNodeMap = new NodeMap<NodeMap<boolean>>();
 
@@ -215,37 +231,35 @@ export default class DomSource {
 
   protected collectNodeAttributes(
     attributeChanged: StringMap<Element[]>,
-  ): Array<AttributeData> {
-    let nodeMap = new NodeMap<AttributeData>();
+  ): Array<NodeData> {
+    let nodeMap = new NodeMap<NodeData>();
 
     Object.keys(attributeChanged).forEach((attrName) => {
       attributeChanged[attrName].forEach((element) => {
         let node = nodeMap.get(element);
 
+        console.info("OK WE HAVE SOME DATA TO COLLECT");
         if (!node) {
-          node = <AttributeData>this.collectNodeData(element);
+          node = this.collectNodeData(element);
           if (node !== null) {
             node[NodeDataTypes.attributes] = {};
             nodeMap.set(element, node);
           }
         }
-
-        if (node !== null) {
-          node[NodeDataTypes.attributes][
-            attrName
-          ] = this.domCompressor.compressAttribute(
-            element.getAttribute(attrName),
-          );
-        }
+        // TODO - ^^ We are fetching an old node, (which i believe is compressed already),we need to make sure this is correct >>
+        console.info(`RECORDING`, attrName, element.getAttribute(attrName));
+        node[NodeDataTypes.attributes][
+          attrName
+        ] = this.nodeDataCompressor.compressData(
+          element.getAttribute(attrName),
+        );
       });
     });
 
-    return nodeMap.keys().map((node) => {
-      return nodeMap.get(node);
-    });
+    return nodeMap.values();
   }
 
-  protected rememberNode(node: Node) {
+  protected rememberNode(node: Node): number {
     let id = this.nextId++;
     this.knownNodes.set(node, id);
     return id;
