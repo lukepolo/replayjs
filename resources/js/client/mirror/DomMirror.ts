@@ -167,7 +167,9 @@ export default class DomMirror {
       if (node) {
         Object.keys(data[NodeDataTypes.attributes]).forEach((attrName) => {
           let newVal = data[NodeDataTypes.attributes][attrName];
+          console.info("NEW", newVal, attrName);
           if (newVal === null) {
+            console.info("does it think its null.....");
             node.removeAttribute(attrName);
           } else {
             try {
@@ -176,6 +178,7 @@ export default class DomMirror {
                 !this.delegate.setAttribute ||
                 !this.delegate.setAttribute(node, attrName, newVal)
               ) {
+                console.info(`SET HERE`, attrName, newVal);
                 node.setAttribute(attrName, newVal);
               }
             } catch (e) {

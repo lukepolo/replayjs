@@ -71,6 +71,8 @@ export default {
                 }
                 node.setAttribute(attrName, value);
               }
+            } else {
+              node.setAttribute(attrName, value);
             }
           }
           return node;
