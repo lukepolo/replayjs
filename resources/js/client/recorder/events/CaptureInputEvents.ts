@@ -1,8 +1,9 @@
 import NodeMap from "../NodeMap";
 import NodeData, { NodeDataTypes } from "../interfaces/NodeData";
 import NodeDataCompressorService from "../services/NodeDataCompressorService";
+import ListenInterface from "../../interfaces/ListenInterface";
 
-export default class CaptureInputEvents {
+export default class CaptureInputEvents implements ListenInterface {
   protected knownNodes: NodeMap<number>;
   protected changesCallback: (
     removed: Array<NodeData>,
@@ -42,7 +43,6 @@ export default class CaptureInputEvents {
     // let compressor = new NodeDataCompressorService();
     let id = this.knownNodes.get(target);
 
-    // TODO - need to check if the value is the same, but at least its working
     switch (target.type) {
       case "radio":
       case "checkbox":
@@ -59,10 +59,9 @@ export default class CaptureInputEvents {
           ],
           [],
         );
-        // @ts-ignore
-        console.info(target.checked);
-        // @ts-ignore
-        target.setAttribute("checked", target.checked);
+        if (target.checked) {
+          target.setAttribute("checked", "true");
+        }
         break;
       default:
         target.setAttribute("value", target.value);
@@ -81,5 +80,11 @@ export default class CaptureInputEvents {
         );
         break;
     }
+  }
+
+  public teardown() {
+    ["input", "change"].forEach((eventName) => {
+      document.removeEventListener(eventName, this.captureInput.bind(this));
+    });
   }
 }

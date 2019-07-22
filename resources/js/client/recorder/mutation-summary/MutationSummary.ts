@@ -25,18 +25,17 @@ export default class MutationSummary {
   }
 
   public connect() {
-    if (this.connected) {
-      throw Error("Already connected");
+    if (!this.connected) {
+      this.observer.observe(this.root, {
+        subtree: true,
+        childList: true,
+        attributes: true,
+        characterData: true,
+        attributeOldValue: true,
+        characterDataOldValue: true,
+      });
+      this.connected = true;
     }
-    this.observer.observe(this.root, {
-      subtree: true,
-      childList: true,
-      attributes: true,
-      characterData: true,
-      attributeOldValue: true,
-      characterDataOldValue: true,
-    });
-    this.connected = true;
   }
 
   public disconnect() {

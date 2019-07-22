@@ -60,6 +60,7 @@ export default {
           // attrName = service.decompressData(service.decompressData(attrName))
           // value = service.decompressData(service.decompressData(value))
           console.info(attrName, value);
+          node.setAttribute(attrName, value);
           if (
             !["test", "http://localhost"].includes(
               new URL(baseHref).origin.split(".").pop(),
@@ -82,8 +83,6 @@ export default {
             node.value = value;
           } else if (attrName === "checked") {
             node.checked = value;
-          } else {
-            node.setAttribute(attrName, value);
           }
 
           return node;

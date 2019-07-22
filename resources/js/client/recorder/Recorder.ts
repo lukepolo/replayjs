@@ -1,6 +1,5 @@
 import NodeMap from "./NodeMap";
 import PositionData from "./interfaces/PositionData";
-import AttributeData from "./interfaces/AttributeData";
 import Summary from "./mutation-summary/interfaces/Summary";
 import CaptureInputEvents from "./events/CaptureInputEvents";
 import NodeData, { NodeDataTypes } from "./interfaces/NodeData";
@@ -15,7 +14,8 @@ export default class Recorder {
   protected fullSnapshotCallback;
   protected partialSnapshotCallback;
   protected knownNodes = new NodeMap<number>();
-  protected nodeDataCompressor: NodeDataCompressorService;
+  protected captureInputEvents: CaptureInputEvents;
+  protected nodeDataCompressorService = new NodeDataCompressorService();
 
   // TODO - apply iframe / shadow dom here cause we can track the ID's of the nodes
   constructor(
@@ -34,21 +34,22 @@ export default class Recorder {
     this.target = target;
     this.fullSnapshotCallback = fullSnapshotCallback;
     this.partialSnapshotCallback = partialSnapshotCallback;
-    this.nodeDataCompressor = new NodeDataCompressorService();
-
-    new CaptureInputEvents(
+    this.captureInputEvents = new CaptureInputEvents(
       this.knownNodes,
       this.partialSnapshotCallback,
-    ).setup();
+    );
+  }
 
-    this.connect();
-
+  public setup() {
+    this.captureInputEvents.setup();
     this.mutationSummary = new MutationSummary({
-      rootNode: target,
+      rootNode: this.target,
       callback: (summary: Summary) => {
         this.collectChanges(summary);
       },
     });
+
+    this.connect();
   }
 
   public connect() {
@@ -139,6 +140,22 @@ export default class Recorder {
           data[NodeDataTypes.attributes][attr.name] = attr.value;
         }
 
+        // @ts-ignore
+        if (elm.value) {
+          // @ts-ignore
+          switch (elm.type) {
+            case "radio":
+            case "checkbox":
+              // @ts-ignore
+              // elm.setAttribute('checked', elm.checked)
+              break;
+            default:
+              // @ts-ignore
+              // elm.setAttribute('value', elm.value)
+              break;
+          }
+        }
+
         if (
           elm.tagName == "CANVAS" ||
           elm.tagName == "SCRIPT" ||
@@ -164,7 +181,7 @@ export default class Recorder {
         break;
     }
 
-    return this.nodeDataCompressor.compressNode(data);
+    return this.nodeDataCompressorService.compressNode(data);
   }
 
   // TODO - do more research on this
@@ -238,7 +255,6 @@ export default class Recorder {
       attributeChanged[attrName].forEach((element) => {
         let node = nodeMap.get(element);
 
-        console.info("OK WE HAVE SOME DATA TO COLLECT");
         if (!node) {
           node = this.collectNodeData(element);
           if (node !== null) {
@@ -246,16 +262,13 @@ export default class Recorder {
             nodeMap.set(element, node);
           }
         }
-        // TODO - ^^ We are fetching an old node, (which i believe is compressed already),we need to make sure this is correct >>
-        console.info(`RECORDING`, attrName, element.getAttribute(attrName));
         node[NodeDataTypes.attributes][
           attrName
-        ] = this.nodeDataCompressor.compressData(
+        ] = this.nodeDataCompressorService.compressData(
           element.getAttribute(attrName),
         );
       });
     });
-
     return nodeMap.values();
   }
 
@@ -267,5 +280,10 @@ export default class Recorder {
 
   protected forgetNode(node: Node) {
     this.knownNodes.delete(node);
+  }
+
+  public teardown() {
+    this.disconnect();
+    this.captureInputEvents.teardown();
   }
 }

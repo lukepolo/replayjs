@@ -1,17 +1,17 @@
-import NodeDataCompressorService from "../../../../../client/recorder/services/NodeDataCompressorService";
 import TextData from "../../../../../client/recorder/interfaces/TextData";
 import PositionData from "../../../../../client/recorder/interfaces/PositionData";
 import AttributeData from "../../../../../client/recorder/interfaces/AttributeData";
 import NodeData, {
   NodeDataTypes,
 } from "../../../../../client/recorder/interfaces/NodeData";
+import NodeDataCompressorService from "../../../../../client/recorder/services/NodeDataCompressorService";
 
 // Should convert this to a service not a controller
 export default class SessionPlaybackController {
   protected rootNode;
   protected delegate;
   protected nodeIdMap = {};
-  protected nodeDataCompressor: NodeDataCompressorService;
+  protected nodeDataCompressorService: NodeDataCompressorService;
 
   constructor(
     rootNode: Node,
@@ -23,7 +23,7 @@ export default class SessionPlaybackController {
     this.nodeIdMap = {};
     this.rootNode = rootNode;
     this.delegate = delegate;
-    this.nodeDataCompressor = new NodeDataCompressorService();
+    this.nodeDataCompressorService = new NodeDataCompressorService();
   }
 
   public initialize(rootNodeId: number, children: Array<NodeData>) {
@@ -39,7 +39,7 @@ export default class SessionPlaybackController {
       return;
     }
 
-    nodeData = this.nodeDataCompressor.decompressNode(nodeData);
+    nodeData = this.nodeDataCompressorService.decompressNode(nodeData);
 
     let node = this.nodeIdMap[nodeData[NodeDataTypes.id]];
 

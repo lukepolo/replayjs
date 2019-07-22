@@ -40,6 +40,27 @@ export default class RecordService {
     this.captureConsoleMessages = new CaptureConsoleMessages();
     this.captureNetworkRequests = new CaptureNetworkRequests();
     this.captureTabVisibilityEvents = new CaptureTabVisibilityEvents();
+
+    this.recorder = new Recorder(
+      document,
+      (rootId, children) => {
+        this.whisperInitialized({
+          rootId,
+          children,
+          timing: timing(),
+          baseHref: this.baseHref,
+        });
+      },
+      (removed, addedOrMoved, attributes, text) => {
+        this.whisperChanges({
+          text,
+          removed,
+          attributes,
+          addedOrMoved,
+          timing: timing(),
+        });
+      },
+    );
   }
 
   public connect(options: StreamOptionsInterface = {}) {
@@ -48,9 +69,6 @@ export default class RecordService {
       this.channel = channel
         .join(`stream.${this.webSocketService.getSession()}`)
         .here(() => {
-          window.addEventListener("focus", this.tabFocusActivity.bind(this));
-          window.addEventListener("blur", this.tabFocusActivity.bind(this));
-
           this.captureClicks.setup(this.channel);
           this.captureScrollEvents.setup(this.channel);
           this.captureWindowResize.setup(this.channel);
@@ -60,43 +78,29 @@ export default class RecordService {
           this.captureTabVisibilityEvents.setup(this.channel);
           this.captureSessionDetails.sendDetails(this.channel);
 
-          // initialize callback should be called => full snapshot
-          // changes call back should be called => partial snapshot
-          this.recorder = new Recorder(
-            document,
-            (rootId, children) => {
-              this.whisperInitialized({
-                rootId,
-                children,
-                timing: timing(),
-                baseHref: this.baseHref,
-              });
-            },
-            (removed, addedOrMoved, attributes, text) => {
-              this.whisperChanges({
-                text,
-                removed,
-                attributes,
-                addedOrMoved,
-                timing: timing(),
-              });
-            },
-          );
+          this.recorder.setup();
+
+          // TODO - do this in the capture tab visibility events?
+          window.addEventListener("focus", this.tabFocusActivity.bind(this));
+          window.addEventListener("blur", this.tabFocusActivity.bind(this));
         });
     });
   }
 
   public teardown() {
-    this.recorder.disconnect();
-    window.removeEventListener("focus", this.tabFocusActivity.bind(this));
-    window.removeEventListener("blur", this.tabFocusActivity.bind(this));
-
+    this.recorder.teardown();
     this.captureClicks.teardown();
     this.captureScrollEvents.teardown();
     this.captureWindowResize.teardown();
     this.captureMouseMovements.teardown();
-    this.captureConsoleMessages.teardown();
+    // this.captureConsoleMessages.teardown();
     this.captureNetworkRequests.teardown();
+    this.captureNetworkRequests.teardown();
+    this.captureTabVisibilityEvents.teardown();
+
+    // TODO - do this in the capture tab visibility events?
+    window.removeEventListener("focus", this.tabFocusActivity.bind(this));
+    window.removeEventListener("blur", this.tabFocusActivity.bind(this));
   }
 
   private tabFocusActivity() {
