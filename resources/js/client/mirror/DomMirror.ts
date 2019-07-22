@@ -121,7 +121,6 @@ export default class DomMirror {
     attributes: Array<AttributeData>,
     text: Array<TextData>,
   ) {
-    console.info(removed, addedOrMoved, attributes, text);
     /**
      * Applying the changes can result in an attempting to add a child
      * to a parent which is presently an ancestor of the parent. This can occur
