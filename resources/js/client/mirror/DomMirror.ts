@@ -121,6 +121,7 @@ export default class DomMirror {
     attributes: Array<AttributeData>,
     text: Array<TextData>,
   ) {
+    console.info(removed, addedOrMoved, attributes, text);
     /**
      * Applying the changes can result in an attempting to add a child
      * to a parent which is presently an ancestor of the parent. This can occur
@@ -161,43 +162,37 @@ export default class DomMirror {
       }
     });
 
-    attributes.forEach((data: AttributeData) => {
-      let node = <Element>this.recreateNode(data);
+    setTimeout(() => {
+      attributes.forEach((data: AttributeData) => {
+        let node = <Element>this.recreateNode(data);
 
-      if (node) {
-        Object.keys(data[NodeDataTypes.attributes]).forEach((attrName) => {
-          let newVal = data[NodeDataTypes.attributes][attrName];
-          console.info("NEW", newVal, attrName);
-          if (newVal === null) {
-            console.info("does it think its null.....");
-            node.removeAttribute(attrName);
-          } else {
-            try {
-              if (
-                !this.delegate ||
-                !this.delegate.setAttribute ||
-                !this.delegate.setAttribute(node, attrName, newVal)
-              ) {
-                console.info(`SET HERE`, attrName, newVal);
-                node.setAttribute(attrName, newVal);
+        if (node) {
+          Object.keys(data[NodeDataTypes.attributes]).forEach((attrName) => {
+            let newVal = data[NodeDataTypes.attributes][attrName];
+            if (newVal === null) {
+              node.removeAttribute(attrName);
+            } else {
+              try {
+                // TODO - id rather just use this internally but need baseURL some how....
+                this.delegate.setAttribute(node, attrName, newVal);
+              } catch (e) {
+                console.warn(`Cant set attribute`, e);
               }
-            } catch (e) {
-              console.warn(`Cant set attribute`, e);
             }
-          }
-        });
-      }
-    });
+          });
+        }
+      });
 
-    text.forEach((data) => {
-      let node = this.recreateNode(data);
-      if (node) {
-        node.textContent = data[NodeDataTypes.textContent];
-      }
-    });
+      text.forEach((data) => {
+        let node = this.recreateNode(data);
+        if (node) {
+          node.textContent = data[NodeDataTypes.textContent];
+        }
+      });
 
-    removed.forEach((node) => {
-      delete this.nodeIdMap[node[NodeDataTypes.id]];
-    });
+      removed.forEach((node) => {
+        delete this.nodeIdMap[node[NodeDataTypes.id]];
+      });
+    }, 0);
   }
 }

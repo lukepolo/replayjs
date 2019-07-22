@@ -40,21 +40,13 @@ export default class CaptureInputEvents {
 
   private updateVnode(target: HTMLInputElement) {
     switch (target.type) {
-      case "select":
-        let selectedIndex = ((target as unknown) as HTMLSelectElement)
-          .selectedIndex;
-        this.setAttribute(target, "selected-option", String(selectedIndex));
-        break;
       case "radio":
       case "checkbox":
-        this.setAttribute(target, "checked", String(target.checked));
+        console.info("update vnode...");
         break;
       default:
-        this.setAttribute(target, "value", target.value);
+        console.info("update vnode...");
+        break;
     }
-  }
-
-  private setAttribute(target, attribute, value) {
-    target.setAttribute(attribute, value);
   }
 }
