@@ -140,6 +140,37 @@ export default class Recorder {
           data[NodeDataTypes.attributes][attr.name] = attr.value;
         }
 
+        switch (elm.tagName) {
+          case "OPTION":
+            const parentElement = (elm as HTMLOptionElement).parentElement;
+            if (
+              (elm as HTMLSelectElement).value ===
+              (parentElement as HTMLSelectElement).value
+            ) {
+              data[NodeDataTypes.attributes][
+                "selected"
+              ] = (elm as HTMLOptionElement).selected ? "selected" : "";
+            }
+            break;
+          case "INPUT":
+          case "TEXTAREA":
+          case "SELECT":
+            switch ((elm as HTMLInputElement).type) {
+              case "radio":
+              case "checkbox":
+                data[NodeDataTypes.attributes][
+                  "checked"
+                ] = (elm as HTMLInputElement).checked ? "checked" : "";
+                break;
+              default:
+                data[NodeDataTypes.attributes][
+                  "value"
+                ] = (elm as HTMLOptionElement).value;
+                break;
+            }
+            break;
+        }
+
         if (
           elm.tagName == "CANVAS" ||
           elm.tagName == "SCRIPT" ||

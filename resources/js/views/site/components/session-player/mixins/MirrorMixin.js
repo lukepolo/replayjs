@@ -1,3 +1,5 @@
+import { NodeDataTypes } from "../../../../../client/recorder/interfaces/NodeData";
+import NodeDataCompressorService from "../../../../../client/recorder/services/NodeDataCompressorService";
 import SessionPlaybackService from "@views/site/components/session-player/services/SessionPlaybackService";
 
 export default {
@@ -54,12 +56,12 @@ export default {
             return node;
           }
         },
+        // TODO - this should be put into the replay servicer
         setAttribute: (node, attrName, value) => {
           // TODO - add compression
           // let service = new NodeDataCompressorService()
           // attrName = service.decompressData(service.decompressData(attrName))
           // value = service.decompressData(service.decompressData(value))
-          node.setAttribute(attrName, value);
           if (
             !["test", "http://localhost"].includes(
               new URL(baseHref).origin.split(".").pop(),
@@ -73,7 +75,6 @@ export default {
                     "app.APP_URL",
                   )}/api/asset?url=${baseHref}${value}`;
                 }
-                node.setAttribute(attrName, value);
               }
             }
           }
@@ -83,6 +84,8 @@ export default {
           } else if (attrName === "checked") {
             node.checked = value;
           }
+
+          node.setAttribute(attrName, value);
 
           return node;
         },
