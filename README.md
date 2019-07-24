@@ -4,30 +4,41 @@
 
 ReplayJS is an Open Source Project to help support your clients with full session replays.
 
-## Features
+## Planned Features
 
 - Session Recording
-  - JS Errors - TODO
-  - Scrolling - TODO
-  - Mouse Clicks
-  - Mouse Movements
-  - Network Traffic
-  - Console Messages
-  - Window Size Changes
-  - Tab Visibility
-  - Session / User Details
-  - Filter Private Data - TODO
-- Live Session Playback
-- Co-Browsing - TODO
-  - Drawling
-  - Mouse Pointing
-- Chat Support
-  - Slack / Discord / Email Notifications - TODO
-- Notifications - TODO
-  - Network Errors
-  - Console Errors
-- Session Analytics - TODO
-- Integrations - TODO
+  - [x] Input Events
+  - [x] Scrolling
+  - [x] Mouse Clicks
+  - [x] Mouse Movements
+  - [x] Network Traffic
+  - [x] Window Size Changes
+  - [x] Tab Visibility
+  - [x] Session / User Details
+  - [x] Live Session Playback
+  - [ ] Hovering Events
+  - [ ] Console Messages
+  - [ ] JS Errors
+  - [ ] IFrame Support
+  - [ ] Shadow Dom Support
+  - [ ] Session Share
+  - Privacy
+    - [ ] Exclude Elements
+    - [ ] Blacklist / Whitelist
+    - [ ] XHR stripping
+- Co-Browsing
+  - [ ] Drawling
+  - [ ] Mouse Pointing
+- [ ] Screen Share
+- [ ] Live Chat
+- Notifications
+  - [ ] Slack
+  - [ ] Discord
+  - [ ] Email Notifications
+- [ ] Page Metrics
+- [ ] Session Events
+- [ ] Basic Analytics
+- [ ] Integration Plugin System
 
 ## Issues
 
@@ -65,19 +76,22 @@ is the same user as before.
    - `npm ci`
 7. Building UI
    - `npm run dev`
-8. Run Web Socket Server
+
+## Running The application
+
+1. Run Web Socket Server
    - `npm run websocket-server`
-9. Start Workers
+2. Start Workers
    - `php artisan horizon`
 
 ## Fonts and CORS
 
 By default fonts are no able to be cross site. To allow this we need to update our nginx config to allow CORS for fonts.
 
-### Valet
+### Laravel Valet (https://laravel.com/docs/5.8/valet)
 
-Modify your nginx file (`/usr/local/etc/nginx/valet/valet.conf`) , to add a new CORS rule
-inside of the `41c270e4-5535-4daa-b23e-c269744c2f4` location.
+If your using Valet you can modify your nginx file (`/usr/local/etc/nginx/valet/valet.conf`) , to add a new CORS rule
+inside of the `location` config, `41c270e4-5535-4daa-b23e-c269744c2f45`, this comes fromm `VALET_STATIC_PREFIX`.
 
 ```bash
 
@@ -93,15 +107,9 @@ inside of the `41c270e4-5535-4daa-b23e-c269744c2f4` location.
 
 ```
 
-### Homestead
-
-// TODO
-
 ## Storing Assets from other local sites
 
 To allow PHP to know how to get assets from other local sites you need to add them to your host file (/etc/hosts).
-
-### Valet
 
 ```bash
     ...
@@ -117,10 +125,6 @@ To allow PHP to know how to get assets from other local sites you need to add th
     ...
 ```
 
-### Homestaed
-
-// TODO
-
 ## Common Problems
 
 ### Clashing Recordings / Sessions
@@ -132,10 +136,13 @@ You should clear your cache whenever you refresh your database.
 
 ## Built With
 
-ReplayJS is built with Open Source technologies such as :
+ReplayJS is built with Open Source technologies, highlighted packages are:
 
 - [VarieJS](https://varie.io)
 - [Laravel](https://laravel.com/)
+- [Laravel Echo](https://laravel.com/docs/5.8/broadcasting)
+- [Laravel Horizon](https://laravel.com/docs/master/horizon)
+- [Laravel WebSockets](https://github.com/beyondcode/laravel-websockets)
 
 ## Other Credits
 

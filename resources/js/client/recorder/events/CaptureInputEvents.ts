@@ -1,7 +1,7 @@
 import NodeMap from "../NodeMap";
+import ListenInterface from "../../interfaces/ListenInterface";
 import NodeData, { NodeDataTypes } from "../interfaces/NodeData";
 import NodeDataCompressorService from "../services/NodeDataCompressorService";
-import ListenInterface from "../../interfaces/ListenInterface";
 
 export default class CaptureInputEvents implements ListenInterface {
   protected knownNodes: NodeMap<number>;
@@ -59,9 +59,10 @@ export default class CaptureInputEvents implements ListenInterface {
           ],
           [],
         );
-        if (target.checked) {
-          target.setAttribute("checked", "true");
-        }
+        target.setAttribute(
+          "checked",
+          String((target as HTMLInputElement).checked),
+        );
         break;
       default:
         target.setAttribute("value", target.value);

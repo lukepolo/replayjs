@@ -59,6 +59,7 @@ export default {
       this.getScale();
     },
     updateScrollPosition({ target, scrollPosition }) {
+      // TODO - test content window scrolling
       let element = this.previewDocument.querySelector(target);
       if (element) {
         element.scrollTo(0, scrollPosition);
@@ -67,6 +68,7 @@ export default {
     updateMouseMovement({ x, y }) {
       this.$refs.cursor.style.top = y + "px";
       this.$refs.cursor.style.left = x + "px";
+      // TODO : hover element (we should send target along)
     },
   },
 };
