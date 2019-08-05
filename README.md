@@ -147,3 +147,8 @@ ReplayJS is built with Open Source technologies, highlighted packages are:
 ## Other Credits
 
 - [Mutation Summary](https://github.com/rafaelw/mutation-summary)
+
+<!--https://stackoverflow.com/questions/33261244/why-same-origin-policy-isnt-enough-to-prevent-csrf-attacks-->
+<!--https://stackoverflow.com/questions/27067251/where-to-store-jwt-in-browser-how-to-protect-against-csrf/27084126#27084126-->
+
+TLS + JWT stored in secure cookie + JWT in request header + No XSS vulnerabilities.
