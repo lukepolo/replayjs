@@ -6,7 +6,8 @@ export default {
   },
   guards: {
     user: {
-      driver: "CookieDriver", // or CookieDriver
+      driver: "JwtDriver", // or CookieDriver
+      refreshToken: true,
       loginAfterReset: true,
       loginAfterRegister: true,
       endpoints: {
@@ -17,6 +18,11 @@ export default {
         register: "/api/register",
         resetPassword: "/api/reset-password",
         forgotPassword: "/api/forgot-password",
+      },
+      token: {
+        expiresIn: "expires_in",
+        accessToken: "access_token",
+        tokenTypeName: "token_type",
       },
     },
   },
