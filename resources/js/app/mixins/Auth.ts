@@ -5,5 +5,8 @@ Vue.mixin({
     user() {
       return this.$store.getters["auth/user"]();
     },
+    isAuthed() {
+      return !!this.user;
+    },
   },
 });

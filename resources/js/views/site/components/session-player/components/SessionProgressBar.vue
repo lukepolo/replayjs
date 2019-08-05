@@ -165,7 +165,6 @@ export default {
   border: 1px solid #ccc;
   background-color: #fff;
   height: 20px;
-  width: 80%;
   border-radius: 8px;
   display: flex;
   position: relative;

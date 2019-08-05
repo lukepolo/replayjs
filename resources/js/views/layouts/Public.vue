@@ -1,5 +1,6 @@
 <template>
-  <div id="app">
+  <div id="landing">
+    <alerts></alerts>
     <site-header></site-header>
     <router-view></router-view>
     <site-footer></site-footer>
@@ -7,9 +8,10 @@
 </template>
 
 <script>
+import Alerts from "varie/Alerts";
 import SiteHeader from "./components/SiteHeader";
 import SiteFooter from "./components/SiteFooter";
-import Alerts from "varie/Alerts";
+
 export default {
   components: {
     Alerts,

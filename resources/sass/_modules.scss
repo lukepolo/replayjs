@@ -2,9 +2,11 @@
 // =========================================================
 
 // LAYOUT MODULES
-@import "modules/site-header";
-@import "modules/site-footer";
+@import "modules/header";
 
 // CONTENT MODULES
 @import "modules/replay-logo";
 @import "modules/spinner";
+@import "modules/dropdown";
+@import "modules/nav";
+@import "modules/player";

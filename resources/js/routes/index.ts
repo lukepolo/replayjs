@@ -36,13 +36,11 @@ export default function($router: RouterInterface) {
         .prefix("site/:site")
         .area(siteViews.SiteArea)
         .group(() => {
+          $router.route("setup", siteViews.SiteSetup);
           $router.route("dashboard", siteViews.SiteDashboard);
           $router.prefix("guest:guest").group(() => {
             $router.route("", siteViews.SiteGuestSessions);
-            $router.route(
-              "session/:session/components",
-              siteViews.SiteSessionPlayer,
-            );
+            $router.route("session/:session", siteViews.SiteSessionPlayer);
           });
         });
     });

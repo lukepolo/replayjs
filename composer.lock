@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1ae4552e0942eda6e43f441d3aa0b3b8",
+    "content-hash": "331198cd7d4be83fab6dc80b57adf385",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -2877,16 +2877,16 @@
         },
         {
             "name": "react/dns",
-            "version": "v1.1.0",
+            "version": "v0.4.19",
             "source": {
                 "type": "git",
                 "url": "https://github.com/reactphp/dns.git",
-                "reference": "a04f6f23ee40afec2e5814ddfbdf71b9e88bbc1f"
+                "reference": "6852fb98e22d2e5bb35fe5aeeaa96551b120e7c9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/reactphp/dns/zipball/a04f6f23ee40afec2e5814ddfbdf71b9e88bbc1f",
-                "reference": "a04f6f23ee40afec2e5814ddfbdf71b9e88bbc1f",
+                "url": "https://api.github.com/repos/reactphp/dns/zipball/6852fb98e22d2e5bb35fe5aeeaa96551b120e7c9",
+                "reference": "6852fb98e22d2e5bb35fe5aeeaa96551b120e7c9",
                 "shasum": ""
             },
             "require": {
@@ -2894,7 +2894,8 @@
                 "react/cache": "^1.0 || ^0.6 || ^0.5",
                 "react/event-loop": "^1.0 || ^0.5 || ^0.4 || ^0.3.5",
                 "react/promise": "^2.1 || ^1.2.1",
-                "react/promise-timer": "^1.2"
+                "react/promise-timer": "^1.2",
+                "react/stream": "^1.0 || ^0.7 || ^0.6 || ^0.5 || ^0.4.5"
             },
             "require-dev": {
                 "clue/block-react": "^1.2",
@@ -2917,7 +2918,7 @@
                 "dns-resolver",
                 "reactphp"
             ],
-            "time": "2019-07-18T09:47:47+00:00"
+            "time": "2019-07-10T21:00:53+00:00"
         },
         {
             "name": "react/event-loop",
@@ -6777,16 +6778,16 @@
         },
         {
             "name": "phpunit/php-token-stream",
-            "version": "3.0.2",
+            "version": "3.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-token-stream.git",
-                "reference": "c4a66b97f040e3e20b3aa2a243230a1c3a9f7c8c"
+                "reference": "e899757bb3df5ff6e95089132f32cd59aac2220a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-token-stream/zipball/c4a66b97f040e3e20b3aa2a243230a1c3a9f7c8c",
-                "reference": "c4a66b97f040e3e20b3aa2a243230a1c3a9f7c8c",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-token-stream/zipball/e899757bb3df5ff6e95089132f32cd59aac2220a",
+                "reference": "e899757bb3df5ff6e95089132f32cd59aac2220a",
                 "shasum": ""
             },
             "require": {
@@ -6799,7 +6800,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.0-dev"
+                    "dev-master": "3.1-dev"
                 }
             },
             "autoload": {
@@ -6822,7 +6823,7 @@
             "keywords": [
                 "tokenizer"
             ],
-            "time": "2019-07-08T05:24:54+00:00"
+            "time": "2019-07-25T05:29:42+00:00"
         },
         {
             "name": "phpunit/phpunit",

@@ -1,0 +1,26 @@
+#player-wrapper {
+  display: grid;
+  grid-template-rows: min-content 1fr min-content;
+  grid-template-columns: 2fr 1fr;
+  grid-template-areas:
+    "dev-tool information"
+    "playback information"
+    "controls controls";
+}
+
+.dev-tool {
+  grid-area: dev-tool;
+}
+
+.information {
+  grid-area: information;
+}
+
+.playback {
+  min-width: 0;
+  grid-area: playback;
+}
+
+.controls {
+  grid-area: controls;
+}
