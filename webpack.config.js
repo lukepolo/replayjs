@@ -53,50 +53,48 @@ module.exports = function(env) {
     })
     .proxy("/api", ENV.APP_URL);
 
-  // let clientBundle = new VarieBundler(env, { bundleName : "client" })
-  //   .varieConfig({
-  //     app: {
-  //       ENV: ENV.APP_ENV,
-  //       APP_URL: ENV.APP_URL,
-  //       WS_HOST: ENV.WS_HOST,
-  //       WS_PORT: ENV.WS_PORT,
-  //       VERSION: require("./package").version,
-  //     },
-  //     services: {
-  //       PUSHER_APP_KEY: ENV.PUSHER_APP_KEY,
-  //     },
-  //   })
-  //   .entry("client", ["resources/js/client/client.ts"])
-  //   .chainWebpack((config) => {
-  //     config.module.rules.delete("html");
-  //     config.module.rules.delete("javascript");
-  //     config.module.rules.delete("fonts");
-  //     config.module.rules.delete("images");
-  //
-  //     config.plugins.delete("html");
-  //     config.plugins.delete("clean");
-  //     config.plugins.delete("multi-build");
-  //     config.plugins.delete("mini-extract");
-  //     config.plugins.delete("browser-sync");
-  //     config.plugins.delete("optimize-assets");
-  //
-  //     config.devServer.hot(false);
-  //
-  //     config.optimization.splitChunks({}).runtimeChunk(false);
-  //
-  //     if (config.plugins.has("analyzer")) {
-  //       config.plugin("analyzer").tap(() => {
-  //         return [
-  //           {
-  //             analyzerPort: 8890,
-  //           },
-  //         ];
-  //       });
-  //     }
-  //     config.output.filename("js/client.js");
-  //   });
+  let clientBundle = new VarieBundler(env, { bundleName: "client" })
+    .varieConfig({
+      app: {
+        ENV: ENV.APP_ENV,
+        APP_URL: ENV.APP_URL,
+        WS_HOST: ENV.WS_HOST,
+        WS_PORT: ENV.WS_PORT,
+        VERSION: require("./package").version,
+      },
+      services: {
+        PUSHER_APP_KEY: ENV.PUSHER_APP_KEY,
+      },
+    })
+    .entry("client", ["resources/js/client/client.ts"])
+    .chainWebpack((config) => {
+      config.module.rules.delete("html");
+      config.module.rules.delete("javascript");
+      config.module.rules.delete("fonts");
+      config.module.rules.delete("images");
 
-  // ...clientBundle.build()
+      config.plugins.delete("html");
+      config.plugins.delete("clean");
+      config.plugins.delete("multi-build");
+      config.plugins.delete("mini-extract");
+      config.plugins.delete("browser-sync");
+      config.plugins.delete("optimize-assets");
 
-  return [...appBundle.build()];
+      config.devServer.hot(false);
+
+      config.optimization.splitChunks({}).runtimeChunk(false);
+
+      if (config.plugins.has("analyzer")) {
+        config.plugin("analyzer").tap(() => {
+          return [
+            {
+              analyzerPort: 8890,
+            },
+          ];
+        });
+      }
+      config.output.filename("js/client.js");
+    });
+
+  return [...appBundle.build(), ...clientBundle.build()];
 };
