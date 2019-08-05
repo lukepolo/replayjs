@@ -2,7 +2,7 @@ const VarieBundler = require("varie-bundler");
 const ENV = require("dotenv").config().parsed;
 
 module.exports = function(env) {
-  let bundle = new VarieBundler(env, {
+  let appBundle = new VarieBundler(env, {
     bundleName: "web",
     vue: {
       runtimeOnly: false,
@@ -51,10 +51,9 @@ module.exports = function(env) {
     .chainWebpack((config) => {
       config.devServer.disableHostCheck(true);
     })
-    .proxy("/api", ENV.APP_URL)
-    .build();
+    .proxy("/api", ENV.APP_URL);
 
-  let clientBundle = new VarieBundler(env, "client")
+  let clientBundle = new VarieBundler(env, { bundleName: "client" })
     .varieConfig({
       app: {
         ENV: ENV.APP_ENV,
@@ -97,12 +96,5 @@ module.exports = function(env) {
       config.output.filename("js/client.js");
     });
 
-  clientBundle._env.isModern = false;
-
-  if (!Array.isArray(bundle)) {
-    bundle = [bundle];
-  }
-  bundle.push(clientBundle.build());
-
-  return bundle;
+  return [...appBundle.build(), ...clientBundle.build()];
 };
