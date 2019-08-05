@@ -7,7 +7,6 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use App\Models\Site\Guest\Session\GuestSession;
 
 class RecordSessionDetails implements ShouldQueue
 {
@@ -35,6 +34,5 @@ class RecordSessionDetails implements ShouldQueue
      */
     public function handle()
     {
-
     }
 }
