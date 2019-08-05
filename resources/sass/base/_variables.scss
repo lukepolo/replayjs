@@ -3,50 +3,52 @@
 
 // BASE COLORS
 // NOTE: do not use these outside of _variables
-$green: #83b692;
-$blue: #48acf0;
-$yellow: #fec07a;
+$green: #42b884;
+$blue: #85cbe5;
+$yellow: #f5ff77;
+$orange: #ffa147;
 $red: #f4645f;
-$purple: #8165c6;
 
 $white: #ffffff;
-$black: #2b2b2b;
-$gray: #3c3f41;
-$gray-dark: darken($gray, 10%);
-$gray-medium: darken($gray, 5%);
-$gray-light: #b6b6b6;
-$gray-xlight: #eeefef;
+$black: #525252;
+$gray: #dae1e7;
+$code: #f5f2f0;
 
 // COLOR DECLARATIONS
 // NOTE: use these for application variables
 $color-background: $white;
-$color-background-content: $gray-light;
+$color-background-content: darken($gray, 5%);
+$color-background-code: $code;
+$color-border: $gray;
+$color-border-accent: $green;
 
-$color-text-primary: $gray;
+$color-text-primary: $black;
 $color-text-secondary: $gray;
 $color-text-inverse-primary: $white;
-$color-text-inverse-secondary: $gray-light;
-$color-text-accent: $purple;
-$color-text-link: $blue;
+$color-text-inverse-secondary: darken($white, 10%);
+$color-text-accent: $green;
+$color-text-link: $green;
 
 $color-state-success: $green;
 $color-state-neutral: $blue;
-$color-state-warning: $yellow;
+$color-state-warning: $orange;
 $color-state-danger: $red;
 $color-state-null: $gray;
 
 $color-divider: mix($gray, $white, 20%);
 $color-divider-inverse: rgba($white, 0.1);
 
-$color-hover-overlay: rgba($gray, 0.3);
-$color-hover-overlay-inverse: rgba($gray-dark, 0.3);
+$color-hover-overlay: rgba($green, 0.3);
+$color-hover-overlay-inverse: rgba($green, 0.3);
 $color-hover-link: mix($black, $color-text-link, 30%);
 $color-hover-link-inverse: mix($white, $color-text-link, 40%);
 $color-hover-list: mix($color-text-link, $white, 5%);
 
 // FONT DECLARATIONS
-$font-body: "Proxima Nova", Arial, sans-serif;
+$font-body: "Open Sans", sans-serif;
 $font-body-size: 14px;
 $font-body-weight: 400;
-
+$font-header: Montserrat, sans-serif;
+$font-header-weight: 600;
+$font-monospace: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
 $font-icon: "icomoon";

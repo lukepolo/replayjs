@@ -1,0 +1,101 @@
+.dropdown {
+  position: relative;
+  text-transform: capitalize;
+  flex: 1 0 auto;
+  justify-content: center;
+  align-items: center;
+
+  .arrow {
+    display: inline-block;
+    height: 0.5rem;
+    width: 0.5rem;
+    border: 2px solid gray;
+    border-left: none;
+    border-bottom: none;
+    transform: rotate(45deg);
+    transition: all 0.2s ease;
+    position: relative;
+    top: -1px;
+  }
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  &.open {
+    .arrow {
+      top: -4px;
+      transform: rotate(135deg);
+      transition: all 0.2s ease;
+    }
+  }
+
+  &__label {
+    padding-right: $site-padding;
+
+    &-icon {
+      position: absolute;
+      top: $site-margin;
+      right: $site-margin;
+    }
+  }
+
+  &--menu {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: -1px;
+    right: -1px;
+    background-color: $color-background;
+    border: 1px solid $color-border;
+
+    &-item {
+      display: block;
+      padding: 2rem 0;
+      text-align: center;
+
+      &:not(:last-child) {
+        border: 1px solid $color-border-accent;
+      }
+
+      &:hover {
+        color: $white;
+        cursor: pointer;
+        background-color: $color-border-accent;
+      }
+
+      &:first-child {
+        &:before {
+          display: block;
+          content: "";
+          border: 10px solid $color-border;
+          border-top: none;
+          border-right-color: transparent;
+          border-left-color: transparent;
+          position: absolute;
+          bottom: calc(100% + 1px);
+          left: 50%;
+          transform: translateX(-50%);
+        }
+
+        &:after {
+          display: block;
+          content: "";
+          border: 10px solid $color-background-content;
+          border-top: none;
+          border-right-color: transparent;
+          border-left-color: transparent;
+          position: absolute;
+          bottom: 100%;
+          left: 50%;
+          transform: translateX(-50%);
+        }
+
+        &:hover {
+          &:after {
+            border-bottom-color: $color-border-accent;
+          }
+        }
+      }
+    }
+  }
+}

@@ -20,6 +20,7 @@
         "league/csv": "^9.2",
         "predis/predis": "^1.1",
         "pusher/pusher-php-server": "~3.0",
+        "react/dns": "^0.4.19",
         "tymon/jwt-auth": "1.0.0-rc.4.1",
         "vinkla/hashids": "^5.2",
         "react/dns": "^0.4.19"

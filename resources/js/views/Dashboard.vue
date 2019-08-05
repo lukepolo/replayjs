@@ -1,6 +1,7 @@
 <template>
   <div>
     <h3>Dashboard</h3>
+    Welcome!
     <h3>Sites</h3>
     <div>Create Site</div>
     <form v-form="siteForm" @submit.prevent="createSite">
@@ -31,14 +32,6 @@ export default Vue.extend({
         },
       }),
     };
-  },
-  watch: {
-    $route: {
-      immediate: true,
-      handler() {
-        this.$store.dispatch("site/get");
-      },
-    },
   },
   methods: {
     createSite() {

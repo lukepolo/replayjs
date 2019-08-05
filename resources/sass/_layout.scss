@@ -1,16 +1,31 @@
 // LAYOUT ==================================================
 // =========================================================
 
-$site-margin: 10px;
-$site-padding: 10px;
-
 // This would include any page layout stuff, like grid
 // to place any headers/footers/sidebars needed
 
 html,
 body,
 #app {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  overflow: hidden;
 }
 
 #app {
+  display: grid;
+  grid-template-columns: min-content 1fr;
+  grid-template-areas: "menu wrapper";
+}
+
+.wrapper {
+  grid-area: wrapper;
+
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.menu {
+  grid-area: menu;
 }

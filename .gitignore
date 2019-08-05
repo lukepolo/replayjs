@@ -2,6 +2,8 @@
 /public/js
 /public/css
 /public/img
+/public/fonts
+/public/*.worker.js
 /public/storage
 /public/*.worker.*
 /storage/*.key

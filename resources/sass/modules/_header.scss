@@ -1,0 +1,127 @@
+.site-header {
+  display: flex;
+  flex-shrink: 0;
+  border-top: 5px solid $color-border-accent;
+  border-bottom: 1px solid $color-border;
+  position: sticky;
+  top: 0;
+  background-color: $color-background;
+  z-index: 900;
+
+  &__logo {
+    @include breakpoint(md) {
+      display: none !important;
+    }
+  }
+
+  &__mobile {
+    cursor: pointer;
+    display: none !important;
+    @include breakpoint(md) {
+      display: inline-block !important;
+    }
+    &.active {
+      background: lighten($color-border-accent, 30%);
+    }
+  }
+
+  &__search {
+    @include breakpoint(md) {
+      display: none !important;
+    }
+  }
+
+  > div:first-child {
+    max-width: 274px;
+
+    .logo {
+      max-width: 100%;
+      align-items: center;
+      padding: 4px 80px 0;
+      img {
+        max-width: 100%;
+      }
+    }
+  }
+  > div {
+    border-left: 1px solid $gray;
+    display: flex;
+    flex: 1 0 auto;
+    > * {
+      &:not(.algolia-autocomplete) {
+        display: flex;
+        flex: 1 0 auto;
+        border-bottom: 1px solid transparent;
+      }
+    }
+
+    a {
+      &:hover {
+        border: 1px solid $gray;
+      }
+    }
+  }
+
+  .algolia-autocomplete {
+    flex: 1 1 auto;
+    #search {
+      font-size: 1rem;
+      width: 100%;
+      display: flex;
+      padding: 2rem 3.5rem 1.5rem;
+      border-bottom: 4px solid;
+      border-color: transparent;
+    }
+  }
+
+  .nav-dropdown {
+    display: flex;
+    max-width: 250px; // janice will tell me to fix this with basis
+    user-select: none;
+  }
+
+  .nav-button {
+    flex: 0 1 120px;
+
+    @include breakpoint(md) {
+      padding: 1rem 1.75rem 0.75rem;
+    }
+
+    @include breakpoint(sm) {
+      flex: 1 1 auto;
+    }
+
+    a {
+      &:hover {
+        border: none !important;
+      }
+    }
+
+    a,
+    span {
+      align-items: center;
+      justify-content: center;
+      border-bottom: 2px solid transparent;
+    }
+  }
+}
+
+.search-area {
+  margin: 0;
+  li {
+    display: flex;
+    flex: 1 1 auto;
+    span {
+      display: flex;
+      flex: 1 1 auto;
+
+      #menu-search {
+        width: 100%;
+        padding-left: 1rem;
+        line-height: 3rem;
+        font-size: 1.25rem;
+        border: 1px solid lighten($color-text-primary, 50%);
+      }
+    }
+  }
+}
