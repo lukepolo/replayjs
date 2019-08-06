@@ -54,6 +54,7 @@ class AuthController extends Controller
      */
     public function refresh()
     {
+        // TODO - this isn't a real way to refresh ......
         return $this->respondWithToken(auth()->refresh());
     }
 }

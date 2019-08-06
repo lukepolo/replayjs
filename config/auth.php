@@ -42,7 +42,7 @@ return [
         ],
 
         'api' => [
-            'driver' => 'jwt',
+            'driver' => 'jwt-cookie',
             'provider' => 'users',
             'hash' => false,
         ],
