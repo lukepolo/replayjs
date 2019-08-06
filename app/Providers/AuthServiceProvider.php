@@ -24,7 +24,6 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        // add custom guard
         $this->app['auth']->extend('jwt-cookie', function ($app, $name, array $config) {
             $guard = new JwtCookieGuard(
                 $app['tymon.jwt'],

@@ -40,7 +40,7 @@ export default function(authService: AuthService) {
         },
         (error) => {
           if (error.response.status === 401) {
-            authService.clearAuthStorage();
+            authService.clearAuthStorage("user");
           }
           throw error;
         },
