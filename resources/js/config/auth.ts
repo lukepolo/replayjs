@@ -6,7 +6,7 @@ export default {
   },
   guards: {
     user: {
-      driver: "JwtDriver", // or CookieDriver
+      driver: "CookieDriver", // or CookieDriver
       refreshToken: true,
       loginAfterReset: true,
       loginAfterRegister: true,
