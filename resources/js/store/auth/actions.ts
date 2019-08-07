@@ -30,21 +30,13 @@ export default function(authService: AuthService) {
       });
     },
     getUser: (context: ActionContext<AuthState, RootState>) => {
-      return authService.getUser().then(
-        (response) => {
-          context.commit("SET_AUTH_USER", {
-            user: response.data,
-            guard: "user",
-          });
-          return response.data;
-        },
-        (error) => {
-          if (error.response.status === 401) {
-            authService.clearAuthStorage("user");
-          }
-          throw error;
-        },
-      );
+      return authService.getUser().then((response) => {
+        context.commit("SET_AUTH_USER", {
+          user: response.data,
+          guard: "user",
+        });
+        return response.data;
+      });
     },
     logout: (context: ActionContext<AuthState, RootState>) => {
       return authService.logout().then((response) => {

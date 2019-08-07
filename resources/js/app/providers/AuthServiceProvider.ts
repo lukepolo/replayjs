@@ -1,7 +1,6 @@
 import AuthStore from "@store/auth/AuthStore";
 import AuthService from "@app/services/AuthService";
 import ConfigInterface from "varie/lib/config/ConfigInterface";
-import JwtDriver from "varie-auth-plugin/lib/drivers/JwtDriver";
 import ServiceProvider from "varie/lib/support/ServiceProvider";
 import AuthMiddleware from "varie-auth-plugin/lib/AuthMiddleware";
 import CookieDriver from "varie-auth-plugin/lib/drivers/CookieDriver";
@@ -28,6 +27,5 @@ export default class AuthServiceProvider extends ServiceProvider {
   public async register() {
     this.app.bind("AuthService", AuthService);
     this.app.singleton("CookieDriver", CookieDriver);
-    this.app.singleton("JwtDriver", JwtDriver);
   }
 }
