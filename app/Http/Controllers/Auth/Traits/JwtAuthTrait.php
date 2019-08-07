@@ -13,11 +13,11 @@ trait JwtAuthTrait
      */
     public function respondWithToken($token)
     {
-     // return response()->json([
-     //         'access_token' => $token,
-     //           'token_type' => 'bearer',
-     //           'expires_in' => auth()->factory()->getTTL() * 60
-     //       ]);
+        // return response()->json([
+        //         'access_token' => $token,
+        //           'token_type' => 'bearer',
+        //           'expires_in' => auth()->factory()->getTTL() * 60
+        //       ]);
 
         [$header, $payload, $signature] = preg_split("/\./", $token);
         return response()->json()

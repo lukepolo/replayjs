@@ -17,7 +17,7 @@ class JwtCookieGuard extends JWTGuard
             return $this->user;
         }
 
-        if($this->request->hasCookie('token') && $this->request->hasCookie('token')) {
+        if ($this->request->hasCookie('token') && $this->request->hasCookie('token')) {
             $this->jwt->setToken($this->request->cookie('token').'.'.$this->request->cookie('signature'));
             if (
                 ($payload = $this->jwt->check(true)) &&
@@ -29,5 +29,4 @@ class JwtCookieGuard extends JWTGuard
 
         return parent::user();
     }
-
 }

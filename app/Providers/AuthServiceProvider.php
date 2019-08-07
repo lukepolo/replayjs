@@ -4,7 +4,6 @@ namespace App\Providers;
 
 use App\Services\JwtCookieGuard;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-use Tymon\JWTAuth\JWT;
 
 class AuthServiceProvider extends ServiceProvider
 {
