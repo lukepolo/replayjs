@@ -13,15 +13,9 @@ trait JwtAuthTrait
      */
     public function respondWithToken($token)
     {
-        // return response()->json([
-        //         'access_token' => $token,
-        //           'token_type' => 'bearer',
-        //           'expires_in' => auth()->factory()->getTTL() * 60
-        //       ]);
-
         [$header, $payload, $signature] = preg_split("/\./", $token);
         return response()->json()
-            ->cookie('signature', $signature, 'session', '/', '.replayjs.test', false, true)
-            ->cookie('token', "$header.$payload", auth()->factory()->getTTL(), '/', '.replayjs.test', false, false);
+            ->cookie('signature', $signature, 'session', null, null, null, true)
+            ->cookie('token', "$header.$payload", auth()->factory()->getTTL(), null, null, null, false);
     }
 }
