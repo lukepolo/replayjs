@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Services\JwtCookieGuard;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -22,6 +23,16 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $this->app['auth']->extend('jwt-cookie', function ($app, $name, array $config) {
+            $guard = new JwtCookieGuard(
+                $app['tymon.jwt'],
+                $app['auth']->createUserProvider($config['provider']),
+                $app['request']
+            );
+            $app->refresh('request', $guard, 'setRequest');
+            return $guard;
+        });
+
         $this->registerPolicies();
 
         //

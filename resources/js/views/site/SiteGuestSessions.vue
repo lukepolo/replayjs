@@ -17,7 +17,7 @@
     <div v-for="session in sessions">
       <router-link
         :to="{
-          name: 'site.guest.session.components',
+          name: 'site.guest.session',
           params: { site: $route.params.site, session: session.hash },
         }"
       >

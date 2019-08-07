@@ -1,18 +1,22 @@
 <template>
-  <div class="site-header">
-    <div class="site__logo">
-      <replay-logo></replay-logo>
-    </div>
+  <header class="header">
+    <nav class="site-header">
+      <div class="site-header__logo">
+        <router-link to="/" tag="span" class="cursor-pointer logo">
+          <replay-logo></replay-logo>
+        </router-link>
+      </div>
 
-    <div></div>
-
-    <div>
-      <div class="site-header__nav-item">
+      <div>
         <router-link :to="{ name: 'login' }">Login</router-link>
       </div>
-      <div class="site-header__nav-item">
+      <div>
         <router-link :to="{ name: 'register' }">Sign Up</router-link>
       </div>
-    </div>
-  </div>
+    </nav>
+  </header>
 </template>
+
+<script>
+export default {};
+</script>

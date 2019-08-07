@@ -27,18 +27,13 @@ export default class BroadcastService {
 
   private connect() {
     this.$echo = new Echo({
+      disableStats: true,
       broadcaster: "pusher",
       enabledTransports: ["ws", "wss"],
+      authEndpoint: `/api/broadcasting/auth`,
       wsHost: this.$configService.get("app.WS_HOST", null),
       wsPort: this.$configService.get("app.WS_PORT", null),
       key: this.$configService.get("services.PUSHER_APP_KEY", null),
-      authEndpoint: `/api/broadcasting/auth`,
-      disableStats: true,
-      auth: {
-        headers: {
-          Authorization: `Bearer ${this.$authService.getJwt()}`,
-        },
-      },
     });
   }
 

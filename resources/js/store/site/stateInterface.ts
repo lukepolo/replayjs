@@ -1,4 +1,5 @@
 export interface SiteState {
-  site: null;
+  site: null | any;
   sites: null | Array<any>;
+  selectedSite: null | any;
 }

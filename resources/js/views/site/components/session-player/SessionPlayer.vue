@@ -1,59 +1,76 @@
 <template>
   <div>
-    <div class="left-nav">
-      <h1>Scale</h1>
-      <pre>{{ scale }}</pre>
-      <h1>User is Live</h1>
-      <pre>{{ canViewLive }}</pre>
-      <button @click="goLive" :disabled="!canViewLive">
-        Connect To Stream
-      </button>
-    </div>
-    <pre>Current : {{ currentTime }}</pre>
+    <div id="player-wrapper">
+      <div class="dev-tool">
+        dev tool
+      </div>
 
-    <h1>Skip Inactivity</h1>
-    <pre>{{ skipInactivity }}</pre>
-    <button @click="skipInactivity = !skipInactivity">
-      Toggle Skip Activity
-    </button>
-
-    <h1>Speed</h1>
-    <pre>{{ playbackSpeed }}x</pre>
-
-    <button @click="changePlaybackSpeed(1)">x1</button>
-    <button @click="changePlaybackSpeed(1.25)">x1.25</button>
-    <button @click="changePlaybackSpeed(1.5)">x1.5</button>
-    <button @click="changePlaybackSpeed(2)">x2</button>
-
-    <h1>Current Activity Range</h1>
-    >>
-    <pre>{{ currentActivityRange }}</pre>
-    <<
-
-    <session-progress-bar
-      v-if="session"
-      @play="play"
-      @stop="stop"
-      @seek="seek"
-      :is-playing="isPlaying"
-      :current-time="currentTime"
-      :starting-time="startingTime"
-      :ending-time="endingTime"
-      :session="session"
-      :activity-ranges="activityRanges"
-    ></session-progress-bar>
-    <div>
-      <pre>IS LOADING : {{ isLoading }}</pre>
-      <div class="preview-box" ref="previewBox" :class="{ loading: isLoading }">
-        <div class="overlay" ref="overlay">
-          <div ref="clicks" id="clicks"></div>
-          <div ref="cursor" id="cursor"></div>
+      <div class="playback">
+        <pre>IS LOADING : {{ isLoading }}</pre>
+        <div
+          class="preview-box"
+          ref="previewBox"
+          :class="{ loading: isLoading }"
+        >
+          <div class="overlay" ref="overlay">
+            <div ref="clicks" id="clicks"></div>
+            <div ref="cursor" id="cursor"></div>
+          </div>
+          <iframe
+            ref="preview"
+            id="preview"
+            sandbox="allow-scripts allow-same-origin"
+          ></iframe>
         </div>
-        <iframe
-          ref="preview"
-          id="preview"
-          sandbox="allow-scripts allow-same-origin"
-        ></iframe>
+      </div>
+
+      <div class="information">
+        information
+
+        <h1>Scale</h1>
+        <pre>{{ scale }}</pre>
+        <h1>User is Live</h1>
+        <pre>{{ canViewLive }}</pre>
+        <button @click="goLive" :disabled="!canViewLive">
+          Connect To Stream
+        </button>
+
+        <pre>Current : {{ currentTime }}</pre>
+
+        <h1>Skip Inactivity</h1>
+        <pre>{{ skipInactivity }}</pre>
+        <button @click="skipInactivity = !skipInactivity">
+          Toggle Skip Activity
+        </button>
+
+        <h1>Speed</h1>
+        <pre>{{ playbackSpeed }}x</pre>
+
+        <button @click="changePlaybackSpeed(1)">x1</button>
+        <button @click="changePlaybackSpeed(1.25)">x1.25</button>
+        <button @click="changePlaybackSpeed(1.5)">x1.5</button>
+        <button @click="changePlaybackSpeed(2)">x2</button>
+
+        <h1>Current Activity Range</h1>
+        >>
+        <pre>{{ currentActivityRange }}</pre>
+        <<
+      </div>
+
+      <div class="controls">
+        controls
+        <session-progress-bar
+          v-if="session"
+          @play="play"
+          @stop="stop"
+          @seek="seek"
+          :is-playing="isPlaying"
+          :current-time="currentTime"
+          :starting-time="startingTime"
+          :ending-time="endingTime"
+          :session="session"
+          :activity-ranges="activityRanges"
+        ></session-progress-bar>
       </div>
     </div>
   </div>

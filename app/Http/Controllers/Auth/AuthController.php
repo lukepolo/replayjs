@@ -3,12 +3,9 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Auth\Traits\JwtAuthTrait;
 
 class AuthController extends Controller
 {
-    use JwtAuthTrait;
-
     /**
      * Create a new AuthController instance.
      *
@@ -32,7 +29,10 @@ class AuthController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
-        return $this->respondWithToken($token);
+        [$header, $payload, $signature] = preg_split("/\./", $token);
+        return response()->json()
+            ->cookie('signature', $signature, 'session', null, null, null, true)
+            ->cookie('token', "$header.$payload", auth()->factory()->getTTL(), null, null, null, false);
     }
 
     /**
@@ -45,15 +45,5 @@ class AuthController extends Controller
         auth()->logout();
 
         return response()->json(['message' => 'Successfully logged out']);
-    }
-
-    /**
-     * Refresh a token.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function refresh()
-    {
-        return $this->respondWithToken(auth()->refresh());
     }
 }

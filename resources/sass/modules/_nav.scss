@@ -1,0 +1,29 @@
+.menu {
+  border-right: 1px solid $color-border;
+}
+
+.nav {
+  white-space: nowrap;
+
+  ul {
+    padding: 0;
+    list-style: none;
+
+    a {
+      display: block;
+      padding: $site-padding;
+
+      &:hover,
+      &:active,
+      &:focus {
+        color: $color-text-primary;
+        border-right: 5px solid $color-text-accent;
+        background-color: lighten($color-text-accent, 45%);
+      }
+
+      &.router-link-active {
+        border-right: 5px solid $color-border-accent;
+      }
+    }
+  }
+}

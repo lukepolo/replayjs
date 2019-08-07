@@ -8,6 +8,9 @@ export default function(siteService: SiteService) {
     get: (context: ActionContext<SiteState, RootState>) => {
       return siteService.get().then(({ data }) => {
         context.commit("SET_SITES", data);
+        if (!context.state.selectedSite && data[0]) {
+          context.commit("SET_SELECTED_SITE", data[0]);
+        }
         return data;
       });
     },
