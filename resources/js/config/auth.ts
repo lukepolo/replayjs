@@ -49,6 +49,7 @@ export default {
       |
       */
       driver: "CookieDriver",
+
       /*
       |--------------------------------------------------------------------------
       | Login Behavior
@@ -60,6 +61,7 @@ export default {
       */
       loginAfterReset: true,
       loginAfterRegister: true,
+
       /*
       |--------------------------------------------------------------------------
       | API Endpoints
@@ -77,6 +79,7 @@ export default {
         resetPassword: "/api/reset-password",
         forgotPassword: "/api/forgot-password",
       },
+
       /*
       |--------------------------------------------------------------------------
       | Strategy Configs
@@ -110,21 +113,21 @@ export default {
         storagePath: "auth",
 
         /*
-      |--------------------------------------------------------------------------
-      |  Token Information
-      |--------------------------------------------------------------------------
-      |
-      | When logging in your response will contain necessary information that
-      | Varie needs to handle your authentication. Let Varie know where to
-      | pull the information from the response.
-      |
-      | Expires In: should supply the number of seconds it will expire in
-      |
-      | Access Token: Is what should be sent back into the headers of all requests.
-      |
-      | Token Type Name: Should be the Authorize token type for the header request.
-      |
-      */
+        |--------------------------------------------------------------------------
+        |  Token Information
+        |--------------------------------------------------------------------------
+        |
+        | When logging in your response will contain necessary information that
+        | Varie needs to handle your authentication. Let Varie know where to
+        | pull the information from the response.
+        |
+        | Expires In: should supply the number of seconds it will expire in
+        |
+        | Access Token: Is what should be sent back into the headers of all requests.
+        |
+        | Token Type Name: Should be the Authorize token type for the header request.
+        |
+        */
         expiresIn: "expires_in",
         accessToken: "access_token",
         tokenTypeName: "token_type",
