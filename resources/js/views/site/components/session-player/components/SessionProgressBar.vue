@@ -174,7 +174,6 @@ export default {
     background-color: #48acf0;
     border-top-left-radius: 8px;
     border-bottom-left-radius: 8px;
-    transition: all 100ms ease;
   }
 
   &--moment {
@@ -197,7 +196,6 @@ $playAndPauseWidth: $playAndPauseHeight / 1.5;
     height: $playAndPauseHeight + 2px;
 
     border-color: transparent transparent transparent #202020;
-    transition: 100ms all ease;
     cursor: pointer;
     border-style: double;
     border-width: 0 0 0 $playAndPauseHeight;
