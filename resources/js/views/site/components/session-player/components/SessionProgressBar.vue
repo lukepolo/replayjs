@@ -108,7 +108,7 @@ export default {
     },
     playAtPosition(event) {
       let rect = event.target.getBoundingClientRect();
-      let percentageFromLeftSide = (event.clientX - rect.left) / rect.right;
+      let percentageFromLeftSide = (event.clientX - rect.left) / rect.width;
       this.$emit(
         "seek",
         this.startingTime + percentageFromLeftSide * this.endingTimeNormalized,
