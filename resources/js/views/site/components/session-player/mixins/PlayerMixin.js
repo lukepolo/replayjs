@@ -104,6 +104,8 @@ export default {
               ),
             );
             this.$delete(this.queuedEvents, timing);
+          } else {
+            break;
           }
         }
 
